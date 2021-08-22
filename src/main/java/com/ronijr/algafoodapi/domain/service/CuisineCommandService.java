@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.domain.service;
 
-import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
+import com.ronijr.algafoodapi.domain.exception.CuisineNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
@@ -16,34 +16,29 @@ public class CuisineCommandService {
     @Autowired
     private CuisineRepository cuisineRepository;
 
-    private Cuisine add(Cuisine cuisine){
-        if (cuisine.getName() == null) {
-            throw new EntityRequiredPropertyEmptyException("Cuisine name is required");
+    public Cuisine create(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
+        return update(cuisine);
+    }
+
+    public Cuisine update(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
+        if (cuisine.getName() == null || cuisine.getName().trim().equals("")) {
+            throw new EntityRequiredPropertyEmptyException("Cuisine name is required.");
         }
         try {
-            return cuisineRepository.add(cuisine);
+            return cuisineRepository.save(cuisine);
         } catch (DataIntegrityViolationException e) {
             throw new EntityUniqueViolationException(
-                    String.format("Cuisine with name %s already registered", cuisine.getName()));
+                    String.format("Cuisine with name %s already registered.", cuisine.getName()));
         }
     }
 
-    public Cuisine create(Cuisine cuisine) {
-        return add(cuisine);
-    }
-
-    public Cuisine update(Cuisine cuisine) {
-        return add(cuisine);
-    }
-
-    public void delete(Long id) {
+    public void delete(Long id) throws EntityRelationshipException, CuisineNotFoundException {
         try {
-            cuisineRepository.remove(id);
+            cuisineRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(String.format("Cuisine with id %d can not be deleted.", id));
         } catch (EmptyResultDataAccessException e) {
-            throw new EntityNotFoundException(
-                    String.format("Cuisine with id %d not found", id));
+            throw new CuisineNotFoundException(id);
         }
     }
 }

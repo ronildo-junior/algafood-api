@@ -1,12 +1,13 @@
 package com.ronijr.algafoodapi.api.controller;
 
-import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
+import com.ronijr.algafoodapi.domain.exception.CuisineNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.service.CuisineCommandService;
 import com.ronijr.algafoodapi.domain.service.CuisineQueryService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +35,11 @@ public class CuisineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Cuisine> get(@PathVariable Long id) {
-        Cuisine cuisine = queryService.findById(id);
-        if (cuisine != null) {
-            return ResponseEntity.ok(cuisine);
+        try {
+            return ResponseEntity.ok(queryService.findById(id));
+        } catch (CuisineNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/by-name")
@@ -48,7 +49,7 @@ public class CuisineController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Cuisine cuisine) {
-        if (cuisine.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST");
+        if (cuisine.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
         try {
             Cuisine result = commandService.create(cuisine);
             URI location = ServletUriComponentsBuilder
@@ -66,36 +67,33 @@ public class CuisineController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody Cuisine cuisine) {
-        if (queryService.findById(id) == null) {
-            return ResponseEntity.notFound().build();
-        }
         try {
-            cuisine.setId(id);
-            Cuisine result = commandService.update(cuisine);
-            return ResponseEntity.ok(result);
+            Cuisine current = queryService.findById(id);
+            BeanUtils.copyProperties(cuisine, current, "id");
+            return ResponseEntity.ok(commandService.update(current));
         } catch (EntityUniqueViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        } catch (CuisineNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateOnePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
-        Cuisine cuisine = queryService.findById(id);
-        if (cuisine == null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
         try {
+            Cuisine cuisine = queryService.findById(id);
             mergeFieldsMapInObject(pathMap, cuisine);
-            cuisine = commandService.update(cuisine);
-            return ResponseEntity.ok(cuisine);
+            return ResponseEntity.ok(commandService.update(cuisine));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (EntityUniqueViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        } catch (CuisineNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -106,7 +104,7 @@ public class CuisineController {
             return ResponseEntity.noContent().build();
         } catch (EntityRelationshipException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (EntityNotFoundException e) {
+        } catch (CuisineNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }

@@ -1,13 +1,12 @@
 package com.ronijr.algafoodapi.domain.repository;
 
 import com.ronijr.algafoodapi.domain.model.Cuisine;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface CuisineRepository {
-    List<Cuisine> list();
-    List<Cuisine> filterByName(String name);
-    Cuisine get(Long id);
-    Cuisine add(Cuisine cuisine);
-    void remove(Long id);
+@Repository
+public interface CuisineRepository extends JpaRepository<Cuisine, Long> {
+    List<Cuisine> findByNameContaining(String name);
 }

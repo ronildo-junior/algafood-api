@@ -1,12 +1,10 @@
 package com.ronijr.algafoodapi.domain.repository;
 
 import com.ronijr.algafoodapi.domain.model.State;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface StateRepository extends JpaRepository<State, Long> {
 
-public interface StateRepository {
-    List<State> list();
-    State get(Long id);
-    State add(State state);
-    void remove(Long id);
 }

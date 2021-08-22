@@ -7,8 +7,10 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 public final class AppUtils {
-    private AppUtils(){}
-    public static void mergeFieldsMapInObject(Map<String, Object> fieldsMap, Object target) {
+    private AppUtils() {}
+
+    public static void mergeFieldsMapInObject(Map<String, Object> fieldsMap, Object target)
+            throws IllegalArgumentException {
         ObjectMapper objectMapper = new ObjectMapper();
         Object mapObject = objectMapper.convertValue(fieldsMap, target.getClass());
         fieldsMap.forEach((key, value) -> {

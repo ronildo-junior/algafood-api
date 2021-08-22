@@ -1,12 +1,10 @@
 package com.ronijr.algafoodapi.domain.repository;
 
 import com.ronijr.algafoodapi.domain.model.PaymentMethod;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+@Repository
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
 
-public interface PaymentMethodRepository {
-    List<PaymentMethod> list();
-    PaymentMethod get(Long id);
-    PaymentMethod add(PaymentMethod paymentMethod);
-    void remove(Long id);
 }

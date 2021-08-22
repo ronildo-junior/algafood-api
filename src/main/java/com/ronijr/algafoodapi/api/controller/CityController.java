@@ -2,9 +2,11 @@ package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
+import com.ronijr.algafoodapi.domain.exception.StateNotFoundException;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.service.CityCommandService;
 import com.ronijr.algafoodapi.domain.service.CityQueryService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,16 +33,16 @@ public class CityController {
 
     @GetMapping("/{id}")
     public ResponseEntity<City> get(@PathVariable Long id) {
-        City city = queryService.findById(id);
-        if (city != null) {
-            return ResponseEntity.ok(city);
+        try {
+            return ResponseEntity.ok(queryService.findById(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody City city) {
-        if (city.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST");
+        if (city.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
         try {
             City result = commandService.create(city);
             URI location = ServletUriComponentsBuilder.
@@ -49,38 +51,36 @@ public class CityController {
                     buildAndExpand(result.getId()).
                     toUri();
             return ResponseEntity.created(location).body(result);
-        } catch (EntityNotFoundException | EntityRequiredPropertyEmptyException e) {
+        } catch (StateNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody City city) {
-        if (queryService.findById(id) == null) {
-            return ResponseEntity.notFound().build();
-        }
         try {
-            city.setId(id);
-            return ResponseEntity.ok(commandService.update(city));
-        } catch (EntityNotFoundException | EntityRequiredPropertyEmptyException e) {
+            City current = queryService.findById(id);
+            BeanUtils.copyProperties(city, current, "id");
+            return ResponseEntity.ok(commandService.update(current));
+        } catch (StateNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
-        City city = queryService.findById(id);
-        if (city == null) {
-            return ResponseEntity.notFound().build();
-        }
         try {
+            City city = queryService.findById(id);
             mergeFieldsMapInObject(pathMap, city);
-            city = commandService.update(city);
-            return ResponseEntity.ok(city);
+            return ResponseEntity.ok(commandService.update(city));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-        }  catch (EntityNotFoundException | EntityRequiredPropertyEmptyException e) {
+        } catch (StateNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
