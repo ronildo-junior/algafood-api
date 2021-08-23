@@ -1,8 +1,11 @@
 package com.ronijr.algafoodapi.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -14,4 +17,9 @@ public class Cuisine extends AbstractEntity<Long> {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @OneToMany(mappedBy = "cuisine")
+    List<Restaurant> restaurants = new ArrayList<>();
 }
