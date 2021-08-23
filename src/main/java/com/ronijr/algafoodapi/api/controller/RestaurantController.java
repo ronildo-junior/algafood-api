@@ -61,7 +61,7 @@ public class RestaurantController {
         try {
             Restaurant current = queryService.findById(id);
             BeanUtils.copyProperties(restaurant, current,
-                    "id", "paymentMethods", "createdAt");
+                    "id", "paymentMethods", "createdAt", "products");
             return ResponseEntity.ok(commandService.update(current));
         } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
@@ -113,6 +113,4 @@ public class RestaurantController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 }
