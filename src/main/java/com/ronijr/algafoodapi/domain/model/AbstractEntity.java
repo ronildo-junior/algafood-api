@@ -6,7 +6,7 @@ import javax.persistence.Transient;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class AbstractEntity<T> {
+public abstract class AbstractEntity<T> extends AuditableEntity {
 
     @Transient
     @JsonIgnore

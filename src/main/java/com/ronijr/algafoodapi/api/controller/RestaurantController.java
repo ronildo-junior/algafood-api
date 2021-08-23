@@ -60,7 +60,8 @@ public class RestaurantController {
     public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
         try {
             Restaurant current = queryService.findById(id);
-            BeanUtils.copyProperties(restaurant, current, "id", "paymentMethods");
+            BeanUtils.copyProperties(restaurant, current,
+                    "id", "paymentMethods", "createdAt");
             return ResponseEntity.ok(commandService.update(current));
         } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
