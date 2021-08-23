@@ -70,10 +70,10 @@ public class CityController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
+    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         try {
             City city = queryService.findById(id);
-            mergeFieldsMapInObject(pathMap, city);
+            mergeFieldsMapInObject(patchMap, city);
             return ResponseEntity.ok(commandService.update(city));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -62,7 +62,7 @@ public class StateController {
         try {
             State current = queryService.findById(id);
             BeanUtils.copyProperties(state, current, "id");
-            return ResponseEntity.ok(commandService.update(state));
+            return ResponseEntity.ok(commandService.update(current));
         } catch (EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         } catch (StateNotFoundException e) {
@@ -71,10 +71,10 @@ public class StateController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
+    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         try {
             State state = queryService.findById(id);
-            mergeFieldsMapInObject(pathMap, state);
+            mergeFieldsMapInObject(patchMap, state);
             return ResponseEntity.ok(commandService.update(state));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

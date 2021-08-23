@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.ronijr.algafoodapi.infrastructure.repository.specification.RestaurantSpecification.withFreeDelivery;
 
 @Service
 public class RestaurantQueryService {
@@ -19,5 +22,17 @@ public class RestaurantQueryService {
 
     public Restaurant findById(Long id) throws EntityNotFoundException {
         return restaurantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id));
+    }
+
+    public List<Restaurant> customQuery(Map<String, Object> parameters){
+        return restaurantRepository.findCriteriaTest(parameters);
+    }
+
+    public List<Restaurant> findAllWithFreeDelivery(){
+        return restaurantRepository.findAll(withFreeDelivery());
+    }
+
+    public Restaurant findFirst() throws EntityNotFoundException {
+        return restaurantRepository.findFirst().orElseThrow(() -> new EntityNotFoundException("No Restaurant found"));
     }
 }

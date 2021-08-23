@@ -61,7 +61,7 @@ public class RestaurantController {
         try {
             Restaurant current = queryService.findById(id);
             BeanUtils.copyProperties(restaurant, current, "id");
-            return ResponseEntity.ok(commandService.update(restaurant));
+            return ResponseEntity.ok(commandService.update(current));
         } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -70,10 +70,10 @@ public class RestaurantController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
+    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         try {
             Restaurant restaurant = queryService.findById(id);
-            mergeFieldsMapInObject(pathMap, restaurant);
+            mergeFieldsMapInObject(patchMap, restaurant);
             return ResponseEntity.ok(commandService.update(restaurant));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -93,4 +93,25 @@ public class RestaurantController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/custom")
+    public List<Restaurant> customQueryTest(@RequestBody Map<String, Object> map) {
+        return queryService.customQuery(map);
+    }
+
+    @GetMapping("/with-free-delivery")
+    public List<Restaurant> listRestaurantsWithFreeDelivery() {
+        return queryService.findAllWithFreeDelivery();
+    }
+
+    @GetMapping("/first")
+    public ResponseEntity<Restaurant> getFirst() {
+        try {
+            return ResponseEntity.ok(queryService.findFirst());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 }

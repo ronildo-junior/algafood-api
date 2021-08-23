@@ -81,10 +81,10 @@ public class CuisineController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> pathMap) {
+    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         try {
             Cuisine cuisine = queryService.findById(id);
-            mergeFieldsMapInObject(pathMap, cuisine);
+            mergeFieldsMapInObject(patchMap, cuisine);
             return ResponseEntity.ok(commandService.update(cuisine));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

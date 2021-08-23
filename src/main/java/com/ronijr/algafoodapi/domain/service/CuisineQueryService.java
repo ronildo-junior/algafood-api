@@ -18,7 +18,7 @@ public class CuisineQueryService {
     }
 
     public List<Cuisine> findByName(String name) {
-        return cuisineRepository.findByNameContaining(name);
+        return cuisineRepository.findAllByNameContaining(name);
     }
 
     public Cuisine findById(Long id) throws CuisineNotFoundException {
