@@ -1,30 +1,19 @@
 -- disable foreign key check
 set foreign_key_checks = 0;
-delete from city;
-delete from cuisine;
-delete from state;
-delete from payment_method;
-delete from permission;
-delete from product;
-delete from restaurant;
-delete from user;
-delete from user_group;
-delete from restaurant_payment_method;
-delete from user_group_user;
-delete from user_group_permission;
+truncate table city;
+truncate table cuisine;
+truncate table state;
+truncate table payment_method;
+truncate table permission;
+truncate table product;
+truncate table restaurant;
+truncate table user;
+truncate table user_group;
+truncate table restaurant_payment_method;
+truncate table user_group_user;
+truncate table user_group_permission;
 -- enable foreign key check
 set foreign_key_checks = 1;
-
--- reset autoincrement id
-alter table city auto_increment = 1;
-alter table cuisine auto_increment = 1;
-alter table state auto_increment = 1;
-alter table payment_method auto_increment = 1;
-alter table permission auto_increment = 1;
-alter table product auto_increment = 1;
-alter table restaurant auto_increment = 1;
-alter table user auto_increment = 1;
-alter table user_group auto_increment = 1;
 
 insert into cuisine(id, name, created_at) values (1, "Mineira", utc_timestamp);
 insert into cuisine(id, name, created_at) values (2, "Baiana", utc_timestamp);
