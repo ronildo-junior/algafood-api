@@ -38,7 +38,7 @@ CREATE TABLE `restaurant` (
   `address_complement` varchar(60) DEFAULT NULL,
   `address_neighborhood` varchar(60) DEFAULT NULL,
   `address_number` varchar(20) DEFAULT NULL,
-  `address_postal_code` varchar(255) DEFAULT NULL,
+  `address_postal_code` varchar(20) DEFAULT NULL,
   `delivery_fee` decimal(10,2) NOT NULL,
   `name` varchar(80) NOT NULL,
   `cuisine_id` bigint DEFAULT NULL,
