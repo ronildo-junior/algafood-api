@@ -1,8 +1,5 @@
 package com.ronijr.algafoodapi.api.controller;
 
-import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
-import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
-import com.ronijr.algafoodapi.domain.exception.StateNotFoundException;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.service.StateCommandService;
 import com.ronijr.algafoodapi.domain.service.StateQueryService;
@@ -34,66 +31,38 @@ public class StateController {
 
     @GetMapping("/{id}")
     public ResponseEntity<State> get(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(queryService.findById(id));
-        } catch (StateNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody State state) {
         if (state.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        try {
-            State result = commandService.create(state);
-            URI location = ServletUriComponentsBuilder.
-                    fromCurrentRequest().
-                    path("/{id}").
-                    buildAndExpand(result.getId()).
-                    toUri();
-            return ResponseEntity.created(location).body(result);
-        } catch (EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        }
+        State result = commandService.create(state);
+        URI location = ServletUriComponentsBuilder.
+                fromCurrentRequest().
+                path("/{id}").
+                buildAndExpand(result.getId()).
+                toUri();
+        return ResponseEntity.created(location).body(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody State state) {
-        try {
-            State current = queryService.findById(id);
-            BeanUtils.copyProperties(state, current, "id");
-            return ResponseEntity.ok(commandService.update(current));
-        } catch (EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        } catch (StateNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody State state) {
+        State current = queryService.findByIdOrElseThrow(id);
+        BeanUtils.copyProperties(state, current, "id");
+        return ResponseEntity.ok(commandService.update(current));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        try {
-            State state = queryService.findById(id);
-            mergeFieldsMapInObject(patchMap, state);
-            return ResponseEntity.ok(commandService.update(state));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        } catch (StateNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<State> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        State state = queryService.findByIdOrElseThrow(id);
+        mergeFieldsMapInObject(patchMap, state);
+        return ResponseEntity.ok(commandService.update(state));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
-        try {
-            commandService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityRelationshipException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (StateNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        commandService.delete(id);
     }
 }

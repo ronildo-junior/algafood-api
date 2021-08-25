@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.infrastructure.repository;
 
+import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.repository.CustomJpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -23,5 +24,11 @@ public class CustomJpaRepositoryImpl<T, D> extends SimpleJpaRepository<T, D> imp
                 getResultList().
                 stream().
                 findFirst();
+    }
+
+    @Override
+    public T findByIdOrElseThrow(D id) {
+        return findById(id).orElseThrow(() ->
+                new EntityNotFoundException(getDomainClass().getName(), id.toString()));
     }
 }

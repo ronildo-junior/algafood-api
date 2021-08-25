@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CityQueryService {
@@ -17,7 +18,11 @@ public class CityQueryService {
         return cityRepository.findAll();
     }
 
-    public City findById(Long id) throws EntityNotFoundException {
-        return cityRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id));
+    public Optional<City> findById(Long id) {
+        return cityRepository.findById(id);
+    }
+
+    public City findByIdOrElseThrow(Long id) throws EntityNotFoundException {
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("City", id.toString()));
     }
 }

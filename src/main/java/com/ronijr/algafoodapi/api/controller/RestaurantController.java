@@ -1,13 +1,11 @@
 package com.ronijr.algafoodapi.api.controller;
 
-import com.ronijr.algafoodapi.domain.exception.CuisineNotFoundException;
-import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
-import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.RestaurantCommandService;
 import com.ronijr.algafoodapi.domain.service.RestaurantQueryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -33,66 +31,40 @@ public class RestaurantController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> get(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(queryService.findById(id));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Restaurant restaurant) {
         if (restaurant.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        try {
-            Restaurant result = commandService.create(restaurant);
-            URI location = ServletUriComponentsBuilder.
-                    fromCurrentRequest().
-                    path("/{id}").
-                    buildAndExpand(result.getId()).
-                    toUri();
-            return ResponseEntity.created(location).body(result);
-        } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        }
+        Restaurant result = commandService.create(restaurant);
+        URI location = ServletUriComponentsBuilder.
+                fromCurrentRequest().
+                path("/{id}").
+                buildAndExpand(result.getId()).
+                toUri();
+        return ResponseEntity.created(location).body(result);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
-        try {
-            Restaurant current = queryService.findById(id);
-            BeanUtils.copyProperties(restaurant, current,
-                    "id", "paymentMethods", "createdAt", "products");
-            return ResponseEntity.ok(commandService.update(current));
-        } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+        Restaurant current = queryService.findByIdOrElseThrow(id);
+        BeanUtils.copyProperties(restaurant, current,
+                "id", "paymentMethods", "createdAt", "products");
+        return ResponseEntity.ok(commandService.update(current));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        try {
-            Restaurant restaurant = queryService.findById(id);
-            mergeFieldsMapInObject(patchMap, restaurant);
-            return ResponseEntity.ok(commandService.update(restaurant));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (CuisineNotFoundException | EntityRequiredPropertyEmptyException e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Restaurant> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        Restaurant restaurant = queryService.findByIdOrElseThrow(id);
+        mergeFieldsMapInObject(patchMap, restaurant);
+        return ResponseEntity.ok(commandService.update(restaurant));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Restaurant> delete(@PathVariable Long id) {
-        try {
-            commandService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        commandService.delete(id);
     }
 
     @GetMapping("/custom")
@@ -107,10 +79,6 @@ public class RestaurantController {
 
     @GetMapping("/first")
     public ResponseEntity<Restaurant> getFirst() {
-        try {
-            return ResponseEntity.ok(queryService.findFirst());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(queryService.findFirst());
     }
 }

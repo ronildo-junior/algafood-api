@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.ronijr.algafoodapi.infrastructure.repository.specification.RestaurantSpecification.withFreeDelivery;
 
@@ -20,8 +21,12 @@ public class RestaurantQueryService {
         return restaurantRepository.findAll();
     }
 
-    public Restaurant findById(Long id) throws EntityNotFoundException {
-        return restaurantRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id));
+    public Optional<Restaurant> findById(Long id) throws EntityNotFoundException {
+        return restaurantRepository.findById(id);
+    }
+
+    public Restaurant findByIdOrElseThrow(Long id) throws EntityNotFoundException {
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("Restaurant", id.toString()));
     }
 
     public List<Restaurant> customQuery(Map<String, Object> parameters){

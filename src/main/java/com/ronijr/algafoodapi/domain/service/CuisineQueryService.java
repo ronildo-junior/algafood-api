@@ -1,12 +1,13 @@
 package com.ronijr.algafoodapi.domain.service;
 
-import com.ronijr.algafoodapi.domain.exception.CuisineNotFoundException;
+import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.repository.CuisineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CuisineQueryService {
@@ -21,7 +22,11 @@ public class CuisineQueryService {
         return cuisineRepository.findAllByNameContaining(name);
     }
 
-    public Cuisine findById(Long id) throws CuisineNotFoundException {
-        return cuisineRepository.findById(id).orElseThrow(() -> new CuisineNotFoundException(id));
+    public Optional<Cuisine> findById(Long id) {
+        return cuisineRepository.findById(id);
+    }
+
+    public Cuisine findByIdOrElseThrow(Long id) throws EntityNotFoundException {
+        return findById(id).orElseThrow(() -> new EntityNotFoundException("Cuisine", id.toString()));
     }
 }

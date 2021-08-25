@@ -1,14 +1,14 @@
-package com.ronijr.algafoodapi.domain.exception;
+package com.ronijr.algafoodapi.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class EntityRequiredPropertyEmptyException extends RuntimeException {
+public class InvalidModelParseException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public EntityRequiredPropertyEmptyException(String message){
+    public InvalidModelParseException(String message){
         super(message);
     }
 

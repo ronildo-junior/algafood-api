@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class EntityRequiredPropertyEmptyException extends RuntimeException {
+public class EntityRelationshipNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public EntityRequiredPropertyEmptyException(String message){
+    public EntityRelationshipNotFoundException(String message){
         super(message);
     }
 

@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.domain.service;
 
-import com.ronijr.algafoodapi.domain.exception.CuisineNotFoundException;
+import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
@@ -8,7 +8,6 @@ import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.repository.CuisineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,13 +31,17 @@ public class CuisineCommandService {
         }
     }
 
-    public void delete(Long id) throws EntityRelationshipException, CuisineNotFoundException {
+    public void delete(Long id) throws EntityRelationshipException, EntityNotFoundException {
         try {
-            cuisineRepository.deleteById(id);
+            Cuisine cuisine = findById(id);
+            cuisineRepository.delete(cuisine);
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(String.format("Cuisine with id %d can not be deleted.", id));
-        } catch (EmptyResultDataAccessException e) {
-            throw new CuisineNotFoundException(id);
         }
+    }
+
+    private Cuisine findById(Long id) throws EntityNotFoundException {
+        return cuisineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                String.format("City with id %d not found.", id)));
     }
 }
