@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.config.utils.AppUtils.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObject;
 
 @RestController
 @RequestMapping("/states")
