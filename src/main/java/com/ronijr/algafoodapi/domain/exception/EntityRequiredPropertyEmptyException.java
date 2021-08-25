@@ -1,15 +1,15 @@
 package com.ronijr.algafoodapi.domain.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-public class EntityRequiredPropertyEmptyException extends RuntimeException {
+public class EntityRequiredPropertyEmptyException extends BusinessException {
 
     private static final long serialVersionUID = 1L;
 
     public EntityRequiredPropertyEmptyException(String message){
         super(message);
+    }
+
+    public EntityRequiredPropertyEmptyException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }
