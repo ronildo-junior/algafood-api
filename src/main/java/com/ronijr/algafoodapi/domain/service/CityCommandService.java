@@ -43,7 +43,8 @@ public class CityCommandService {
             City city = findById(id);
             cityRepository.delete(city);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityRelationshipException(String.format("City with id %d can not be deleted.", id));
+            throw new EntityRelationshipException(
+                    messageSource.getMessage("city.relationship.found", new Object[] { id }));
         }
     }
 

@@ -23,13 +23,13 @@ public class CuisineCommandService {
 
     public Cuisine update(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
         if (cuisine.getName() == null || cuisine.getName().trim().equals("")) {
-            throw new EntityRequiredPropertyEmptyException("Cuisine name is required.");
+            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("cuisine.name.not.empty"));
         }
         try {
             return cuisineRepository.save(cuisine);
         } catch (DataIntegrityViolationException e) {
             throw new EntityUniqueViolationException(
-                    String.format("Cuisine with name %s already registered.", cuisine.getName()));
+                    messageSource.getMessage("cuisine.name.unique", new Object[] { cuisine.getName() }));
         }
     }
 
@@ -38,7 +38,8 @@ public class CuisineCommandService {
             Cuisine cuisine = findById(id);
             cuisineRepository.delete(cuisine);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityRelationshipException(String.format("Cuisine with id %d can not be deleted.", id));
+            throw new EntityRelationshipException(
+                    messageSource.getMessage("cuisine.relationship.found", new Object[] { id }));
         }
     }
 

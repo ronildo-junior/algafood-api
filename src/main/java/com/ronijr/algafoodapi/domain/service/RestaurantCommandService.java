@@ -36,7 +36,7 @@ public class RestaurantCommandService {
         Cuisine cuisine = cuisineQueryService.findById(cuisineId).
                 orElseThrow(() ->
                         new EntityRelationshipNotFoundException(
-                                messageSource.getMessage("cuisine.not.found")));
+                                messageSource.getMessage("cuisine.not.found", new Object[] { cuisineId } )));
         restaurant.setCuisine(cuisine);
         return restaurantRepository.save(restaurant);
     }
@@ -46,7 +46,8 @@ public class RestaurantCommandService {
             Restaurant restaurant = findById(id);
             restaurantRepository.delete(restaurant);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityRelationshipException(String.format("Restaurant with id %d can not be deleted.", id));
+            throw new EntityRelationshipException(
+                    messageSource.getMessage("restaurant.relationship.found", new Object[] { id }));
         }
     }
 

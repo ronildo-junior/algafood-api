@@ -21,9 +21,11 @@ public class StateCommandService {
     }
 
     public State update(State state) throws EntityRequiredPropertyEmptyException {
-        if (state.getName() == null || state.getName().trim().equals("") ||
-                state.getAbbreviation() == null || state.getAbbreviation().trim().equals("")) {
-            throw new EntityRequiredPropertyEmptyException("State name and abbreviation are required.");
+        if (state.getName() == null || state.getName().trim().equals("")) {
+            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("state.name.not.empty"));
+        }
+        if (state.getAbbreviation() == null || state.getAbbreviation().trim().equals("")){
+            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("state.abbreviation.not.empty"));
         }
         return stateRepository.save(state);
     }
@@ -34,12 +36,12 @@ public class StateCommandService {
             stateRepository.delete(state);
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(
-                    String.format("State with id %d can not be deleted.", id));
+                    messageSource.getMessage("state.relationship.found", new Object[] { id } ));
         }
     }
 
     private State findById(Long id) throws EntityNotFoundException {
         return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("state.not.found")));
+                messageSource.getMessage("state.not.found", new Object[] { id } )));
     }
 }

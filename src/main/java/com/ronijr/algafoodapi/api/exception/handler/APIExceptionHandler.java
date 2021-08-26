@@ -47,22 +47,25 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, webRequest);
     }
 
-    protected ProblemDetails.ProblemDetailsBuilder createProblemDetailsBuilder(ProblemType problemType, String detail){
+    protected ProblemDetails.ProblemDetailsBuilder createProblemDetailsBuilder(ProblemType problemType, String detail,
+                                                                               String userMessage){
         return ProblemDetails.builder().
                 status(problemType.status.value()).
                 type(problemType.uri).
                 title(messageSource.getMessage(problemType.title)).
                 detail(detail).
+                userMessage(userMessage).
                 timestamp(LocalDateTime.now());
     }
 
     protected ResponseEntity<Object> handleException(Exception ex, WebRequest webRequest, ProblemType problemType) {
-        ProblemDetails problemDetails = createProblemDetailsBuilder(problemType, ex.getMessage()).build();
+        ProblemDetails problemDetails = createProblemDetailsBuilder(problemType, ex.getMessage(), ex.getMessage()).build();
         return handleExceptionInternal(ex, problemDetails, headers, problemType.status, webRequest);
     }
 
     protected ResponseEntity<Object> handleException(Exception ex, WebRequest webRequest, ProblemType problemType, String detail) {
-        ProblemDetails problemDetails = createProblemDetailsBuilder(problemType, detail).build();
+        ProblemDetails problemDetails = createProblemDetailsBuilder(problemType, detail,
+                messageSource.getMessage("exception.internal.error")).build();
         return handleExceptionInternal(ex, problemDetails, headers, problemType.status, webRequest);
     }
 

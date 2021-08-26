@@ -16,5 +16,8 @@ class ProblemDetails {
     private String type;
     private String title;
     private String detail;
+    /**
+     * Custom Properties. */
+    private String userMessage;
     private LocalDateTime timestamp;
 }
