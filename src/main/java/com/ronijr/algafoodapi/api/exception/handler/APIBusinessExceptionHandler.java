@@ -17,12 +17,12 @@ class APIBusinessExceptionHandler extends APIExceptionHandler {
 
     @ExceptionHandler(EntityRequiredPropertyEmptyException.class)
     public ResponseEntity<Object> handlePropertyEmpty(EntityRequiredPropertyEmptyException ex, WebRequest webRequest) {
-        return handleException(ex, webRequest, ProblemType.UNPROCESSABLE_ENTITY);
+        return handleException(ex, webRequest, ProblemType.INVALID_DATA);
     }
 
     @ExceptionHandler(EntityRelationshipNotFoundException.class)
     public ResponseEntity<Object> handleRelationshipNotFound(EntityRelationshipNotFoundException ex, WebRequest webRequest) {
-        return handleException(ex, webRequest, ProblemType.UNPROCESSABLE_ENTITY);
+        return handleException(ex, webRequest, ProblemType.INVALID_DATA);
     }
 
     @ExceptionHandler(EntityRelationshipException.class)

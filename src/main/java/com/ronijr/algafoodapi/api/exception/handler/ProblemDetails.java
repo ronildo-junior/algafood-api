@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Implements Specification RFC 7807 from IETF.
@@ -20,4 +21,11 @@ class ProblemDetails {
      * Custom Properties. */
     private String userMessage;
     private LocalDateTime timestamp;
+    private List<Field> fields;
+
+    @Getter @Builder
+    public static class Field {
+        private String name;
+        private String description;
+    }
 }

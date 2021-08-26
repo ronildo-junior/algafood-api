@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class CityController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody City city) {
+    public ResponseEntity<Object> create(@RequestBody @Valid City city) {
         if (city.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
         City result = commandService.create(city);
         URI location = ServletUriComponentsBuilder.
@@ -47,7 +48,7 @@ public class CityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody City city) {
+    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody @Valid City city) {
         City current = queryService.findByIdOrElseThrow(id);
         BeanUtils.copyProperties(city, current, "id");
         return ResponseEntity.ok(commandService.update(current));

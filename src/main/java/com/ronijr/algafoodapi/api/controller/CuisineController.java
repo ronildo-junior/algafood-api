@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class CuisineController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Cuisine cuisine) {
+    public ResponseEntity<Object> create(@RequestBody @Valid Cuisine cuisine) {
         if (cuisine.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
         Cuisine result = commandService.create(cuisine);
         URI location = ServletUriComponentsBuilder
@@ -52,7 +53,7 @@ public class CuisineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cuisine> update(@PathVariable Long id, @RequestBody Cuisine cuisine) {
+    public ResponseEntity<Cuisine> update(@PathVariable Long id, @RequestBody @Valid Cuisine cuisine) {
         Cuisine current = queryService.findByIdOrElseThrow(id);
         BeanUtils.copyProperties(cuisine, current, "id");
         return ResponseEntity.ok(commandService.update(current));

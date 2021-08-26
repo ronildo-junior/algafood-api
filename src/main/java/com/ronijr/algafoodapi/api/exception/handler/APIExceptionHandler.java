@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -32,9 +33,7 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
         if(body == null) {
-            body = ProblemDetails.builder().
-                    status(status.value()).
-                    title(status.getReasonPhrase()).
+            body = ProblemDetails.builder().status(status.value()).title(status.getReasonPhrase()).
                     timestamp(LocalDateTime.now()).
                     build();
         } else if (body instanceof String){
@@ -69,6 +68,13 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, problemDetails, headers, problemType.status, webRequest);
     }
 
+    protected ResponseEntity<Object> handleException(Exception ex, WebRequest webRequest, ProblemType problemType,
+                                                     String detail, List<ProblemDetails.Field> fields) {
+        ProblemDetails problemDetails = createProblemDetailsBuilder(problemType, detail,
+                messageSource.getMessage("exception.title.invalid.fields")).fields(fields).build();
+        return handleExceptionInternal(ex, problemDetails, headers, problemType.status, webRequest);
+    }
+
     private String joinPath(List<Reference> references) {
         return references.stream()
                 .map(Reference::getFieldName)
@@ -89,6 +95,19 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
                     (MethodArgumentTypeMismatchException) ex, headers, status, webRequest);
         }
         return super.handleTypeMismatch(ex, headers, status, webRequest);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
+        List<ProblemDetails.Field> problemFields =
+                ex.getBindingResult().getFieldErrors().stream().
+                        map(r -> ProblemDetails.Field.builder().
+                                name(r.getField()).
+                                description(messageSource.getMessage(r)).
+                                build()).
+                        collect(Collectors.toList());
+        return handleException(ex, webRequest, ProblemType.BAD_REQUEST,
+                messageSource.getMessage("exception.invalid.property.list"), problemFields);
     }
 
     private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
@@ -137,5 +156,4 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
         return handleException(ex, webRequest, ProblemType.SYSTEM_ERROR,
                 messageSource.getMessage("exception.internal.error"));
     }
-
 }
