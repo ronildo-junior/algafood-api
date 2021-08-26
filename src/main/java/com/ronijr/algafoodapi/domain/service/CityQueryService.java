@@ -1,18 +1,20 @@
 package com.ronijr.algafoodapi.domain.service;
 
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.repository.CityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CityQueryService {
-    @Autowired
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
+    private final AppMessageSource messageSource;
 
     public List<City> findAll() {
         return cityRepository.findAll();
@@ -23,6 +25,7 @@ public class CityQueryService {
     }
 
     public City findByIdOrElseThrow(Long id) throws EntityNotFoundException {
-        return findById(id).orElseThrow(() -> new EntityNotFoundException("City", id.toString()));
+        return findById(id).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("city.not.found", new Object[] { id })));
     }
 }

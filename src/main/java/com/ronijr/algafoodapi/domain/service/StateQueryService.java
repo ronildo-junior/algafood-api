@@ -1,18 +1,20 @@
 package com.ronijr.algafoodapi.domain.service;
 
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.repository.StateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class StateQueryService {
-    @Autowired
-    private StateRepository stateRepository;
+    private final StateRepository stateRepository;
+    private final AppMessageSource messageSource;
 
     public List<State> findAll() {
         return stateRepository.findAll();
@@ -23,6 +25,7 @@ public class StateQueryService {
     }
 
     public State findByIdOrElseThrow(Long id) throws EntityNotFoundException {
-        return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("State", id.toString()));
+        return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("state.not.found", new Object[] { id })));
     }
 }

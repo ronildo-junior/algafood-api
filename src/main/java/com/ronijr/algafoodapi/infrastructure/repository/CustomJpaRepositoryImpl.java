@@ -29,6 +29,7 @@ public class CustomJpaRepositoryImpl<T, D> extends SimpleJpaRepository<T, D> imp
     @Override
     public T findByIdOrElseThrow(D id) {
         return findById(id).orElseThrow(() ->
-                new EntityNotFoundException(getDomainClass().getName(), id.toString()));
+                new EntityNotFoundException(
+                        getDomainClass().getName() + " with id " + id.toString() + " not found."));
     }
 }

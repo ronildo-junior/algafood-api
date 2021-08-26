@@ -1,19 +1,21 @@
 package com.ronijr.algafoodapi.domain.service;
 
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.repository.CuisineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class CuisineCommandService {
-    @Autowired
-    private CuisineRepository cuisineRepository;
+    private final CuisineRepository cuisineRepository;
+    private final AppMessageSource messageSource;
 
     public Cuisine create(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
         return update(cuisine);
@@ -42,6 +44,6 @@ public class CuisineCommandService {
 
     private Cuisine findById(Long id) throws EntityNotFoundException {
         return cuisineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                String.format("City with id %d not found.", id)));
+                messageSource.getMessage("cuisine.not.found", new Object[] { id })));
     }
 }

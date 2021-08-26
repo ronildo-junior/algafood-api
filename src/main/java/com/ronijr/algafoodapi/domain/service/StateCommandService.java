@@ -1,18 +1,20 @@
 package com.ronijr.algafoodapi.domain.service;
 
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.repository.StateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class StateCommandService {
-    @Autowired
     private StateRepository stateRepository;
+    private final AppMessageSource messageSource;
 
     public State create(State state) throws EntityRequiredPropertyEmptyException {
         return update(state);
@@ -38,6 +40,6 @@ public class StateCommandService {
 
     private State findById(Long id) throws EntityNotFoundException {
         return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                String.format("State with id %d not found.", id)));
+                messageSource.getMessage("state.not.found")));
     }
 }

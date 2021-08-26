@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.ronijr.algafoodapi.api.exception.InvalidModelParseException;
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 class APIExceptionHandler extends ResponseEntityExceptionHandler {
     private final HttpHeaders headers = new HttpHeaders();
+    @Autowired
+    private AppMessageSource messageSource;
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
@@ -47,7 +51,7 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
         return ProblemDetails.builder().
                 status(problemType.status.value()).
                 type(problemType.uri).
-                title(problemType.title).
+                title(messageSource.getMessage(problemType.title)).
                 detail(detail).
                 timestamp(LocalDateTime.now());
     }
@@ -72,7 +76,7 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
                                                                    HttpStatus status, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.BAD_REQUEST,
-                String.format("Resource '%s' Not Found", ex.getRequestURL()));
+                messageSource.getMessage("resource.not.found", new Object[] { ex.getRequestURL() }));
     }
 
     @Override
@@ -86,12 +90,10 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.BAD_REQUEST,
-                String.format("The Path Variable '%s' with value '%s' is not expected. " +
-                                "Type '%s' is required.", ex.getName(),
-                                ex.getValue(),
-                                Optional.ofNullable(ex.getRequiredType()).
-                                    map(Class::getSimpleName).
-                                        orElse("Object")));
+                messageSource.getMessage("exception.invalid.path.variable",
+                        new Object[] { ex.getName(), ex.getValue(), Optional.ofNullable(ex.getRequiredType()).
+                                map(Class::getSimpleName).
+                                orElse("Object")}));
     }
 
     @Override
@@ -110,15 +112,15 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers,
                                                          HttpStatus status, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.BAD_REQUEST,
-                String.format("The property '%s' is not acceptable.", joinPath(ex.getPath())));
+                messageSource.getMessage("exception.invalid.property",
+                        new Object[] { joinPath(ex.getPath()) }));
     }
 
     private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers,
                                                        HttpStatus status, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.BAD_REQUEST,
-                String.format("The property '%s' with value = '%s' is not expected. " +
-                                "Type '%s' is required.", joinPath(ex.getPath()), ex.getValue(),
-                                ex.getTargetType().getSimpleName()));
+                messageSource.getMessage("exception.invalid.type",
+                        new Object[] { joinPath(ex.getPath()), ex.getValue(), ex.getTargetType().getSimpleName() }));
     }
 
     @ExceptionHandler(InvalidModelParseException.class)
@@ -130,8 +132,7 @@ class APIExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest webRequest){
         ex.printStackTrace();
         return handleException(ex, webRequest, ProblemType.SYSTEM_ERROR,
-                "An unexpected internal system error has occurred. " +
-                        "Please try again and if the problem persists, contact a system administrator.");
+                messageSource.getMessage("exception.internal.error"));
     }
 
 }

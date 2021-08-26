@@ -1,9 +1,10 @@
 package com.ronijr.algafoodapi.domain.service;
 
+import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,20 +14,22 @@ import java.util.Optional;
 import static com.ronijr.algafoodapi.infrastructure.repository.specification.RestaurantSpecification.withFreeDelivery;
 
 @Service
+@AllArgsConstructor
 public class RestaurantQueryService {
-    @Autowired
-    private RestaurantRepository restaurantRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final AppMessageSource messageSource;
 
     public List<Restaurant> findAll() {
         return restaurantRepository.findAll();
     }
 
-    public Optional<Restaurant> findById(Long id) throws EntityNotFoundException {
+    public Optional<Restaurant> findById(Long id) {
         return restaurantRepository.findById(id);
     }
 
     public Restaurant findByIdOrElseThrow(Long id) throws EntityNotFoundException {
-        return findById(id).orElseThrow(() -> new EntityNotFoundException("Restaurant", id.toString()));
+        return findById(id).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("restaurant.not.found", new Object[] { id })));
     }
 
     public List<Restaurant> customQuery(Map<String, Object> parameters){
@@ -38,6 +41,7 @@ public class RestaurantQueryService {
     }
 
     public Restaurant findFirst() throws EntityNotFoundException {
-        return restaurantRepository.findFirst().orElseThrow(() -> new EntityNotFoundException("No Restaurant found"));
+        return restaurantRepository.findFirst().orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("resource.list.empty")));
     }
 }
