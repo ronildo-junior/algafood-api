@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class AppMessageSource {
-
+public final class AppMessageSource {
     private final MessageSource messageSource;
 
     public String getMessage(String message) {
@@ -20,8 +19,7 @@ public class AppMessageSource {
         return messageSource.getMessage(resolvable, LocaleContextHolder.getLocale());
     }
 
-    public String getMessage(String message, Object[] params) {
+    public String getMessage(String message, Object... params) {
         return messageSource.getMessage(message, params, LocaleContextHolder.getLocale());
     }
-
 }

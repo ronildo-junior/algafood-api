@@ -26,6 +26,6 @@ public class CityQueryService {
 
     public City findByIdOrElseThrow(Long id) throws EntityNotFoundException {
         return findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("city.not.found", new Object[] { id })));
+                messageSource.getMessage("city.not.found", id)));
     }
 }

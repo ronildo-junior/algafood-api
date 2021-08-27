@@ -3,9 +3,10 @@ package com.ronijr.algafoodapi.domain.service;
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
-import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
+import com.ronijr.algafoodapi.domain.exception.ValidationException;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.repository.StateRepository;
+import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,14 @@ import org.springframework.stereotype.Service;
 public class StateCommandService {
     private StateRepository stateRepository;
     private final AppMessageSource messageSource;
+    private final ResourceValidator validator;
 
-    public State create(State state) throws EntityRequiredPropertyEmptyException {
+    public State create(State state) throws ValidationException {
         return update(state);
     }
 
-    public State update(State state) throws EntityRequiredPropertyEmptyException {
-        if (state.getName() == null || state.getName().trim().equals("")) {
-            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("state.name.not.empty"));
-        }
-        if (state.getAbbreviation() == null || state.getAbbreviation().trim().equals("")){
-            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("state.abbreviation.not.empty"));
-        }
+    public State update(State state) throws ValidationException {
+        validator.validate(state);
         return stateRepository.save(state);
     }
 
@@ -35,13 +32,12 @@ public class StateCommandService {
             State state = findById(id);
             stateRepository.delete(state);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityRelationshipException(
-                    messageSource.getMessage("state.relationship.found", new Object[] { id } ));
+            throw new EntityRelationshipException(messageSource.getMessage("state.relationship.found", id));
         }
     }
 
     private State findById(Long id) throws EntityNotFoundException {
-        return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("state.not.found", new Object[] { id } )));
+        return stateRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(messageSource.getMessage("state.not.found", id)));
     }
 }

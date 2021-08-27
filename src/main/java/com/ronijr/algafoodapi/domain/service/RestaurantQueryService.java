@@ -29,7 +29,7 @@ public class RestaurantQueryService {
 
     public Restaurant findByIdOrElseThrow(Long id) throws EntityNotFoundException {
         return findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("restaurant.not.found", new Object[] { id })));
+                messageSource.getMessage("restaurant.not.found", id)));
     }
 
     public List<Restaurant> customQuery(Map<String, Object> parameters){

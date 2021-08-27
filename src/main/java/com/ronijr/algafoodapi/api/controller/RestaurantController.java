@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid Restaurant restaurant) {
+    public ResponseEntity<Object> create(@RequestBody Restaurant restaurant) {
         if (restaurant.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
         Restaurant result = commandService.create(restaurant);
         URI location = ServletUriComponentsBuilder.
@@ -48,7 +47,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody @Valid Restaurant restaurant) {
+    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
         Restaurant current = queryService.findByIdOrElseThrow(id);
         BeanUtils.copyProperties(restaurant, current,
                 "id", "paymentMethods", "createdAt", "products");

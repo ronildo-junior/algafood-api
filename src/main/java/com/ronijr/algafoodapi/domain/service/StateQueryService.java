@@ -26,6 +26,6 @@ public class StateQueryService {
 
     public State findByIdOrElseThrow(Long id) throws EntityNotFoundException {
         return stateRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("state.not.found", new Object[] { id })));
+                messageSource.getMessage("state.not.found", id)));
     }
 }

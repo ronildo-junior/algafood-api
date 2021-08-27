@@ -30,6 +30,6 @@ public class CuisineQueryService {
 
     public Cuisine findByIdOrElseThrow(Long id) throws EntityNotFoundException {
         return findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("cuisine.not.found", new Object[] { id })));
+                messageSource.getMessage("cuisine.not.found", id)));
     }
 }

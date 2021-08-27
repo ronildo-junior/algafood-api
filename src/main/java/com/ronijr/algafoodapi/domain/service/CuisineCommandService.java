@@ -3,10 +3,11 @@ package com.ronijr.algafoodapi.domain.service;
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
-import com.ronijr.algafoodapi.domain.exception.EntityRequiredPropertyEmptyException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
+import com.ronijr.algafoodapi.domain.exception.ValidationException;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.repository.CuisineRepository;
+import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -16,20 +17,18 @@ import org.springframework.stereotype.Service;
 public class CuisineCommandService {
     private final CuisineRepository cuisineRepository;
     private final AppMessageSource messageSource;
+    private final ResourceValidator validator;
 
-    public Cuisine create(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
+    public Cuisine create(Cuisine cuisine) throws ValidationException, EntityUniqueViolationException {
         return update(cuisine);
     }
 
-    public Cuisine update(Cuisine cuisine) throws EntityRequiredPropertyEmptyException, EntityUniqueViolationException {
-        if (cuisine.getName() == null || cuisine.getName().trim().equals("")) {
-            throw new EntityRequiredPropertyEmptyException(messageSource.getMessage("cuisine.name.not.empty"));
-        }
+    public Cuisine update(Cuisine cuisine) throws ValidationException, EntityUniqueViolationException {
+        validator.validate(cuisine);
         try {
             return cuisineRepository.save(cuisine);
         } catch (DataIntegrityViolationException e) {
-            throw new EntityUniqueViolationException(
-                    messageSource.getMessage("cuisine.name.unique", new Object[] { cuisine.getName() }));
+            throw new EntityUniqueViolationException(messageSource.getMessage("cuisine.name.unique", cuisine.getName()));
         }
     }
 
@@ -39,12 +38,12 @@ public class CuisineCommandService {
             cuisineRepository.delete(cuisine);
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(
-                    messageSource.getMessage("cuisine.relationship.found", new Object[] { id }));
+                    messageSource.getMessage("cuisine.relationship.found", id));
         }
     }
 
     private Cuisine findById(Long id) throws EntityNotFoundException {
         return cuisineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("cuisine.not.found", new Object[] { id })));
+                messageSource.getMessage("cuisine.not.found", id)));
     }
 }
