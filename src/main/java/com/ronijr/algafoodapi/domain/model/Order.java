@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +41,9 @@ public class Order extends AbstractEntity<Long> {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime deliveryDate;
-    private LocalDateTime confirmedAt;
-    private LocalDateTime cancelledAt;
+    private OffsetDateTime deliveryDate;
+    private OffsetDateTime confirmedAt;
+    private OffsetDateTime cancelledAt;
 
     @Valid
     @ConvertGroup(to = ValidationGroups.ValidateId.class)

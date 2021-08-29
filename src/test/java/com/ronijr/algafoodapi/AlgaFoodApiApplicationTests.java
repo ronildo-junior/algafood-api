@@ -7,10 +7,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class AlgafoodApiApplicationTests {
-
+class AlgaFoodApiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

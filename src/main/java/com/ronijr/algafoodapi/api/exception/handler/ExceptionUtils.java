@@ -5,7 +5,7 @@ import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +13,7 @@ final class ExceptionUtils {
     private ExceptionUtils() {}
 
     static ProblemDetails.ProblemDetailsBuilder problemBuilder(){
-        return ProblemDetails.builder().timestamp(LocalDateTime.now());
+        return ProblemDetails.builder().timestamp(OffsetDateTime.now());
     }
 
     static ProblemDetails.ProblemDetailsBuilder problemBuilder(ProblemType problemType){

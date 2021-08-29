@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public abstract class AbstractEntity<T> extends AuditableEntity {
-
     @Transient
     @JsonIgnore
     private UUID uuid = null;
