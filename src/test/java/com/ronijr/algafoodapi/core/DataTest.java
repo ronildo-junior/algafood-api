@@ -17,9 +17,12 @@ public final class DataTest {
     private final RestaurantRepository restaurantRepository;
     private final CityRepository cityRepository;
     private final StateRepository stateRepository;
-    public final static Integer CUISINE_COUNT = 10;
-    public final static Integer CUISINE_RELATIONSHIP_BEGIN = 6;
+    public final static Integer CUISINE_COUNT = 6;
+    public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
+    public final static Integer RESTAURANT_COUNT = 6;
+    public final static Integer RESTAURANT_RELATIONSHIP_BEGIN = 3;
+    public final static Integer RESTAURANT_NON_EXISTENT_ID = RESTAURANT_COUNT + 1;
 
     public Cuisine createCuisine(int id) {
         Cuisine cuisine = Cuisine.builder().name(getCuisineName(id)).build();
@@ -104,6 +107,12 @@ public final class DataTest {
             if (i >= CUISINE_RELATIONSHIP_BEGIN) {
                 createRestaurant(i + 1 - CUISINE_RELATIONSHIP_BEGIN, cuisine);
             }
+        }
+    }
+
+    public void createRestaurantBaseData() {
+        for (int i = 1; i <= RESTAURANT_COUNT; i++) {
+            createRestaurant(i);
         }
     }
 }

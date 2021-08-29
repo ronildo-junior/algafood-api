@@ -1,0 +1,17 @@
+{
+  "name": "Gusteau's",
+  "deliveryFee": 1.00,
+  "cuisine": {
+    "id": 2
+  },
+  "address": {
+    "postalCode": "1234567",
+    "addressName": "Street Name",
+    "number": "1",
+    "complement": "Complement 1",
+    "neighborhood": "District 9",
+    "city": {
+      "id": 1
+    }
+  }
+}

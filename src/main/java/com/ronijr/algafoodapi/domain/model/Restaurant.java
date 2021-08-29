@@ -1,7 +1,6 @@
 package com.ronijr.algafoodapi.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
@@ -43,7 +42,7 @@ public class Restaurant extends AbstractEntity<Long> {
 
     @Valid
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Embedded
     private Address address;
 

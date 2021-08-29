@@ -36,10 +36,14 @@ class CuisineRestIT extends AbstractTestRest {
     }
 
     @Test
-    void shouldStatus200_WhenListingAllByName() {
-        given().accept(ContentType.JSON).
-        when().get().
-        then().statusCode(HttpStatus.OK.value());
+    void shouldStatus200AndContainCountCuisines_WhenListingAllByName() {
+        given().
+            queryParam("name", "Cuisine").
+            accept(ContentType.JSON).
+        when().get("/by-name").
+        then().
+            statusCode(HttpStatus.OK.value()).
+            body("", hasSize(DataTest.CUISINE_COUNT));
     }
 
     @Test
