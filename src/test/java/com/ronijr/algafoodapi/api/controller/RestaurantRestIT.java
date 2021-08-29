@@ -1,4 +1,4 @@
-package com.ronijr.algafoodapi.api;
+package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.core.AbstractTestRest;
 import com.ronijr.algafoodapi.core.DataTest;
