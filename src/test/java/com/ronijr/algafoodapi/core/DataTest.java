@@ -26,6 +26,9 @@ public final class DataTest {
     public final static Integer STATE_COUNT = 6;
     public final static Integer STATE_RELATIONSHIP_BEGIN = 3;
     public final static Integer STATE_NON_EXISTENT_ID = STATE_COUNT + 1;
+    public final static Integer CITY_COUNT = 6;
+    public final static Integer CITY_RELATIONSHIP_BEGIN = 3;
+    public final static Integer CITY_NON_EXISTENT_ID = CITY_COUNT + 1;
 
     public Cuisine createCuisine(int id) {
         Cuisine cuisine = Cuisine.builder().name(getCuisineName(id)).build();
@@ -133,6 +136,12 @@ public final class DataTest {
             if (i >= STATE_RELATIONSHIP_BEGIN) {
                 createCity(i + 1 - STATE_RELATIONSHIP_BEGIN, state);
             }
+        }
+    }
+
+    public void createCityBaseData() {
+        for (int i = 1; i <= RESTAURANT_COUNT; i++) {
+            createCity(i);
         }
     }
 }

@@ -74,8 +74,9 @@ class CuisineRestIT extends AbstractTestRest {
         when().
             get("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NOT_FOUND.value()).
-            body(this.STATUS, equalTo(HttpStatus.NOT_FOUND.value()));
+            assertThat().
+                statusCode(HttpStatus.NOT_FOUND.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.NOT_FOUND.value()));
     }
 
     @Test
@@ -101,7 +102,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().post().
         then().
             statusCode(HttpStatus.CONFLICT.value()).
-            body(this.STATUS, equalTo(HttpStatus.CONFLICT.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.CONFLICT.value()));
     }
 
     @ParameterizedTest
@@ -114,7 +115,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().post().
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -142,7 +143,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().put("/{id}").
         then().
             statusCode(HttpStatus.CONFLICT.value()).
-            body(this.STATUS, equalTo(HttpStatus.CONFLICT.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.CONFLICT.value()));
     }
 
     @ParameterizedTest
@@ -157,7 +158,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().put("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -187,7 +188,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().patch("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -201,7 +202,7 @@ class CuisineRestIT extends AbstractTestRest {
         when().patch("/{id}").
         then().
             statusCode(HttpStatus.CONFLICT.value()).
-            body(this.STATUS, equalTo(HttpStatus.CONFLICT.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.CONFLICT.value()));
     }
 
     @Test
@@ -212,7 +213,8 @@ class CuisineRestIT extends AbstractTestRest {
         when().
             delete("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NO_CONTENT.value());
+            assertThat().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -223,8 +225,9 @@ class CuisineRestIT extends AbstractTestRest {
         when().
             delete("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NOT_FOUND.value()).
-            body(this.STATUS, equalTo(HttpStatus.NOT_FOUND.value()));
+            assertThat().
+                statusCode(HttpStatus.NOT_FOUND.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.NOT_FOUND.value()));
     }
 
     @Test
@@ -236,6 +239,6 @@ class CuisineRestIT extends AbstractTestRest {
             delete("/{id}").
         then().
             statusCode(HttpStatus.CONFLICT.value()).
-            body(this.STATUS, equalTo(HttpStatus.CONFLICT.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.CONFLICT.value()));
     }
 }

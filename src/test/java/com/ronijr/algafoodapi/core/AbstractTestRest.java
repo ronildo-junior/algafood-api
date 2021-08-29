@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 public abstract class AbstractTestRest extends AbstractTest {
     @LocalServerPort
     protected int randomPort;
-    protected final String STATUS = "status";
+    protected final String STATUS_PROPERTY = "status";
     protected final String INVALID = "1nv@lid";
     protected final String BAD_FORMAT_JSON = "/json/invalid/bad_format.json";
 
@@ -30,7 +30,7 @@ public abstract class AbstractTestRest extends AbstractTest {
         when().get().
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-        body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+        body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -42,7 +42,7 @@ public abstract class AbstractTestRest extends AbstractTest {
         when().get("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -66,7 +66,7 @@ public abstract class AbstractTestRest extends AbstractTest {
         when().post().
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -77,7 +77,7 @@ public abstract class AbstractTestRest extends AbstractTest {
         when().post().
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -88,6 +88,6 @@ public abstract class AbstractTestRest extends AbstractTest {
         when().put("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 }

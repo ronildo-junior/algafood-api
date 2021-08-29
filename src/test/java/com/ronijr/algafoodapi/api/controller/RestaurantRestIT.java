@@ -63,8 +63,9 @@ class RestaurantRestIT extends AbstractTestRest {
         when().
             get("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NOT_FOUND.value()).
-            body(this.STATUS, equalTo(HttpStatus.NOT_FOUND.value()));
+            assertThat().
+                statusCode(HttpStatus.NOT_FOUND.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.NOT_FOUND.value()));
     }
 
     @Test
@@ -90,13 +91,12 @@ class RestaurantRestIT extends AbstractTestRest {
         when().post().
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
     void shouldStatus200AndResponseBody_WhenUpdatingValidRestaurant() {
         Restaurant restaurant = (Restaurant) getObjectFromJson(this.RESTAURANT_VALID_PATH, Restaurant.class);
-        System.out.println(restaurant);
         assert restaurant != null;
         given().
             pathParam("id", DataTest.RESTAURANT_COUNT).
@@ -120,7 +120,7 @@ class RestaurantRestIT extends AbstractTestRest {
         when().put("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -150,7 +150,7 @@ class RestaurantRestIT extends AbstractTestRest {
         when().patch("/{id}").
         then().
             statusCode(HttpStatus.BAD_REQUEST.value()).
-            body(this.STATUS, equalTo(HttpStatus.BAD_REQUEST.value()));
+            body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
     }
 
     @Test
@@ -161,7 +161,8 @@ class RestaurantRestIT extends AbstractTestRest {
         when().
             delete("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NO_CONTENT.value());
+            assertThat().
+                statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -172,7 +173,8 @@ class RestaurantRestIT extends AbstractTestRest {
         when().
             delete("/{id}").
         then().
-            assertThat().statusCode(HttpStatus.NOT_FOUND.value()).
-            body(this.STATUS, equalTo(HttpStatus.NOT_FOUND.value()));
+            assertThat().
+                statusCode(HttpStatus.NOT_FOUND.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.NOT_FOUND.value()));
     }
 }
