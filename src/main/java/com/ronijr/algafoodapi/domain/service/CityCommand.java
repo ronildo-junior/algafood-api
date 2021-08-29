@@ -13,8 +13,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
+@Transactional
 public class CityCommand {
     private final CityRepository cityRepository;
     private final StateQuery stateQueryService;

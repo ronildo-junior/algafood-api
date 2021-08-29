@@ -11,8 +11,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
+@Transactional
 public class StateCommand {
     private StateRepository stateRepository;
     private final AppMessageSource messageSource;

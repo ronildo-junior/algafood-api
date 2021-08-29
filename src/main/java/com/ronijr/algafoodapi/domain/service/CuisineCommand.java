@@ -12,8 +12,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 @AllArgsConstructor
+@Transactional
 public class CuisineCommand {
     private final CuisineRepository cuisineRepository;
     private final AppMessageSource messageSource;
