@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
@@ -28,7 +27,6 @@ public class User extends AbstractEntity<Long> {
     private String email;
 
     @NotBlank
-    @JsonIgnore
     @Column(nullable = false)
     private String password;
 

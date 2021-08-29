@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
@@ -12,9 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -42,19 +39,16 @@ public class Restaurant extends AbstractEntity<Long> {
 
     @Valid
     @NotNull
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Embedded
     private Address address;
 
-    @JsonIgnore
     @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "restaurant_payment_method",
         joinColumns = @JoinColumn(name = "restaurant_id"),
         inverseJoinColumns = @JoinColumn(name = "payment_method_id"))
-    Set<PaymentMethod> paymentMethods = new HashSet<>();
+    private final List<PaymentMethod> paymentMethods = new ArrayList<>();
 
-    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();

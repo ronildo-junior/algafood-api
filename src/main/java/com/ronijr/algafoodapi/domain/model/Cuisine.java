@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
@@ -23,8 +22,7 @@ public class Cuisine extends AbstractEntity<Long> {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @JsonIgnore
     @ToString.Exclude
     @OneToMany(mappedBy = "cuisine")
-    List<Restaurant> restaurants = new ArrayList<>();
+    private List<Restaurant> restaurants = new ArrayList<>();
 }
