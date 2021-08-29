@@ -1,8 +1,8 @@
 package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.domain.model.State;
-import com.ronijr.algafoodapi.domain.service.StateCommandService;
-import com.ronijr.algafoodapi.domain.service.StateQueryService;
+import com.ronijr.algafoodapi.domain.service.StateCommand;
+import com.ronijr.algafoodapi.domain.service.StateQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObjec
 @RequestMapping("/states")
 public class StateController {
     @Autowired
-    private StateQueryService queryService;
+    private StateQuery queryService;
     @Autowired
-    private StateCommandService commandService;
+    private StateCommand commandService;
 
     @GetMapping
     public List<State> list() {
@@ -56,6 +56,7 @@ public class StateController {
     @PatchMapping("/{id}")
     public ResponseEntity<State> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         State state = queryService.findByIdOrElseThrow(id);
+        patchMap.remove("id");
         mergeFieldsMapInObject(patchMap, state);
         return ResponseEntity.ok(commandService.update(state));
     }

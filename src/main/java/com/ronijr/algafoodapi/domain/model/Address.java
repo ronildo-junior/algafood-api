@@ -1,8 +1,7 @@
 package com.ronijr.algafoodapi.domain.model;
 
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.groups.ConvertGroup;
 
 @Embeddable
-@Getter @Setter
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Address {
     @Column(name = "address_postal_code")
     private String postalCode;

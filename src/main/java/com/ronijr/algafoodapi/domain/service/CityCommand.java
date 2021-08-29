@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class CityCommandService {
+public class CityCommand {
     private final CityRepository cityRepository;
-    private final StateQueryService stateQueryService;
+    private final StateQuery stateQueryService;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 

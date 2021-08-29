@@ -1,8 +1,8 @@
 package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.domain.model.Restaurant;
-import com.ronijr.algafoodapi.domain.service.RestaurantCommandService;
-import com.ronijr.algafoodapi.domain.service.RestaurantQueryService;
+import com.ronijr.algafoodapi.domain.service.RestaurantCommand;
+import com.ronijr.algafoodapi.domain.service.RestaurantQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObjec
 @RequestMapping("/restaurants")
 public class RestaurantController {
     @Autowired
-    private RestaurantQueryService queryService;
+    private RestaurantQuery queryService;
     @Autowired
-    private RestaurantCommandService commandService;
+    private RestaurantCommand commandService;
 
     @GetMapping
     public List<Restaurant> list() {
@@ -57,6 +57,7 @@ public class RestaurantController {
     @PatchMapping("/{id}")
     public ResponseEntity<Restaurant> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         Restaurant restaurant = queryService.findByIdOrElseThrow(id);
+        patchMap.remove("id");
         mergeFieldsMapInObject(patchMap, restaurant);
         return ResponseEntity.ok(commandService.update(restaurant));
     }

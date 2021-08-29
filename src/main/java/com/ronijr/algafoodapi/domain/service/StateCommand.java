@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class StateCommandService {
+public class StateCommand {
     private StateRepository stateRepository;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class RestaurantCommandService {
+public class RestaurantCommand {
     private final RestaurantRepository restaurantRepository;
-    private final CuisineQueryService cuisineQueryService;
+    private final CuisineQuery cuisineQueryService;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 

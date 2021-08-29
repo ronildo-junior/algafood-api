@@ -25,7 +25,7 @@ import static com.ronijr.algafoodapi.api.exception.handler.ExceptionUtils.*;
 
 @ControllerAdvice
 @AllArgsConstructor
-public class AppExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private final HttpHeaders headers = new HttpHeaders();
     private final AppMessageSource messenger;
 
@@ -95,7 +95,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         if (cause instanceof PropertyBindingException) {
             return handlePropertyBinding((PropertyBindingException) cause, request);
         }
-        return handleBadRequest(ex, request, ex.getCause().getMessage());
+        return handleBadRequest(ex, request, ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
     }
 
     private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, WebRequest request) {

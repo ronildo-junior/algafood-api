@@ -15,7 +15,7 @@ import static com.ronijr.algafoodapi.infrastructure.repository.specification.Res
 
 @Service
 @AllArgsConstructor
-public class RestaurantQueryService {
+public class RestaurantQuery {
     private final RestaurantRepository restaurantRepository;
     private final AppMessageSource messageSource;
 

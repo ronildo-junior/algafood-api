@@ -1,8 +1,8 @@
 package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.domain.model.City;
-import com.ronijr.algafoodapi.domain.service.CityCommandService;
-import com.ronijr.algafoodapi.domain.service.CityQueryService;
+import com.ronijr.algafoodapi.domain.service.CityCommand;
+import com.ronijr.algafoodapi.domain.service.CityQuery;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObjec
 @RequestMapping("/cities")
 public class CityController {
     @Autowired
-    private CityQueryService queryService;
+    private CityQuery queryService;
     @Autowired
-    private CityCommandService commandService;
+    private CityCommand commandService;
 
     @GetMapping
     public List<City> list() {
@@ -56,6 +56,7 @@ public class CityController {
     @PatchMapping("/{id}")
     public ResponseEntity<City> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         City city = queryService.findByIdOrElseThrow(id);
+        patchMap.remove("id");
         mergeFieldsMapInObject(patchMap, city);
         return ResponseEntity.ok(commandService.update(city));
     }

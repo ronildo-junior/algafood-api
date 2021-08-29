@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class StateQueryService {
+public class StateQuery {
     private final StateRepository stateRepository;
     private final AppMessageSource messageSource;
 

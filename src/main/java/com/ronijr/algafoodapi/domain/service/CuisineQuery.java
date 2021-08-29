@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class CuisineQueryService {
+public class CuisineQuery {
     private final CuisineRepository cuisineRepository;
     private final AppMessageSource messageSource;
 
