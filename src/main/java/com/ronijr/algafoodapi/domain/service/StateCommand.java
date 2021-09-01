@@ -34,6 +34,7 @@ public class StateCommand {
         try {
             State state = findById(id);
             stateRepository.delete(state);
+            stateRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(messageSource.getMessage("state.relationship.found", id));
         }

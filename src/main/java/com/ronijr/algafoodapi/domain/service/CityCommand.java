@@ -42,6 +42,7 @@ public class CityCommand {
         try{
             City city = findById(id);
             cityRepository.delete(city);
+            cityRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(
                     messageSource.getMessage("city.relationship.found", id));

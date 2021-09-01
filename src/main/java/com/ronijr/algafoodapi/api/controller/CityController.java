@@ -1,10 +1,12 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.assembler.CityAssembler;
+import com.ronijr.algafoodapi.api.assembler.CityDisassembler;
+import com.ronijr.algafoodapi.api.model.CityResource;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.service.CityCommand;
 import com.ronijr.algafoodapi.domain.service.CityQuery;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,47 +20,47 @@ import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObjec
 
 @RestController
 @RequestMapping("/cities")
+@AllArgsConstructor
 public class CityController {
-    @Autowired
-    private CityQuery queryService;
-    @Autowired
-    private CityCommand commandService;
+    private final CityQuery queryService;
+    private final CityCommand commandService;
+    private final CityAssembler assembler;
+    private final CityDisassembler disassembler;
 
     @GetMapping
-    public List<City> list() {
-        return queryService.findAll();
+    public List<CityResource.Summary> list() {
+        return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<City> get(@PathVariable Long id) {
-        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
+    public ResponseEntity<CityResource.Output> get(@PathVariable Long id) {
+        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody City city) {
-        if (city.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        City result = commandService.create(city);
+    public ResponseEntity<Object> create(@RequestBody CityResource.Input input) {
+        City current = disassembler.toDomain(input);
+        CityResource.Output city = assembler.toOutput(commandService.create(current));
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
-                buildAndExpand(result.getId()).
+                buildAndExpand(city.getId()).
                 toUri();
-        return ResponseEntity.created(location).body(result);
+        return ResponseEntity.created(location).body(city);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<City> update(@PathVariable Long id, @RequestBody City city) {
+    public ResponseEntity<CityResource.Output> update(@PathVariable Long id, @RequestBody CityResource.Input city) {
         City current = queryService.findByIdOrElseThrow(id);
-        BeanUtils.copyProperties(city, current, "id");
-        return ResponseEntity.ok(commandService.update(current));
+        disassembler.copyToDomainObject(city, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<City> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        City city = queryService.findByIdOrElseThrow(id);
-        patchMap.remove("id");
-        mergeFieldsMapInObject(patchMap, city);
-        return ResponseEntity.ok(commandService.update(city));
+    public ResponseEntity<CityResource.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        CityResource.Input input = assembler.toInput(queryService.findByIdOrElseThrow(id));
+        mergeFieldsMapInObject(patchMap, input);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(disassembler.toDomain(input))));
     }
 
     @DeleteMapping("/{id}")

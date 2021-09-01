@@ -44,6 +44,7 @@ public class RestaurantCommand {
         try {
             Restaurant restaurant = findById(id);
             restaurantRepository.delete(restaurant);
+            restaurantRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(messageSource.getMessage("restaurant.relationship.found", id));
         }

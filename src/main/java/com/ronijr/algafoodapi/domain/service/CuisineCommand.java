@@ -39,6 +39,7 @@ public class CuisineCommand {
         try {
             Cuisine cuisine = findById(id);
             cuisineRepository.delete(cuisine);
+            cuisineRepository.flush();
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(
                     messageSource.getMessage("cuisine.relationship.found", id));
