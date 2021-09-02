@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-public final class CityResource {
+public final class CityModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface StateIdentifier { @NotNull @Valid StateModel.Identifier getState(); }

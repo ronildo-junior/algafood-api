@@ -12,8 +12,8 @@ public final class AddressModel {
     private interface Number { @NotBlank String getNumber(); }
     private interface Complement { @NotBlank String getComplement(); }
     private interface Neighborhood { @NotBlank String getNeighborhood(); }
-    private interface CityIdentifier { @NotNull @Valid CityResource.Identifier getCity(); }
-    private interface CitySummary { @NotNull @Valid CityResource.Summary getCity(); }
+    private interface CityIdentifier { @NotNull @Valid CityModel.Identifier getCity(); }
+    private interface CitySummary { @NotNull @Valid CityModel.Summary getCity(); }
 
     @Value
     public static class Input
@@ -23,7 +23,7 @@ public final class AddressModel {
         String number;
         String complement;
         String neighborhood;
-        CityResource.Identifier city;
+        CityModel.Identifier city;
     }
 
     @Value
@@ -34,6 +34,6 @@ public final class AddressModel {
         String number;
         String complement;
         String neighborhood;
-        CityResource.Summary city;
+        CityModel.Summary city;
     }
 }

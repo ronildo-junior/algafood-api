@@ -9,12 +9,12 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
-public final class RestaurantResource {
+public final class RestaurantModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface DeliveryFee { @PositiveOrZero BigDecimal getDeliveryFee(); }
-    private interface CuisineIdentifier { @NotNull @Valid CuisineResource.Identifier getCuisine(); }
-    private interface CuisineOutput { @NotNull @Valid CuisineResource.Output getCuisine(); }
+    private interface CuisineIdentifier { @NotNull @Valid CuisineModel.Identifier getCuisine(); }
+    private interface CuisineOutput { @NotNull @Valid CuisineModel.Output getCuisine(); }
     private interface AddressOutput { @NotNull @Valid AddressModel.Output getAddress(); }
     private interface AddressInput { @NotNull @Valid AddressModel.Input getAddress(); }
 
@@ -22,7 +22,7 @@ public final class RestaurantResource {
     public static class Input implements Name, DeliveryFee, CuisineIdentifier, AddressInput {
         String name;
         BigDecimal deliveryFee;
-        CuisineResource.Identifier cuisine;
+        CuisineModel.Identifier cuisine;
         AddressModel.Input address;
     }
 
@@ -31,7 +31,7 @@ public final class RestaurantResource {
         Long id;
         String name;
         BigDecimal deliveryFee;
-        CuisineResource.Output cuisine;
+        CuisineModel.Output cuisine;
         AddressModel.Output address;
     }
 
@@ -40,6 +40,6 @@ public final class RestaurantResource {
         Long id;
         String name;
         BigDecimal deliveryFee;
-        CuisineResource.Output cuisine;
+        CuisineModel.Output cuisine;
     }
 }

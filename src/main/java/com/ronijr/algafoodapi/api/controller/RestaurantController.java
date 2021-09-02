@@ -1,10 +1,12 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.assembler.RestaurantAssembler;
+import com.ronijr.algafoodapi.api.assembler.RestaurantDisassembler;
+import com.ronijr.algafoodapi.api.model.RestaurantModel;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.RestaurantQuery;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,52 +16,55 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 
 @RestController
 @RequestMapping("/restaurants")
+@AllArgsConstructor
 public class RestaurantController {
-    @Autowired
-    private RestaurantQuery queryService;
-    @Autowired
-    private RestaurantCommand commandService;
+    private final RestaurantQuery queryService;
+    private final RestaurantCommand commandService;
+    private final RestaurantAssembler assembler;
+    private final RestaurantDisassembler disassembler;
 
     @GetMapping
-    public List<Restaurant> list() {
-        return queryService.findAll();
+    public List<RestaurantModel.Summary> list() {
+        return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> get(@PathVariable Long id) {
-        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
+    public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long id) {
+        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Restaurant restaurant) {
-        if (restaurant.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        Restaurant result = commandService.create(restaurant);
+    public ResponseEntity<Object> create(@RequestBody RestaurantModel.Input input) {
+        Restaurant created = commandService.create(disassembler.toDomain(input));
+        RestaurantModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
-                buildAndExpand(result.getId()).
+                buildAndExpand(output.getId()).
                 toUri();
-        return ResponseEntity.created(location).body(result);
+        return ResponseEntity.created(location).body(output);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<RestaurantModel.Output> update(
+            @PathVariable Long id, @RequestBody RestaurantModel.Input input) {
         Restaurant current = queryService.findByIdOrElseThrow(id);
-        BeanUtils.copyProperties(restaurant, current,
-                "id", "paymentMethods", "createdAt", "products");
-        return ResponseEntity.ok(commandService.update(current));
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Restaurant> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        Restaurant restaurant = queryService.findByIdOrElseThrow(id);
-        patchMap.remove("id");
-        mergeFieldsMapInObject(patchMap, restaurant);
-        return ResponseEntity.ok(commandService.update(restaurant));
+    public ResponseEntity<RestaurantModel.Output> updatePartial(
+            @PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        Restaurant current = queryService.findByIdOrElseThrow(id);
+        RestaurantModel.Input input = assembler.toInput(current);
+        mergeFieldsMapInObject(patchMap, input);
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")
@@ -69,17 +74,17 @@ public class RestaurantController {
     }
 
     @GetMapping("/custom")
-    public List<Restaurant> customQueryTest(@RequestBody Map<String, Object> map) {
-        return queryService.customQuery(map);
+    public List<RestaurantModel.Summary> customQueryTest(@RequestBody Map<String, Object> map) {
+        return assembler.toCollectionModel(queryService.customQuery(map));
     }
 
     @GetMapping("/with-free-delivery")
-    public List<Restaurant> listRestaurantsWithFreeDelivery() {
-        return queryService.findAllWithFreeDelivery();
+    public List<RestaurantModel.Summary> listRestaurantsWithFreeDelivery() {
+        return assembler.toCollectionModel(queryService.findAllWithFreeDelivery());
     }
 
     @GetMapping("/first")
-    public ResponseEntity<Restaurant> getFirst() {
-        return ResponseEntity.ok(queryService.findFirst());
+    public ResponseEntity<RestaurantModel.Output> getFirst() {
+        return ResponseEntity.ok(assembler.toOutput(queryService.findFirst()));
     }
 }

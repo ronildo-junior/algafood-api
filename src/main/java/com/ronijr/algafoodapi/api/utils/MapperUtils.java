@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class MapperUitls {
-    private MapperUitls() {}
+public final class MapperUtils {
+    private MapperUtils() {}
 
     public static void mergeFieldsMapInObject(Map<String, Object> fieldsMap, Object target)
             throws InvalidModelParseException {

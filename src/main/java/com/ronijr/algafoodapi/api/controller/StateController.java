@@ -1,10 +1,12 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.assembler.StateAssembler;
+import com.ronijr.algafoodapi.api.assembler.StateDisassembler;
+import com.ronijr.algafoodapi.api.model.StateModel;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.service.StateCommand;
 import com.ronijr.algafoodapi.domain.service.StateQuery;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,51 +16,53 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 
 @RestController
 @RequestMapping("/states")
+@AllArgsConstructor
 public class StateController {
-    @Autowired
-    private StateQuery queryService;
-    @Autowired
-    private StateCommand commandService;
+    private final StateQuery queryService;
+    private final StateCommand commandService;
+    private final StateAssembler assembler;
+    private final StateDisassembler disassembler;
 
     @GetMapping
-    public List<State> list() {
-        return queryService.findAll();
+    public List<StateModel.Output> list() {
+        return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<State> get(@PathVariable Long id) {
-        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
+    public ResponseEntity<StateModel.Output> get(@PathVariable Long id) {
+        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody State state) {
-        if (state.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        State result = commandService.create(state);
+    public ResponseEntity<Object> create(@RequestBody StateModel.Input input) {
+        State created = commandService.create(disassembler.toDomain(input));
+        StateModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
-                buildAndExpand(result.getId()).
+                buildAndExpand(output.getId()).
                 toUri();
-        return ResponseEntity.created(location).body(result);
+        return ResponseEntity.created(location).body(output);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<State> update(@PathVariable Long id, @RequestBody State state) {
+    public ResponseEntity<StateModel.Output> update(@PathVariable Long id, @RequestBody StateModel.Input input) {
         State current = queryService.findByIdOrElseThrow(id);
-        BeanUtils.copyProperties(state, current, "id");
-        return ResponseEntity.ok(commandService.update(current));
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<State> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        State state = queryService.findByIdOrElseThrow(id);
-        patchMap.remove("id");
-        mergeFieldsMapInObject(patchMap, state);
-        return ResponseEntity.ok(commandService.update(state));
+    public ResponseEntity<StateModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        State current = queryService.findByIdOrElseThrow(id);
+        StateModel.Input input = assembler.toInput(current);
+        mergeFieldsMapInObject(patchMap, input);
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")

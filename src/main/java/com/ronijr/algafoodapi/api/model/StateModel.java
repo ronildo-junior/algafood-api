@@ -16,19 +16,14 @@ public final class StateModel {
     }
 
     @Value
-    public static class Input implements Name {
+    public static class Input implements Name, Abbreviation {
         String name;
+        String abbreviation;
     }
 
    @Value
     public static class Output implements Id, Name, Abbreviation {
         Long id;
-        String name;
-        String abbreviation;
-    }
-
-    @Value
-    public static class Summary implements Name, Abbreviation {
         String name;
         String abbreviation;
     }

@@ -20,7 +20,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class CityCommand {
     private final CityRepository cityRepository;
-    private final StateQuery stateQueryService;
+    private final StateQuery stateQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
@@ -31,7 +31,7 @@ public class CityCommand {
     public City update(City city) throws ValidationException, EntityRelationshipNotFoundException {
         validator.validate(city);
         Long stateId = city.getState().getId();
-        State state = stateQueryService.findById(stateId).
+        State state = stateQuery.findById(stateId).
                 orElseThrow(() -> new EntityRelationshipNotFoundException(
                         messageSource.getMessage("state.not.found", stateId)));
         city.setState(state);

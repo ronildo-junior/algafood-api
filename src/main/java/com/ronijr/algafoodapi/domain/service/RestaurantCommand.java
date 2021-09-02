@@ -5,6 +5,8 @@ import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.ValidationException;
+import com.ronijr.algafoodapi.domain.model.Address;
+import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
@@ -20,7 +22,8 @@ import javax.transaction.Transactional;
 @Transactional
 public class RestaurantCommand {
     private final RestaurantRepository restaurantRepository;
-    private final CuisineQuery cuisineQueryService;
+    private final CuisineQuery cuisineQuery;
+    private final CityQuery cityQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
@@ -33,9 +36,16 @@ public class RestaurantCommand {
             EntityNotFoundException, EntityRelationshipNotFoundException {
         validator.validate(restaurant);
         Long cuisineId = restaurant.getCuisine().getId();
-        Cuisine cuisine = cuisineQueryService.findById(cuisineId).
+        Cuisine cuisine = cuisineQuery.findById(cuisineId).
                 orElseThrow(() -> new EntityRelationshipNotFoundException(
                         messageSource.getMessage("cuisine.not.found", cuisineId)));
+        Long cityId = restaurant.getAddress().getCity().getId();
+        City city = cityQuery.findById(cityId).
+                orElseThrow(() -> new EntityRelationshipNotFoundException(
+                        messageSource.getMessage("city.not.found", cityId)));
+        Address address = restaurant.getAddress();
+        address.setCity(city);
+        restaurant.setAddress(address);
         restaurant.setCuisine(cuisine);
         return restaurantRepository.save(restaurant);
     }

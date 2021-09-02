@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.api.assembler;
 
-import com.ronijr.algafoodapi.api.model.CityResource;
+import com.ronijr.algafoodapi.api.model.CityModel;
 import com.ronijr.algafoodapi.config.mapper.CityMapper;
 import com.ronijr.algafoodapi.domain.model.City;
 import lombok.AllArgsConstructor;
@@ -14,19 +14,19 @@ import java.util.stream.Collectors;
 public class CityAssembler {
     private final CityMapper mapper;
 
-    public CityResource.Summary toSummary(City city) {
+    public CityModel.Summary toSummary(City city) {
         return mapper.entityToSummary(city);
     }
 
-    public CityResource.Output toOutput(City city) {
+    public CityModel.Output toOutput(City city) {
         return mapper.entityToOutput(city);
     }
 
-    public CityResource.Input toInput(City city) {
+    public CityModel.Input toInput(City city) {
         return mapper.entityToInput(city);
     }
 
-    public List<CityResource.Summary> toCollectionModel(List<City> cities) {
+    public List<CityModel.Summary> toCollectionModel(List<City> cities) {
         return cities.stream().
                 map(this::toSummary).
                 collect(Collectors.toList());

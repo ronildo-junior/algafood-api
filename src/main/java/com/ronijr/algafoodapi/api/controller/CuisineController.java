@@ -1,10 +1,12 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.assembler.CuisineAssembler;
+import com.ronijr.algafoodapi.api.assembler.CuisineDisassembler;
+import com.ronijr.algafoodapi.api.model.CuisineModel;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.service.CuisineCommand;
 import com.ronijr.algafoodapi.domain.service.CuisineQuery;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,56 +16,58 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.api.utils.MapperUitls.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 
 @RestController
 @RequestMapping("/cuisines")
+@AllArgsConstructor
 public class CuisineController {
-    @Autowired
-    private CuisineCommand commandService;
-    @Autowired
-    private CuisineQuery queryService;
+    private final CuisineCommand commandService;
+    private final CuisineQuery queryService;
+    private final CuisineAssembler assembler;
+    private final CuisineDisassembler disassembler;
 
     @GetMapping
-    public List<Cuisine> list() {
-        return queryService.findAll();
+    public List<CuisineModel.Output> list() {
+        return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cuisine> get(@PathVariable Long id) {
-        return ResponseEntity.ok(queryService.findByIdOrElseThrow(id));
+    public ResponseEntity<CuisineModel.Output> get(@PathVariable Long id) {
+        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @GetMapping("/by-name")
-    public List<Cuisine> cuisinesByName(@RequestParam String name) {
-        return queryService.findByName(name);
+    public List<CuisineModel.Output> cuisinesByName(@RequestParam String name) {
+        return assembler.toCollectionModel(queryService.findByName(name));
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Cuisine cuisine) {
-        if (cuisine.getId() != null) return ResponseEntity.badRequest().body("id not allow in POST.");
-        Cuisine result = commandService.create(cuisine);
+    public ResponseEntity<Object> create(@RequestBody CuisineModel.Input input) {
+        Cuisine created = commandService.create(disassembler.toDomain(input));
+        CuisineModel.Output response = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(result.getId())
+                .buildAndExpand(response.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(result);
+        return ResponseEntity.created(location).body(response);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cuisine> update(@PathVariable Long id, @RequestBody Cuisine cuisine) {
+    public ResponseEntity<CuisineModel.Output> update(@PathVariable Long id, @RequestBody CuisineModel.Input input) {
         Cuisine current = queryService.findByIdOrElseThrow(id);
-        BeanUtils.copyProperties(cuisine, current, "id");
-        return ResponseEntity.ok(commandService.update(current));
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Cuisine> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        Cuisine cuisine = queryService.findByIdOrElseThrow(id);
-        patchMap.remove("id");
-        mergeFieldsMapInObject(patchMap, cuisine);
-        return ResponseEntity.ok(commandService.update(cuisine));
+    public ResponseEntity<CuisineModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        Cuisine current = queryService.findByIdOrElseThrow(id);
+        CuisineModel.Input input = assembler.toInput(current);
+        mergeFieldsMapInObject(patchMap, input);
+        disassembler.copyToDomainObject(input, current);
+        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")

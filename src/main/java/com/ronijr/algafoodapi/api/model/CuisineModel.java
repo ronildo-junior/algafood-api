@@ -5,7 +5,7 @@ import lombok.Value;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
-public final class CuisineResource {
+public final class CuisineModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
 
