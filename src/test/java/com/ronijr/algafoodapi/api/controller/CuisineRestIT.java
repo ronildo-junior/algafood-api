@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.model.CuisineModel;
 import com.ronijr.algafoodapi.core.AbstractTestRest;
 import com.ronijr.algafoodapi.core.DataTest;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
@@ -27,7 +28,7 @@ class CuisineRestIT extends AbstractTestRest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
         RestAssured.basePath = "/cuisines";
@@ -55,7 +56,7 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenGettingExistingCuisineById() {
-        int id = DataTest.CUISINE_COUNT;
+        final int id = DataTest.CUISINE_COUNT;
         given().
             pathParam("id", id).
             accept(ContentType.JSON).
@@ -81,7 +82,8 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus201AndResponseBody_WhenCreatingValidCuisine() {
-        Cuisine cuisine = (Cuisine) getObjectFromJson(this.CUISINE_VALID_PATH, Cuisine.class);
+        final CuisineModel.Input cuisine =
+                (CuisineModel.Input) getObjectFromJson(this.CUISINE_VALID_PATH, CuisineModel.Input.class);
         assert cuisine != null;
         given().
             body(cuisine).contentType(ContentType.JSON).accept(ContentType.JSON).
@@ -94,7 +96,7 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus409_WhenCreatingExistingCuisineName() {
-        final Cuisine FIRST_CUISINE_NAME = Cuisine.builder().name(testData.getCuisineName(1)).build();
+        final CuisineModel.Input FIRST_CUISINE_NAME = new CuisineModel.Input(testData.getCuisineName(1));
         given().
             body(FIRST_CUISINE_NAME).
             contentType(ContentType.JSON).
@@ -120,7 +122,8 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenUpdatingValidCuisine() {
-        Cuisine cuisine = (Cuisine) getObjectFromJson(this.CUISINE_VALID_PATH, Cuisine.class);
+        final CuisineModel.Input cuisine =
+                (CuisineModel.Input) getObjectFromJson(this.CUISINE_VALID_PATH, CuisineModel.Input.class);
         assert cuisine != null;
         given().
             pathParam("id", DataTest.CUISINE_COUNT).
@@ -134,7 +137,7 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus409AndResponseBody_WhenUpdatingCuisineNameWithExistingName() {
-        final Cuisine FIRST_CUISINE_NAME = Cuisine.builder().name(testData.getCuisineName(1)).build();
+        final CuisineModel.Input FIRST_CUISINE_NAME = new CuisineModel.Input(testData.getCuisineName(1));
         given().
             pathParam("id", DataTest.CUISINE_COUNT).
             body(FIRST_CUISINE_NAME).
@@ -163,7 +166,8 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenPatchingValidCuisine() {
-        Cuisine cuisine = (Cuisine) getObjectFromJson(this.CUISINE_VALID_PATH, Cuisine.class);
+        final CuisineModel.Input cuisine =
+                (CuisineModel.Input) getObjectFromJson(this.CUISINE_VALID_PATH, CuisineModel.Input.class);
         assert cuisine != null;
         given().
             pathParam("id", DataTest.CUISINE_COUNT).
@@ -193,7 +197,7 @@ class CuisineRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus400AndResponseBody_WhenPatchingCuisineNameWithExistingName() {
-        final Cuisine FIRST_CUISINE_NAME = Cuisine.builder().name(testData.getCuisineName(1)).build();
+        final CuisineModel.Input FIRST_CUISINE_NAME = new CuisineModel.Input(testData.getCuisineName(1));
         given().
             pathParam("id", DataTest.CUISINE_COUNT).
             body(FIRST_CUISINE_NAME).

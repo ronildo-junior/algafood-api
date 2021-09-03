@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.model.CityModel;
 import com.ronijr.algafoodapi.core.AbstractTestRest;
 import com.ronijr.algafoodapi.core.DataTest;
 import com.ronijr.algafoodapi.domain.model.City;
@@ -26,7 +27,7 @@ class CityRestIT extends AbstractTestRest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
         RestAssured.basePath = "/cities";
@@ -36,7 +37,7 @@ class CityRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenGettingExistingCityById() {
-        int id = DataTest.CITY_COUNT;
+        final int id = DataTest.CITY_COUNT;
         given().
             pathParam("id", id).
             accept(ContentType.JSON).
@@ -62,7 +63,7 @@ class CityRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus201AndResponseBody_WhenCreatingValidCity() {
-        City city = (City) getObjectFromJson(this.CITY_VALID_PATH, City.class);
+        final CityModel.Input city = (CityModel.Input) getObjectFromJson(this.CITY_VALID_PATH, CityModel.Input.class);
         assert city != null;
         given().
             body(city).contentType(ContentType.JSON).accept(ContentType.JSON).
@@ -88,7 +89,7 @@ class CityRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenUpdatingValidCity() {
-        City city = (City) getObjectFromJson(this.CITY_VALID_PATH, City.class);
+        final CityModel.Input city = (CityModel.Input) getObjectFromJson(this.CITY_VALID_PATH, CityModel.Input.class);
         assert city != null;
         given().
             pathParam("id", DataTest.CITY_COUNT).
@@ -119,7 +120,7 @@ class CityRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenPatchingValidCity() {
-        City city = (City) getObjectFromJson(this.CITY_VALID_PATH, City.class);
+        final CityModel.Input city = (CityModel.Input) getObjectFromJson(this.CITY_VALID_PATH, CityModel.Input.class);
         assert city != null;
         given().
             pathParam("id", DataTest.CITY_COUNT).

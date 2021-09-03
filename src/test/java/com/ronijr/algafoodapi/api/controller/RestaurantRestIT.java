@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.model.RestaurantModel;
 import com.ronijr.algafoodapi.core.AbstractTestRest;
 import com.ronijr.algafoodapi.core.DataTest;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
@@ -27,7 +28,7 @@ class RestaurantRestIT extends AbstractTestRest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
         RestAssured.basePath = "/restaurants";
@@ -44,7 +45,7 @@ class RestaurantRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenGettingExistingRestaurantById() {
-        int id = DataTest.RESTAURANT_COUNT;
+        final int id = DataTest.RESTAURANT_COUNT;
         given().
             pathParam("id", id).
             accept(ContentType.JSON).
@@ -70,7 +71,8 @@ class RestaurantRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus201AndResponseBody_WhenCreatingValidRestaurant() {
-        Restaurant restaurant = (Restaurant) getObjectFromJson(this.RESTAURANT_VALID_PATH, Restaurant.class);
+        final RestaurantModel.Input restaurant =
+                (RestaurantModel.Input) getObjectFromJson(this.RESTAURANT_VALID_PATH, RestaurantModel.Input.class);
         assert restaurant != null;
         given().
             body(restaurant).contentType(ContentType.JSON).accept(ContentType.JSON).
@@ -96,7 +98,8 @@ class RestaurantRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenUpdatingValidRestaurant() {
-        Restaurant restaurant = (Restaurant) getObjectFromJson(this.RESTAURANT_VALID_PATH, Restaurant.class);
+        final RestaurantModel.Input restaurant =
+                (RestaurantModel.Input) getObjectFromJson(this.RESTAURANT_VALID_PATH, RestaurantModel.Input.class);
         assert restaurant != null;
         given().
             pathParam("id", DataTest.RESTAURANT_COUNT).
@@ -125,7 +128,8 @@ class RestaurantRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenPatchingValidRestaurant() {
-        Restaurant restaurant = (Restaurant) getObjectFromJson(this.RESTAURANT_VALID_PATH, Restaurant.class);
+        final RestaurantModel.Input restaurant =
+                (RestaurantModel.Input) getObjectFromJson(this.RESTAURANT_VALID_PATH, RestaurantModel.Input.class);
         assert restaurant != null;
         given().
             pathParam("id", DataTest.RESTAURANT_COUNT).

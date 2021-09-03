@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.model.StateModel;
 import com.ronijr.algafoodapi.core.AbstractTestRest;
 import com.ronijr.algafoodapi.core.DataTest;
 import com.ronijr.algafoodapi.domain.model.State;
@@ -26,7 +27,7 @@ class StateRestIT extends AbstractTestRest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
         RestAssured.basePath = "/states";
@@ -36,7 +37,7 @@ class StateRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenGettingExistingStateById() {
-        int id = DataTest.STATE_COUNT;
+        final int id = DataTest.STATE_COUNT;
         given().
             pathParam("id", id).
             accept(ContentType.JSON).
@@ -62,7 +63,8 @@ class StateRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus201AndResponseBody_WhenCreatingValidState() {
-        State state = (State) getObjectFromJson(this.STATE_VALID_PATH, State.class);
+        final StateModel.Input state =
+                (StateModel.Input) getObjectFromJson(this.STATE_VALID_PATH, StateModel.Input.class);
         assert state != null;
         given().
             body(state).contentType(ContentType.JSON).accept(ContentType.JSON).
@@ -88,7 +90,8 @@ class StateRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenUpdatingValidState() {
-        State state = (State) getObjectFromJson(this.STATE_VALID_PATH, State.class);
+        final StateModel.Input state =
+                (StateModel.Input) getObjectFromJson(this.STATE_VALID_PATH, StateModel.Input.class);
         assert state != null;
         given().
             pathParam("id", DataTest.STATE_COUNT).
@@ -119,7 +122,8 @@ class StateRestIT extends AbstractTestRest {
 
     @Test
     void shouldStatus200AndResponseBody_WhenPatchingValidState() {
-        State state = (State) getObjectFromJson(this.STATE_VALID_PATH, State.class);
+        final StateModel.Input state =
+                (StateModel.Input) getObjectFromJson(this.STATE_VALID_PATH, StateModel.Input.class);
         assert state != null;
         given().
             pathParam("id", DataTest.STATE_COUNT).
