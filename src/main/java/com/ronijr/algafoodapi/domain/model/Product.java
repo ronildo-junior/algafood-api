@@ -2,7 +2,6 @@ package com.ronijr.algafoodapi.domain.model;
 
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -33,10 +32,10 @@ public class Product extends AbstractEntity<Long> {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Builder.Default
     @NotNull
     @Column(nullable = false)
-    @ColumnDefault("1")
-    private Boolean active;
+    private Boolean active = Boolean.TRUE;
 
     @Valid
     @ConvertGroup(to = ValidationGroups.ValidateId.class)

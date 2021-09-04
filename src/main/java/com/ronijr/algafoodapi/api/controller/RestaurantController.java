@@ -87,4 +87,16 @@ public class RestaurantController {
     public ResponseEntity<RestaurantModel.Output> getFirst() {
         return ResponseEntity.ok(assembler.toOutput(queryService.findFirst()));
     }
+
+    @PutMapping("/{id}/active")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void activate(@PathVariable Long id) {
+        commandService.activate(id);
+    }
+
+    @DeleteMapping("/{id}/active")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inactivate(@PathVariable Long id) {
+        commandService.inactivate(id);
+    }
 }

@@ -60,6 +60,16 @@ public class RestaurantCommand {
         }
     }
 
+    public void activate(Long id) throws EntityNotFoundException {
+        Restaurant restaurant = findById(id);
+        restaurant.activate();
+    }
+
+    public void inactivate(Long id) throws EntityNotFoundException {
+        Restaurant restaurant = findById(id);
+        restaurant.inactivate();
+    }
+
     private Restaurant findById(Long id) throws EntityNotFoundException {
         return restaurantRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(messageSource.getMessage("restaurant.not.found", id)));

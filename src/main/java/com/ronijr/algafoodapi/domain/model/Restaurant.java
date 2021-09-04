@@ -26,6 +26,11 @@ public class Restaurant extends AbstractEntity<Long> {
     @Column(nullable = false)
     private String name;
 
+    @Builder.Default
+    @NotNull
+    @Column(nullable = false)
+    private Boolean active = Boolean.TRUE;
+
     @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal deliveryFee;
@@ -52,4 +57,12 @@ public class Restaurant extends AbstractEntity<Long> {
     @ToString.Exclude
     @OneToMany(mappedBy = "restaurant")
     private List<Product> products = new ArrayList<>();
+
+    public void activate() {
+        this.setActive(true);
+    }
+
+    public void inactivate() {
+        this.setActive(false);
+    }
 }
