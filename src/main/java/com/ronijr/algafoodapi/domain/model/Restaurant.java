@@ -65,4 +65,8 @@ public class Restaurant extends AbstractEntity<Long> {
     public void inactivate() {
         this.setActive(false);
     }
+
+    public void addPaymentMethod(PaymentMethod paymentMethod) {
+        paymentMethods.add(paymentMethod);
+    }
 }

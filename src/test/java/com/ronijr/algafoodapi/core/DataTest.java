@@ -1,10 +1,7 @@
 package com.ronijr.algafoodapi.core;
 
 import com.ronijr.algafoodapi.domain.model.*;
-import com.ronijr.algafoodapi.domain.repository.CityRepository;
-import com.ronijr.algafoodapi.domain.repository.CuisineRepository;
-import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
-import com.ronijr.algafoodapi.domain.repository.StateRepository;
+import com.ronijr.algafoodapi.domain.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +14,7 @@ public final class DataTest {
     private final RestaurantRepository restaurantRepository;
     private final CityRepository cityRepository;
     private final StateRepository stateRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
     public final static Integer CUISINE_COUNT = 6;
     public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
@@ -29,6 +27,9 @@ public final class DataTest {
     public final static Integer CITY_COUNT = 6;
     public final static Integer CITY_RELATIONSHIP_BEGIN = 3;
     public final static Integer CITY_NON_EXISTENT_ID = CITY_COUNT + 1;
+    public final static Integer PAYMENT_METHOD_COUNT = 6;
+    public final static Integer PAYMENT_METHOD_RELATIONSHIP_BEGIN = 3;
+    public final static Integer PAYMENT_METHOD_NON_EXISTENT_ID = PAYMENT_METHOD_COUNT + 1;
 
     public Cuisine createCuisine(int id) {
         Cuisine cuisine = Cuisine.builder().name(getCuisineName(id)).build();
@@ -99,6 +100,18 @@ public final class DataTest {
         return restaurantRepository.save(restaurant);
     }
 
+    public PaymentMethod createPaymentMethod(int id) {
+        PaymentMethod paymentMethod = PaymentMethod.builder().
+                description(getPaymentMethodDescription(id)).
+                build();
+        return paymentMethodRepository.save(paymentMethod);
+    }
+
+    public Restaurant addPaymentMethodRestaurant(Restaurant restaurant, PaymentMethod paymentMethod) {
+        restaurant.addPaymentMethod(paymentMethod);
+        return restaurantRepository.save(restaurant);
+    }
+
     public String getCuisineName(int id){
         return "Cuisine Test" + id;
     }
@@ -113,6 +126,10 @@ public final class DataTest {
 
     public String getCityName(int id){
         return "City Test" + id;
+    }
+
+    public String getPaymentMethodDescription(int id){
+        return "Payment Method Test " + id;
     }
 
     public void createCuisineBaseData() {
@@ -142,6 +159,16 @@ public final class DataTest {
     public void createCityBaseData() {
         for (int i = 1; i <= RESTAURANT_COUNT; i++) {
             createCity(i);
+        }
+    }
+
+    public void createPaymentMethodBaseData() {
+        for (int i = 1; i <= PAYMENT_METHOD_COUNT; i++) {
+            PaymentMethod paymentMethod = createPaymentMethod(i);
+            if (i >= PAYMENT_METHOD_RELATIONSHIP_BEGIN) {
+                Restaurant restaurant = createRestaurant(i + 1 - PAYMENT_METHOD_RELATIONSHIP_BEGIN);
+                addPaymentMethodRestaurant(restaurant, paymentMethod);
+            }
         }
     }
 }
