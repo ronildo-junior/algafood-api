@@ -31,7 +31,7 @@ public class Restaurant extends AbstractEntity<Long> {
     @Column(nullable = false)
     private Boolean active = Boolean.TRUE;
 
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal deliveryFee;
 

@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 @AllArgsConstructor
 @Transactional
 public class PaymentMethodCommand {
-    private PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodRepository paymentMethodRepository;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 

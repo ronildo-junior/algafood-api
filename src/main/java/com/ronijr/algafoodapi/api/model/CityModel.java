@@ -11,7 +11,7 @@ public final class CityModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface StateIdentifier { @NotNull @Valid StateModel.Identifier getState(); }
-    private interface StateOutput { @NotNull @Valid StateModel.Output getState(); }
+    private interface StateOutput { @NotNull StateModel.Output getState(); }
 
     @Value
     public static class Identifier implements Id {

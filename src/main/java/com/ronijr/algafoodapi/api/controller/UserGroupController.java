@@ -1,11 +1,11 @@
 package com.ronijr.algafoodapi.api.controller;
 
-import com.ronijr.algafoodapi.api.assembler.PaymentMethodAssembler;
-import com.ronijr.algafoodapi.api.assembler.PaymentMethodDisassembler;
-import com.ronijr.algafoodapi.api.model.PaymentMethodModel;
-import com.ronijr.algafoodapi.domain.model.PaymentMethod;
-import com.ronijr.algafoodapi.domain.service.PaymentMethodCommand;
-import com.ronijr.algafoodapi.domain.service.PaymentMethodQuery;
+import com.ronijr.algafoodapi.api.assembler.UserGroupAssembler;
+import com.ronijr.algafoodapi.api.assembler.UserGroupDisassembler;
+import com.ronijr.algafoodapi.api.model.UserGroupModel;
+import com.ronijr.algafoodapi.domain.model.UserGroup;
+import com.ronijr.algafoodapi.domain.service.UserGroupCommand;
+import com.ronijr.algafoodapi.domain.service.UserGroupQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,28 +20,28 @@ import java.util.Map;
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 
 @RestController
-@RequestMapping("/payment-methods")
+@RequestMapping("/user-groups")
 @AllArgsConstructor
-public class PaymentMethodController {
-    private final PaymentMethodQuery queryService;
-    private final PaymentMethodCommand commandService;
-    private final PaymentMethodAssembler assembler;
-    private final PaymentMethodDisassembler disassembler;
+public class UserGroupController {
+    private final UserGroupQuery queryService;
+    private final UserGroupCommand commandService;
+    private final UserGroupAssembler assembler;
+    private final UserGroupDisassembler disassembler;
 
     @GetMapping
-    public List<PaymentMethodModel.Output> list() {
+    public List<UserGroupModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentMethodModel.Output> get(@PathVariable Long id) {
+    public ResponseEntity<UserGroupModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid PaymentMethodModel.Input input) {
-        PaymentMethod created = commandService.create(disassembler.toDomain(input));
-        PaymentMethodModel.Output output = assembler.toOutput(created);
+    public ResponseEntity<Object> create(@RequestBody @Valid UserGroupModel.Input input) {
+        UserGroup created = commandService.create(disassembler.toDomain(input));
+        UserGroupModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
@@ -51,16 +51,16 @@ public class PaymentMethodController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentMethodModel.Output> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodModel.Input input) {
-        PaymentMethod current = queryService.findByIdOrElseThrow(id);
+    public ResponseEntity<UserGroupModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserGroupModel.Input input) {
+        UserGroup current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PaymentMethodModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        PaymentMethod current = queryService.findByIdOrElseThrow(id);
-        PaymentMethodModel.Input input = assembler.toInput(current);
+    public ResponseEntity<UserGroupModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        UserGroup current = queryService.findByIdOrElseThrow(id);
+        UserGroupModel.Input input = assembler.toInput(current);
         mergeFieldsMapInObject(patchMap, input);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));

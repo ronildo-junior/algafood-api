@@ -15,6 +15,8 @@ public final class DataTest {
     private final CityRepository cityRepository;
     private final StateRepository stateRepository;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final UserGroupRepository userGroupRepository;
+    private final UserRepository userRepository;
     public final static Integer CUISINE_COUNT = 6;
     public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
@@ -30,6 +32,12 @@ public final class DataTest {
     public final static Integer PAYMENT_METHOD_COUNT = 6;
     public final static Integer PAYMENT_METHOD_RELATIONSHIP_BEGIN = 3;
     public final static Integer PAYMENT_METHOD_NON_EXISTENT_ID = PAYMENT_METHOD_COUNT + 1;
+    public final static Integer USER_GROUP_COUNT = 6;
+    public final static Integer USER_GROUP_RELATIONSHIP_BEGIN = 3;
+    public final static Integer USER_GROUP_NON_EXISTENT_ID = USER_GROUP_COUNT + 1;
+    public final static Integer USER_COUNT = 6;
+    public final static Integer USER_RELATIONSHIP_BEGIN = 3;
+    public final static Integer USER_NON_EXISTENT_ID = USER_COUNT + 1;
 
     public Cuisine createCuisine(int id) {
         Cuisine cuisine = Cuisine.builder().name(getCuisineName(id)).build();
@@ -112,24 +120,48 @@ public final class DataTest {
         return restaurantRepository.save(restaurant);
     }
 
+    public UserGroup createUserGroup(int id) {
+        UserGroup userGroup = UserGroup.builder().
+                name(getUserGroupName(id)).
+                build();
+        return userGroupRepository.save(userGroup);
+    }
+
+    public User createUser(int id) {
+        User userGroup = User.builder().
+                name(getUserName(id)).
+                email("email" + id + "@gmail.com").
+                password("123" + id).
+                build();
+        return userRepository.save(userGroup);
+    }
+
     public String getCuisineName(int id){
-        return "Cuisine Test" + id;
+        return "Cuisine Test " + id;
     }
 
     public String getRestaurantName(int id){
-        return "Restaurant Test" + id;
+        return "Restaurant Test " + id;
     }
 
     public String getStateName(int id){
-        return "State Test" + id;
+        return "State Test " + id;
     }
 
     public String getCityName(int id){
-        return "City Test" + id;
+        return "City Test " + id;
     }
 
     public String getPaymentMethodDescription(int id){
         return "Payment Method Test " + id;
+    }
+
+    public String getUserGroupName(int id){
+        return "User Group " + id;
+    }
+
+    public String getUserName(int id){
+        return "User " + id;
     }
 
     public void createCuisineBaseData() {
@@ -169,6 +201,18 @@ public final class DataTest {
                 Restaurant restaurant = createRestaurant(i + 1 - PAYMENT_METHOD_RELATIONSHIP_BEGIN);
                 addPaymentMethodRestaurant(restaurant, paymentMethod);
             }
+        }
+    }
+
+    public void createUserGroupBaseData() {
+        for (int i = 1; i <= USER_GROUP_COUNT; i++) {
+            createUserGroup(i);
+        }
+    }
+
+    public void createUserBaseData() {
+        for (int i = 1; i <= USER_COUNT; i++) {
+            createUser(i);
         }
     }
 }

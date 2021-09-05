@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class StateController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody StateModel.Input input) {
+    public ResponseEntity<Object> create(@RequestBody @Valid StateModel.Input input) {
         State created = commandService.create(disassembler.toDomain(input));
         StateModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.
@@ -50,7 +51,7 @@ public class StateController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StateModel.Output> update(@PathVariable Long id, @RequestBody StateModel.Input input) {
+    public ResponseEntity<StateModel.Output> update(@PathVariable Long id, @RequestBody @Valid StateModel.Input input) {
         State current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));

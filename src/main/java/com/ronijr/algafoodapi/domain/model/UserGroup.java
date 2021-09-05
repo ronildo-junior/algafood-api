@@ -25,7 +25,7 @@ public class UserGroup extends AbstractEntity<Long> {
     @ToString.Exclude
     @ManyToMany
     @JoinTable(name = "user_group_permission",
-        joinColumns = @JoinColumn(name = "group_id"),
+        joinColumns = @JoinColumn(name = "user_group_id"),
         inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions = new ArrayList<>();
 }

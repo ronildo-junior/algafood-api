@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -65,6 +66,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String detail = messenger.getMessage("resource.not.found", ex.getRequestURL());
         return handleException(ex, request, ProblemType.BAD_REQUEST, detail);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleBadRequest(ex, request, ex.getMessage());
     }
 
     @Override
@@ -147,6 +154,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityUniqueViolationException.class)
     public ResponseEntity<Object> handleUniqueViolation(EntityUniqueViolationException ex, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    private ResponseEntity<Object> handleBusinessException(Exception ex, WebRequest request){
+        return handleException(ex, request, ProblemType.INVALID_DATA, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

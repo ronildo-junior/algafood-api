@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class CuisineController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody CuisineModel.Input input) {
+    public ResponseEntity<Object> create(@RequestBody @Valid CuisineModel.Input input) {
         Cuisine created = commandService.create(disassembler.toDomain(input));
         CuisineModel.Output response = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder
@@ -55,7 +56,7 @@ public class CuisineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CuisineModel.Output> update(@PathVariable Long id, @RequestBody CuisineModel.Input input) {
+    public ResponseEntity<CuisineModel.Output> update(@PathVariable Long id, @RequestBody @Valid CuisineModel.Input input) {
         Cuisine current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));

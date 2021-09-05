@@ -29,9 +29,7 @@ public class CuisineCommand {
     public Cuisine update(Cuisine cuisine) throws ValidationException, EntityUniqueViolationException {
         validator.validate(cuisine);
         try {
-            Cuisine saved = cuisineRepository.save(cuisine);
-            cuisineRepository.flush();
-            return saved;
+            return cuisineRepository.saveAndFlush(cuisine);
         } catch (DataIntegrityViolationException e) {
             throw new EntityUniqueViolationException(messageSource.getMessage("cuisine.name.unique", cuisine.getName()));
         }

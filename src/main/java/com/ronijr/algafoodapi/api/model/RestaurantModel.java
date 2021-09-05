@@ -12,11 +12,10 @@ import java.math.BigDecimal;
 public final class RestaurantModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
-    private interface Active { @NotNull Boolean getName(); }
-    private interface DeliveryFee { @PositiveOrZero BigDecimal getDeliveryFee(); }
+    private interface DeliveryFee { @NotNull @PositiveOrZero BigDecimal getDeliveryFee(); }
     private interface CuisineIdentifier { @NotNull @Valid CuisineModel.Identifier getCuisine(); }
-    private interface CuisineOutput { @NotNull @Valid CuisineModel.Output getCuisine(); }
-    private interface AddressOutput { @NotNull @Valid AddressModel.Output getAddress(); }
+    private interface CuisineOutput { @NotNull CuisineModel.Output getCuisine(); }
+    private interface AddressOutput { @NotNull AddressModel.Output getAddress(); }
     private interface AddressInput { @NotNull @Valid AddressModel.Input getAddress(); }
 
     @Value

@@ -13,7 +13,7 @@ public final class AddressModel {
     private interface Complement { @NotBlank String getComplement(); }
     private interface Neighborhood { @NotBlank String getNeighborhood(); }
     private interface CityIdentifier { @NotNull @Valid CityModel.Identifier getCity(); }
-    private interface CitySummary { @NotNull @Valid CityModel.Summary getCity(); }
+    private interface CitySummary { @NotNull CityModel.Summary getCity(); }
 
     @Value
     public static class Input

@@ -28,7 +28,7 @@ public class Product extends AbstractEntity<Long> {
     @Column(nullable = false)
     private String description;
 
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal price;
 

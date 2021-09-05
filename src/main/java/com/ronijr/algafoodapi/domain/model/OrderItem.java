@@ -18,11 +18,11 @@ public class OrderItem extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal amount;
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal price;
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal total;
 
     private String notes;

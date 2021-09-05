@@ -22,11 +22,11 @@ public class Order extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal deliveryFee;
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal subtotal;
-    @PositiveOrZero
+    @NotNull @PositiveOrZero
     private BigDecimal total;
 
     @Valid

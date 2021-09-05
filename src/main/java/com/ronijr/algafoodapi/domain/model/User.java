@@ -34,7 +34,15 @@ public class User extends AbstractEntity<Long> {
     @ManyToMany
     @JoinTable(name = "user_group_user",
         joinColumns = @JoinColumn(name ="user_id"),
-        inverseJoinColumns = @JoinColumn(name = "group_id")
+        inverseJoinColumns = @JoinColumn(name = "user_group_id")
     )
     private List<UserGroup> groups = new ArrayList<>();
+
+    public void updatePassword(String password) {
+        this.setPassword(password);
+    }
+
+    public boolean passwordEquals(String password) {
+        return this.getPassword().equals(password);
+    }
 }

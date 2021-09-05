@@ -17,7 +17,7 @@ import javax.transaction.Transactional;
 @AllArgsConstructor
 @Transactional
 public class StateCommand {
-    private StateRepository stateRepository;
+    private final StateRepository stateRepository;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
