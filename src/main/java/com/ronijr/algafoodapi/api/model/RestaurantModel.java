@@ -13,6 +13,8 @@ public final class RestaurantModel {
     private interface Id { @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface DeliveryFee { @NotNull @PositiveOrZero BigDecimal getDeliveryFee(); }
+    private interface Active { @NotNull Boolean getActive(); }
+    private interface Opened { @NotNull Boolean getOpened(); }
     private interface CuisineIdentifier { @NotNull @Valid CuisineModel.Identifier getCuisine(); }
     private interface CuisineOutput { @NotNull CuisineModel.Output getCuisine(); }
     private interface AddressOutput { @NotNull AddressModel.Output getAddress(); }
@@ -27,19 +29,23 @@ public final class RestaurantModel {
     }
 
     @Value
-    public static class Output implements Id, Name, DeliveryFee, CuisineOutput, AddressOutput {
+    public static class Output implements Id, Name, DeliveryFee, Active, Opened, CuisineOutput, AddressOutput {
         Long id;
         String name;
         BigDecimal deliveryFee;
+        Boolean active;
+        Boolean opened;
         CuisineModel.Output cuisine;
         AddressModel.Output address;
     }
 
     @Value
-    public static class Summary implements Id, Name, DeliveryFee, CuisineOutput {
+    public static class Summary implements Id, Name, DeliveryFee, Active, Opened, CuisineOutput {
         Long id;
         String name;
         BigDecimal deliveryFee;
+        Boolean active;
+        Boolean opened;
         CuisineModel.Output cuisine;
     }
 }

@@ -15,6 +15,10 @@ public class UserDisassembler {
         return mapper.inputCreateToEntity(input);
     }
 
+    public User inputUpdateToDomain(UserModel.Update input) {
+        return mapper.inputUpdateToEntity(input);
+    }
+
     public void copyToDomainObject(UserModel.Update input, User user) {
         mapper.mergeIntoTarget(input, user);
     }

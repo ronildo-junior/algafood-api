@@ -6,8 +6,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -27,5 +28,19 @@ public class UserGroup extends AbstractEntity<Long> {
     @JoinTable(name = "user_group_permission",
         joinColumns = @JoinColumn(name = "user_group_id"),
         inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private List<Permission> permissions = new ArrayList<>();
+    private Set<Permission> permissions = new HashSet<>();
+
+    public Optional<Permission> getPermission(Long id) {
+        return permissions.stream().
+                filter(permission -> permission.getId().equals(id))
+                .findAny();
+    }
+
+    public void grantPermission(Permission permission) {
+        permissions.add(permission);
+    }
+
+    public void revokePermission(Permission permission) {
+        permissions.remove(permission);
+    }
 }

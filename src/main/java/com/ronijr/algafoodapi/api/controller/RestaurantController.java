@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
 @RequestMapping("/restaurants")
@@ -61,10 +62,9 @@ public class RestaurantController {
     @PatchMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> updatePartial(
             @PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        verifyMapContainsOnlyFieldsOfClass(patchMap, RestaurantModel.Input.class);
         Restaurant current = queryService.findByIdOrElseThrow(id);
-        RestaurantModel.Input input = assembler.toInput(current);
-        mergeFieldsMapInObject(patchMap, input);
-        disassembler.copyToDomainObject(input, current);
+        mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
@@ -99,5 +99,17 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inactivate(@PathVariable Long id) {
         commandService.inactivateRestaurant(id);
+    }
+
+    @PutMapping("/{id}/opening")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void open(@PathVariable Long id) {
+        commandService.openRestaurant(id);
+    }
+
+    @PutMapping("/{id}/closing")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void close(@PathVariable Long id) {
+        commandService.closeRestaurant(id);
     }
 }

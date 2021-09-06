@@ -4,7 +4,7 @@ import com.ronijr.algafoodapi.api.assembler.ProductAssembler;
 import com.ronijr.algafoodapi.api.assembler.ProductDisassembler;
 import com.ronijr.algafoodapi.api.model.ProductModel;
 import com.ronijr.algafoodapi.domain.model.Product;
-import com.ronijr.algafoodapi.domain.service.RestaurantCommand;
+import com.ronijr.algafoodapi.domain.service.ProductCommand;
 import com.ronijr.algafoodapi.domain.service.RestaurantQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RestaurantProductController {
     private final RestaurantQuery restaurantQuery;
-    private final RestaurantCommand restaurantCommand;
+    private final ProductCommand productCommand;
     private final ProductAssembler productAssembler;
     private final ProductDisassembler productDisassembler;
 
@@ -35,25 +35,25 @@ public class RestaurantProductController {
     @PostMapping
     public ProductModel.Output create(@PathVariable Long restaurantId, @RequestBody ProductModel.Input input) {
         Product product = productDisassembler.toDomain(input);
-        return productAssembler.toOutput(restaurantCommand.createProduct(restaurantId, product));
+        return productAssembler.toOutput(productCommand.create(restaurantId, product));
     }
 
     @PutMapping("/{productId}")
     public ProductModel.Output update(
             @PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductModel.Input input) {
         Product product = productDisassembler.toDomain(input);
-        return productAssembler.toOutput(restaurantCommand.updateProduct(restaurantId, productId, product));
+        return productAssembler.toOutput(productCommand.update(restaurantId, productId, product));
     }
 
     @PutMapping("/{productId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void activateProduct(@PathVariable Long restaurantId, @PathVariable Long productId) {
-        restaurantCommand.activateProduct(productId, restaurantId);
+        productCommand.activate(productId, restaurantId);
     }
 
     @DeleteMapping("/{productId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inactivateProduct(@PathVariable Long restaurantId, @PathVariable Long productId) {
-        restaurantCommand.inactivateProduct(productId, restaurantId);
+        productCommand.inactivate(productId, restaurantId);
     }
 }

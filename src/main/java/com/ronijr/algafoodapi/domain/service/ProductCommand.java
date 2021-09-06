@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.domain.service;
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Product;
+import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -15,35 +16,40 @@ import javax.transaction.Transactional;
 @Transactional
 public class ProductCommand {
     private final ProductRepository repository;
+    private final RestaurantQuery restaurantQuery;
     private final AppMessageSource messageSource;
 
-    public Product create(Product product) {
+    public Product create(Long restaurantId, Product product) {
+        Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(restaurantId);
+        product.setRestaurant(restaurant);
         return repository.save(product);
     }
 
-    public Product update(Long id, Long restaurantId, Product product) {
-        Product current = findById(id, restaurantId);
+    public Product update(Long productId, Long restaurantId, Product product) {
+        Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(restaurantId);
+        product.setRestaurant(restaurant);
+        Product current = findById(productId, restaurantId);
         BeanUtils.copyProperties(product, current, "id");
         return repository.save(current);
     }
 
-    public void delete(Long id, Long restaurantId) {
-        Product product = findById(id, restaurantId);
+    public void delete(Long productId, Long restaurantId) {
+        Product product = findById(productId, restaurantId);
         repository.delete(product);
     }
 
-    public void activate(Long id, Long restaurantId) throws EntityNotFoundException {
-        Product product = findById(id, restaurantId);
+    public void activate(Long productId, Long restaurantId) throws EntityNotFoundException {
+        Product product = findById(productId, restaurantId);
         product.activate();
     }
 
-    public void inactivate(Long id, Long restaurantId) throws EntityNotFoundException {
-        Product product = findById(id, restaurantId);
+    public void inactivate(Long productId, Long restaurantId) throws EntityNotFoundException {
+        Product product = findById(productId, restaurantId);
         product.inactivate();
     }
 
-    private Product findById(Long id, Long restaurantId) {
-        return repository.findByIdAndRestaurantId(id, restaurantId).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("product.not.found", id)));
+    private Product findById(Long productId, Long restaurantId) throws EntityNotFoundException {
+        return repository.findByIdAndRestaurantId(productId, restaurantId).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("product.restaurant.not.found", productId, restaurantId)));
     }
 }

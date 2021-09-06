@@ -5,6 +5,7 @@ import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityUniqueViolationException;
 import com.ronijr.algafoodapi.domain.exception.ValidationException;
+import com.ronijr.algafoodapi.domain.model.Permission;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
 import com.ronijr.algafoodapi.domain.repository.UserGroupRepository;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
@@ -19,6 +20,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class UserGroupCommand {
     private final UserGroupRepository userGroupRepository;
+    private final PermissionQuery permissionQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
@@ -43,6 +45,18 @@ public class UserGroupCommand {
         } catch (DataIntegrityViolationException e) {
             throw new EntityRelationshipException(messageSource.getMessage("user.group.relationship.found", id));
         }
+    }
+
+    public void grantPermission(Long userGroupId, Long permissionId) {
+        UserGroup userGroup = findById(userGroupId);
+        Permission permission = permissionQuery.findByIdOrElseThrow(permissionId);
+        userGroup.grantPermission(permission);
+    }
+
+    public void revokePermission(Long userGroupId, Long permissionId) {
+        UserGroup userGroup = findById(userGroupId);
+        Permission permission = permissionQuery.findByIdOrElseThrow(permissionId);
+        userGroup.revokePermission(permission);
     }
 
     private UserGroup findById(Long id) throws EntityNotFoundException {

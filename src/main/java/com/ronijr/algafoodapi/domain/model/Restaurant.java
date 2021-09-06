@@ -32,6 +32,11 @@ public class Restaurant extends AbstractEntity<Long> {
     @Column(nullable = false)
     private Boolean active = Boolean.TRUE;
 
+    @Builder.Default
+    @NotNull
+    @Column(nullable = false)
+    private Boolean opened = Boolean.FALSE;
+
     @NotNull @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal deliveryFee;
@@ -65,6 +70,14 @@ public class Restaurant extends AbstractEntity<Long> {
 
     public void inactivate() {
         this.setActive(false);
+    }
+
+    public void open() {
+        this.setOpened(true);
+    }
+
+    public void close() {
+        this.setOpened(false);
     }
 
     public void addPaymentMethod(PaymentMethod paymentMethod) {

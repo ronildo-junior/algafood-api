@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.api.utils.MapperUtils.validateMapWithClassFields;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
 @RequestMapping("/users")
@@ -52,14 +52,13 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserModel.Update input) {
-        User current = new User();
-        disassembler.copyToDomainObject(input, current);
+        User current = disassembler.inputUpdateToDomain(input);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(id, current)));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        validateMapWithClassFields(patchMap, UserModel.Update.class);
+        verifyMapContainsOnlyFieldsOfClass(patchMap, UserModel.Update.class);
         return ResponseEntity.ok(assembler.toOutput(commandService.updatePartial(id, patchMap)));
     }
 

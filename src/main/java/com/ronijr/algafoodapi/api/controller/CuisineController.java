@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
 @RequestMapping("/cuisines")
@@ -64,10 +65,9 @@ public class CuisineController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<CuisineModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+        verifyMapContainsOnlyFieldsOfClass(patchMap, CuisineModel.Input.class);
         Cuisine current = queryService.findByIdOrElseThrow(id);
-        CuisineModel.Input input = assembler.toInput(current);
-        mergeFieldsMapInObject(patchMap, input);
-        disassembler.copyToDomainObject(input, current);
+        mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 

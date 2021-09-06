@@ -21,7 +21,6 @@ public class RestaurantCommand {
     private final RestaurantRepository restaurantRepository;
     private final CuisineQuery cuisineQuery;
     private final CityQuery cityQuery;
-    private final ProductCommand productCommand;
     private final PaymentMethodQuery paymentMethodQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
@@ -69,6 +68,16 @@ public class RestaurantCommand {
         restaurant.inactivate();
     }
 
+    public void openRestaurant(Long id) throws EntityNotFoundException {
+        Restaurant restaurant = findById(id);
+        restaurant.open();
+    }
+
+    public void closeRestaurant(Long id) throws EntityNotFoundException {
+        Restaurant restaurant = findById(id);
+        restaurant.close();
+    }
+
     public void associatePaymentMethod(Long restaurantId, Long paymentMethodId) {
         Restaurant restaurant = findById(restaurantId);
         PaymentMethod paymentMethod1 = paymentMethodQuery.findByIdOrElseThrow(paymentMethodId);
@@ -83,30 +92,6 @@ public class RestaurantCommand {
         if (restaurant.hasPaymentMethod(paymentMethod1)) {
             restaurant.removePaymentMethod(paymentMethod1);
         }
-    }
-
-    public Product createProduct(Long restaurantId, Product product) {
-        Restaurant restaurant = findById(restaurantId);
-        product.setRestaurant(restaurant);
-        Product saved = productCommand.create(product);
-        restaurant.addProduct(saved);
-        return saved;
-    }
-
-    public Product updateProduct(Long restaurantId, Long productId, Product product) {
-        Restaurant restaurant = findById(restaurantId);
-        product.setRestaurant(restaurant);
-        Product saved = productCommand.update(productId, restaurantId, product);
-        restaurant.addProduct(saved);
-        return saved;
-    }
-
-    public void activateProduct(Long productId, Long restaurantId) throws EntityNotFoundException {
-        productCommand.activate(productId, restaurantId);
-    }
-
-    public void inactivateProduct(Long productId, Long restaurantId) throws EntityNotFoundException {
-        productCommand.inactivate(productId, restaurantId);
     }
 
     private Restaurant findById(Long id) throws EntityNotFoundException {

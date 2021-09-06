@@ -52,7 +52,7 @@ public final class MapperUtils {
         return fields;
     }
 
-    public static void validateMapWithClassFields(Map<String, Object> map, Class<?> representation) {
+    public static void verifyMapContainsOnlyFieldsOfClass(Map<String, Object> map, Class<?> representation) {
         List<String> fields = getClassFieldNames(representation);
         List<String> fieldsInvalid = new ArrayList<>();
         map.forEach((key, value) -> {

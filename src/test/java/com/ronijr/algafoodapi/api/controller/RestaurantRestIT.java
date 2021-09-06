@@ -158,6 +158,29 @@ class RestaurantRestIT extends AbstractTestRest {
     }
 
     @Test
+    void shouldStatus204_WhenActivatingExistingRestaurant() {
+        given().
+            pathParam("id", DataTest.RESTAURANT_COUNT).
+            accept(ContentType.JSON).
+        when().put("/{id}/active").
+        then().
+            assertThat().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void shouldStatus404_WhenActivatingNonExistingRestaurant() {
+        given().
+            pathParam("id", DataTest.RESTAURANT_NON_EXISTENT_ID).
+            contentType(ContentType.JSON).
+        when().put("/{id}/active").
+        then().
+            assertThat().
+                statusCode(HttpStatus.NOT_FOUND.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.NOT_FOUND.value()));
+    }
+
+    @Test
     void shouldStatus204_WhenDeletingExistentRestaurant() {
         given().
             pathParam("id", DataTest.RESTAURANT_COUNT).
