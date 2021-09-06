@@ -5,10 +5,7 @@ import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.ValidationException;
-import com.ronijr.algafoodapi.domain.model.Address;
-import com.ronijr.algafoodapi.domain.model.City;
-import com.ronijr.algafoodapi.domain.model.Cuisine;
-import com.ronijr.algafoodapi.domain.model.Restaurant;
+import com.ronijr.algafoodapi.domain.model.*;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
@@ -24,6 +21,8 @@ public class RestaurantCommand {
     private final RestaurantRepository restaurantRepository;
     private final CuisineQuery cuisineQuery;
     private final CityQuery cityQuery;
+    private final ProductCommand productCommand;
+    private final PaymentMethodQuery paymentMethodQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
@@ -60,14 +59,54 @@ public class RestaurantCommand {
         }
     }
 
-    public void activate(Long id) throws EntityNotFoundException {
+    public void activateRestaurant(Long id) throws EntityNotFoundException {
         Restaurant restaurant = findById(id);
         restaurant.activate();
     }
 
-    public void inactivate(Long id) throws EntityNotFoundException {
+    public void inactivateRestaurant(Long id) throws EntityNotFoundException {
         Restaurant restaurant = findById(id);
         restaurant.inactivate();
+    }
+
+    public void associatePaymentMethod(Long restaurantId, Long paymentMethodId) {
+        Restaurant restaurant = findById(restaurantId);
+        PaymentMethod paymentMethod1 = paymentMethodQuery.findByIdOrElseThrow(paymentMethodId);
+        if (!restaurant.hasPaymentMethod(paymentMethod1)) {
+            restaurant.addPaymentMethod(paymentMethod1);
+        }
+    }
+
+    public void disassociatePaymentMethod(Long restaurantId, Long paymentMethodId) {
+        Restaurant restaurant = findById(restaurantId);
+        PaymentMethod paymentMethod1 = paymentMethodQuery.findByIdOrElseThrow(paymentMethodId);
+        if (restaurant.hasPaymentMethod(paymentMethod1)) {
+            restaurant.removePaymentMethod(paymentMethod1);
+        }
+    }
+
+    public Product createProduct(Long restaurantId, Product product) {
+        Restaurant restaurant = findById(restaurantId);
+        product.setRestaurant(restaurant);
+        Product saved = productCommand.create(product);
+        restaurant.addProduct(saved);
+        return saved;
+    }
+
+    public Product updateProduct(Long restaurantId, Long productId, Product product) {
+        Restaurant restaurant = findById(restaurantId);
+        product.setRestaurant(restaurant);
+        Product saved = productCommand.update(productId, restaurantId, product);
+        restaurant.addProduct(saved);
+        return saved;
+    }
+
+    public void activateProduct(Long productId, Long restaurantId) throws EntityNotFoundException {
+        productCommand.activate(productId, restaurantId);
+    }
+
+    public void inactivateProduct(Long productId, Long restaurantId) throws EntityNotFoundException {
+        productCommand.inactivate(productId, restaurantId);
     }
 
     private Restaurant findById(Long id) throws EntityNotFoundException {

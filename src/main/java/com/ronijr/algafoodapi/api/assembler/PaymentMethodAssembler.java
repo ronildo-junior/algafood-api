@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.domain.model.PaymentMethod;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class PaymentMethodAssembler {
         return mapper.entityToInput(paymentMethod);
     }
 
-    public List<PaymentMethodModel.Output> toCollectionModel(List<PaymentMethod> paymentMethods) {
+    public List<PaymentMethodModel.Output> toCollectionModel(Collection<PaymentMethod> paymentMethods) {
         return paymentMethods.stream().
                 map(this::toOutput).
                 collect(Collectors.toList());

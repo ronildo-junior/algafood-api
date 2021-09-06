@@ -6,10 +6,13 @@ import com.ronijr.algafoodapi.domain.model.User;
 import com.ronijr.algafoodapi.domain.repository.UserRepository;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Map;
+
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
+import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Service
 @AllArgsConstructor
@@ -27,7 +30,14 @@ public class UserCommand {
 
     public User update(Long id, User user) throws ValidationException {
         User current = findById(id);
-        BeanUtils.copyProperties(user, current, "id", "password");
+        copyProperties(user, current, "id", "password");
+        validate(current);
+        return userRepository.save(current);
+    }
+
+    public User updatePartial(Long id, Map<String, Object> patchMap) throws ValidationException {
+        User current = findById(id);
+        mergeFieldsMapInObject(patchMap, current);
         validate(current);
         return userRepository.save(current);
     }
@@ -51,9 +61,6 @@ public class UserCommand {
 
     private void validate(User user) {
         validator.validate(user);
-        if (userRepository.existsByNameAndIdNotEqual(user.getName(), user.getId())) {
-            throw new EntityUniqueViolationException(messageSource.getMessage("user.name.unique", user.getName()));
-        }
         if (userRepository.existsByEmailAndIdNotEqual(user.getEmail(), user.getId())) {
             throw new EntityUniqueViolationException(messageSource.getMessage("user.email.unique", user.getEmail()));
         }

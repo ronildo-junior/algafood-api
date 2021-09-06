@@ -43,4 +43,12 @@ public class Product extends AbstractEntity<Long> {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Restaurant restaurant;
+
+    public void activate() {
+        this.setActive(true);
+    }
+
+    public void inactivate() {
+        this.setActive(false);
+    }
 }

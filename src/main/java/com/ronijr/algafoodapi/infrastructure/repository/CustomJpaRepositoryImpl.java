@@ -32,4 +32,9 @@ public class CustomJpaRepositoryImpl<T, D> extends SimpleJpaRepository<T, D> imp
                 new EntityNotFoundException(
                         getDomainClass().getName() + " with id " + id.toString() + " not found."));
     }
+
+    @Override
+    public void detach(T entity) {
+        entityManager.detach(entity);
+    }
 }

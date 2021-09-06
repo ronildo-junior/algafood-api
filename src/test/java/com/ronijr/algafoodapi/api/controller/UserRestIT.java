@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import static com.ronijr.algafoodapi.core.ResourceUtils.getContentFromResource;
 import static com.ronijr.algafoodapi.core.ResourceUtils.getObjectFromJson;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -119,6 +120,35 @@ class UserRestIT extends AbstractTestRest {
             assertThat().
                 statusCode(HttpStatus.BAD_REQUEST.value()).
                 body(this.STATUS_PROPERTY, equalTo(HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @Test
+    void shouldStatus204AndResponseBody_WhenUpdatingPasswordCorrect() {
+        final String json = getContentFromResource("/json/valid/password.json");
+        given().
+            pathParam("id", DataTest.USER_COUNT).
+            body(json).
+            contentType(ContentType.JSON).
+            accept(ContentType.JSON).
+        when().put("/{id}/password").
+        then().
+            assertThat().
+                statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void shouldStatus400AndResponseBody_WhenUpdatingPasswordIncorrect() {
+        final String json = getContentFromResource("/json/invalid/password.json");
+        given().
+            pathParam("id", DataTest.USER_COUNT).
+            body(json).
+            contentType(ContentType.JSON).
+            accept(ContentType.JSON).
+        when().put("/{id}/password").
+        then().
+            assertThat().
+                statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value()).
+                body(this.STATUS_PROPERTY, equalTo(HttpStatus.UNPROCESSABLE_ENTITY.value()));
     }
 
     @Test

@@ -10,8 +10,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -52,11 +53,11 @@ public class Restaurant extends AbstractEntity<Long> {
     @JoinTable(name = "restaurant_payment_method",
         joinColumns = @JoinColumn(name = "restaurant_id"),
         inverseJoinColumns = @JoinColumn(name = "payment_method_id"))
-    private final List<PaymentMethod> paymentMethods = new ArrayList<>();
+    private final Set<PaymentMethod> paymentMethods = new HashSet<>();
 
     @ToString.Exclude
     @OneToMany(mappedBy = "restaurant")
-    private List<Product> products = new ArrayList<>();
+    private final Set<Product> products = new HashSet<>();
 
     public void activate() {
         this.setActive(true);
@@ -68,5 +69,31 @@ public class Restaurant extends AbstractEntity<Long> {
 
     public void addPaymentMethod(PaymentMethod paymentMethod) {
         paymentMethods.add(paymentMethod);
+    }
+
+    public void removePaymentMethod(PaymentMethod paymentMethod) {
+        paymentMethods.remove(paymentMethod);
+    }
+
+    public boolean hasPaymentMethod(PaymentMethod paymentMethod) {
+        return this.paymentMethods.contains(paymentMethod);
+    }
+
+    public void addProduct(Product product) {
+        products.add(product);
+    }
+
+    public Optional<Product> getProduct(Long id) {
+        return products.stream().
+                filter(product -> product.getId().equals(id))
+                .findAny();
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+    }
+
+    public boolean hasProduct(Product product) {
+        return this.products.contains(product);
     }
 }

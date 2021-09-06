@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -19,10 +20,11 @@ public class User extends AbstractEntity<Long> {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @NotBlank
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
 

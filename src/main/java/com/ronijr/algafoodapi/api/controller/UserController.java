@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
+import static com.ronijr.algafoodapi.api.utils.MapperUtils.validateMapWithClassFields;
 
 @RestController
 @RequestMapping("/users")
@@ -59,11 +59,8 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
-        User current = queryService.findByIdOrElseThrow(id);
-        UserModel.Update input = assembler.toInputUpdate(current);
-        mergeFieldsMapInObject(patchMap, input);
-        disassembler.copyToDomainObject(input, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(id, current)));
+        validateMapWithClassFields(patchMap, UserModel.Update.class);
+        return ResponseEntity.ok(assembler.toOutput(commandService.updatePartial(id, patchMap)));
     }
 
     @DeleteMapping("/{id}")

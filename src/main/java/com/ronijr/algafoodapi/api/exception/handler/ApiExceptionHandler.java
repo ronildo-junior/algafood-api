@@ -125,7 +125,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidModelParseException.class)
     private ResponseEntity<Object> handleInvalidModelParse(InvalidModelParseException ex, WebRequest request) {
-        return handleException(ex, request, ProblemType.BAD_REQUEST, ex.getMessage());
+        return handleBadRequest(ex, request, ex.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)

@@ -131,7 +131,7 @@ public final class DataTest {
         User userGroup = User.builder().
                 name(getUserName(id)).
                 email("email" + id + "@gmail.com").
-                password("123" + id).
+                password("123").
                 build();
         return userRepository.save(userGroup);
     }

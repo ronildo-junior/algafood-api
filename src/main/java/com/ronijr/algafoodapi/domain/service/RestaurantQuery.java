@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.domain.service;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
+import com.ronijr.algafoodapi.domain.model.Product;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.ronijr.algafoodapi.infrastructure.repository.specification.RestaurantSpecification.withFreeDelivery;
 
@@ -43,5 +45,16 @@ public class RestaurantQuery {
     public Restaurant findFirst() throws EntityNotFoundException {
         return restaurantRepository.findFirst().orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("resource.list.empty")));
+    }
+
+    public Set<Product> getProductList(Long restaurantId) {
+        Restaurant restaurant = findByIdOrElseThrow(restaurantId);
+        return restaurant.getProducts();
+    }
+
+    public Product getProduct(Long restaurantId, Long productId) {
+        Restaurant restaurant = findByIdOrElseThrow(restaurantId);
+        return restaurant.getProduct(productId).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("product.not.found", productId)));
     }
 }

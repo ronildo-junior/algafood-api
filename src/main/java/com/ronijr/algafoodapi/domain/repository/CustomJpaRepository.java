@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface CustomJpaRepository<T, D> extends JpaRepository<T, D>, JpaSpecificationExecutor<T> {
     Optional<T> findFirst();
     T findByIdOrElseThrow(D id);
+    void detach(T entity);
 }
