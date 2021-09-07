@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.domain.service;
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.*;
 import com.ronijr.algafoodapi.domain.model.User;
+import com.ronijr.algafoodapi.domain.model.UserGroup;
 import com.ronijr.algafoodapi.domain.repository.UserRepository;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 public class UserCommand {
     private final UserRepository userRepository;
     private final UserQuery userQuery;
+    private final UserGroupQuery userGroupQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
 
@@ -57,6 +59,18 @@ public class UserCommand {
         User user = findById(id);
         userRepository.delete(user);
         userRepository.flush();
+    }
+
+    public void associateUserGroup(Long userId, Long userGroupId) {
+        User user = findById(userId);
+        UserGroup userGroup = userGroupQuery.findByIdOrElseThrow(userGroupId);
+        user.linkUserGroup(userGroup);
+    }
+
+    public void disassociateUserGroup(Long userId, Long userGroupId) {
+        User user = findById(userId);
+        UserGroup userGroup = userGroupQuery.findByIdOrElseThrow(userGroupId);
+        user.unlinkUserGroup(userGroup);
     }
 
     private void validate(User user) {

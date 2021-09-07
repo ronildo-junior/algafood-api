@@ -7,8 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -38,7 +39,7 @@ public class User extends AbstractEntity<Long> {
         joinColumns = @JoinColumn(name ="user_id"),
         inverseJoinColumns = @JoinColumn(name = "user_group_id")
     )
-    private List<UserGroup> groups = new ArrayList<>();
+    private final Set<UserGroup> userGroups = new HashSet<>();
 
     public void updatePassword(String password) {
         this.setPassword(password);
@@ -46,5 +47,17 @@ public class User extends AbstractEntity<Long> {
 
     public boolean passwordEquals(String password) {
         return this.getPassword().equals(password);
+    }
+
+    public Optional<UserGroup> getUserGroup(Long id) {
+        return userGroups.stream().filter(r -> r.getId().equals(id)).findFirst();
+    }
+
+    public void linkUserGroup(UserGroup userGroup) {
+        userGroups.add(userGroup);
+    }
+
+    public void unlinkUserGroup(UserGroup userGroup) {
+        userGroups.remove(userGroup);
     }
 }

@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Product;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
+import com.ronijr.algafoodapi.domain.model.User;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,16 @@ public class RestaurantQuery {
         Restaurant restaurant = findByIdOrElseThrow(restaurantId);
         return restaurant.getProduct(productId).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("product.not.found", productId)));
+    }
+
+    public Set<User> getUsers(Long restaurantId) {
+        Restaurant restaurant = findByIdOrElseThrow(restaurantId);
+        return restaurant.getUsers();
+    }
+
+    public User getUser(Long restaurantId, Long userId) {
+        Restaurant restaurant = findByIdOrElseThrow(restaurantId);
+        return restaurant.getUser(userId).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("user.not.found", userId)));
     }
 }

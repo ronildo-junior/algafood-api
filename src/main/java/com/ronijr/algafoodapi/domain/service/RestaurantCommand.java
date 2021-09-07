@@ -21,6 +21,7 @@ public class RestaurantCommand {
     private final RestaurantRepository restaurantRepository;
     private final CuisineQuery cuisineQuery;
     private final CityQuery cityQuery;
+    private final UserQuery userQuery;
     private final PaymentMethodQuery paymentMethodQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
@@ -92,6 +93,16 @@ public class RestaurantCommand {
         if (restaurant.hasPaymentMethod(paymentMethod1)) {
             restaurant.removePaymentMethod(paymentMethod1);
         }
+    }
+
+    public void addManager(Long restaurantId, Long userId) {
+        Restaurant restaurant = findById(restaurantId);
+        restaurant.addManager(userQuery.findByIdOrElseThrow(userId));
+    }
+
+    public void removeManager(Long restaurantId, Long userId) {
+        Restaurant restaurant = findById(restaurantId);
+        restaurant.removeManager(userQuery.findByIdOrElseThrow(userId));
     }
 
     private Restaurant findById(Long id) throws EntityNotFoundException {

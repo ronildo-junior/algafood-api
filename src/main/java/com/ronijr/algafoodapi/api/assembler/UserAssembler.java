@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.domain.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class UserAssembler {
         return mapper.entityToInputUpdate(user);
     }
 
-    public List<UserModel.Output> toCollectionModel(List<User> users) {
+    public List<UserModel.Output> toCollectionModel(Collection<User> users) {
         return users.stream().
                 map(this::toOutput).
                 collect(Collectors.toList());

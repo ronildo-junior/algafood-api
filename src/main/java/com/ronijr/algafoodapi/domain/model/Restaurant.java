@@ -64,6 +64,30 @@ public class Restaurant extends AbstractEntity<Long> {
     @OneToMany(mappedBy = "restaurant")
     private final Set<Product> products = new HashSet<>();
 
+    @ToString.Exclude
+    @ManyToMany
+    @JoinTable(name = "restaurant_manager",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private final Set<User> users = new HashSet<>();
+
+    public Optional<Product> getProduct(Long id) {
+        return products.stream().
+                filter(product -> product.getId().equals(id))
+                .findAny();
+    }
+
+    public Optional<User> getUser(Long id) {
+        return users.stream().
+                filter(r -> r.getId().equals(id)).
+                findAny();
+    }
+
+    public boolean hasPaymentMethod(PaymentMethod paymentMethod) {
+        return this.paymentMethods.contains(paymentMethod);
+    }
+
     public void activate() {
         this.setActive(true);
     }
@@ -88,25 +112,11 @@ public class Restaurant extends AbstractEntity<Long> {
         paymentMethods.remove(paymentMethod);
     }
 
-    public boolean hasPaymentMethod(PaymentMethod paymentMethod) {
-        return this.paymentMethods.contains(paymentMethod);
+    public void addManager(User user) {
+        users.add(user);
     }
 
-    public void addProduct(Product product) {
-        products.add(product);
-    }
-
-    public Optional<Product> getProduct(Long id) {
-        return products.stream().
-                filter(product -> product.getId().equals(id))
-                .findAny();
-    }
-
-    public void removeProduct(Product product) {
-        products.remove(product);
-    }
-
-    public boolean hasProduct(Product product) {
-        return this.products.contains(product);
+    public void removeManager(User user) {
+        users.remove(user);
     }
 }

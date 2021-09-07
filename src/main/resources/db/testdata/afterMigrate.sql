@@ -12,6 +12,7 @@ truncate table user_group;
 truncate table restaurant_payment_method;
 truncate table user_group_user;
 truncate table user_group_permission;
+truncate table restaurant_manager;
 -- enable foreign key check
 set foreign_key_checks = 1;
 
@@ -77,3 +78,7 @@ insert into `user` (id, name, email, password, created_at) values
 
 insert into user_group_permission (user_group_id, permission_id) values
     (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
+insert into user_group_user(user_id, user_group_id) values (1, 1), (1, 2), (2, 2);
+
+insert into restaurant_manager (restaurant_id, user_id) values (1, 3), (3, 4);

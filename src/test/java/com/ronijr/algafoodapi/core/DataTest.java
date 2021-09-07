@@ -175,7 +175,11 @@ public final class DataTest {
 
     public void createRestaurantBaseData() {
         for (int i = 1; i <= RESTAURANT_COUNT; i++) {
-            createRestaurant(i);
+            Restaurant restaurant = createRestaurant(i);
+            if (i >= RESTAURANT_RELATIONSHIP_BEGIN) {
+                User user = createUser(i + 1 - RESTAURANT_RELATIONSHIP_BEGIN);
+                restaurant.addManager(user);
+            }
         }
     }
 
@@ -212,7 +216,12 @@ public final class DataTest {
 
     public void createUserBaseData() {
         for (int i = 1; i <= USER_COUNT; i++) {
-            createUser(i);
+            User user = createUser(i);
+            if (i >= USER_RELATIONSHIP_BEGIN) {
+                UserGroup userGroup = createUserGroup(i);
+                user.linkUserGroup(userGroup);
+                userRepository.save(user);
+            }
         }
     }
 }
