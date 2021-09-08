@@ -7,11 +7,12 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import javax.validation.groups.ConvertGroup;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -39,9 +40,7 @@ public class Order extends AbstractEntity<Long> {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @NotNull
-    @Column(nullable = false)
-    private OffsetDateTime deliveryDate;
+    private OffsetDateTime deliveredAt;
     private OffsetDateTime confirmedAt;
     private OffsetDateTime cancelledAt;
 
@@ -50,13 +49,14 @@ public class Order extends AbstractEntity<Long> {
     @NotNull
     @ManyToOne
     @JoinColumn(nullable = false)
-    private User user;
+    private User customer;
 
     @Valid
     @ConvertGroup(to = ValidationGroups.ValidateId.class)
     @NotNull
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @ToString.Exclude
     private PaymentMethod paymentMethod;
 
     @Valid
@@ -66,7 +66,29 @@ public class Order extends AbstractEntity<Long> {
     @JoinColumn(nullable = false)
     private Restaurant restaurant;
 
+    @Size(min = 1)
     @ToString.Exclude
-    @OneToMany(mappedBy = "order")
-    private List<OrderItem> orderItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private Set<OrderItem> items = new HashSet<>();
+
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
+        this.deliveryFee = restaurant.getDeliveryFee();
+    }
+
+    private void recalculateItems() {
+        this.getItems().forEach(OrderItem::calculateTotal);
+    }
+
+    private void calculateSubtotal() {
+        this.recalculateItems();
+        this.subtotal = items.stream().
+                map(OrderItem::getTotal).
+                reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void calculateTotal() {
+        this.calculateSubtotal();
+        this.total = this.subtotal.add(deliveryFee);
+    }
 }

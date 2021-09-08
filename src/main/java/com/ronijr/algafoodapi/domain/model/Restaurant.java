@@ -84,7 +84,7 @@ public class Restaurant extends AbstractEntity<Long> {
                 findAny();
     }
 
-    public boolean hasPaymentMethod(PaymentMethod paymentMethod) {
+    public boolean acceptPaymentMethod(PaymentMethod paymentMethod) {
         return this.paymentMethods.contains(paymentMethod);
     }
 

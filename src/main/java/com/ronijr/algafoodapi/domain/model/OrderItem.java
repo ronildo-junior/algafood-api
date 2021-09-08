@@ -40,4 +40,27 @@ public class OrderItem extends AbstractEntity<Long> {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Order order;
+
+    public BigDecimal getPrice() {
+        if (this.price == null) {
+            this.price = BigDecimal.ZERO;
+        }
+        return this.price;
+    }
+
+    public BigDecimal getAmount() {
+        if (this.amount == null) {
+            this.amount = BigDecimal.ZERO;
+        }
+        return this.amount;
+    }
+
+    public void calculateTotal() {
+        this.setTotal(this.getPrice().multiply(this.getAmount()));
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+        this.price = product.getPrice();
+    }
 }

@@ -1,18 +1,20 @@
 -- disable foreign key check
 set foreign_key_checks = 0;
-truncate table city;
-truncate table cuisine;
-truncate table state;
-truncate table payment_method;
-truncate table permission;
-truncate table product;
-truncate table restaurant;
-truncate table user;
-truncate table user_group;
-truncate table restaurant_payment_method;
-truncate table user_group_user;
-truncate table user_group_permission;
-truncate table restaurant_manager;
+truncate table `city`;
+truncate table `cuisine`;
+truncate table `state`;
+truncate table `payment_method`;
+truncate table `permission`;
+truncate table `product`;
+truncate table `restaurant`;
+truncate table `user`;
+truncate table `user_group`;
+truncate table `restaurant_payment_method`;
+truncate table `user_group_user`;
+truncate table `user_group_permission`;
+truncate table `restaurant_manager`;
+truncate table `order`;
+truncate table `order_item`;
 -- enable foreign key check
 set foreign_key_checks = 1;
 
@@ -82,3 +84,23 @@ insert into user_group_permission (user_group_id, permission_id) values
 insert into user_group_user(user_id, user_group_id) values (1, 1), (1, 2), (2, 2);
 
 insert into restaurant_manager (restaurant_id, user_id) values (1, 3), (3, 4);
+
+insert into `order` (id, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
+    address_name, address_number, address_complement, address_neighborhood,
+    status, created_at, subtotal, delivery_fee, total)
+values (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+    'CREATED', utc_timestamp, 298.90, 10, 308.90);
+
+insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
+values (1, 1, 1, 1, 78.9, 78.9, null, utc_timestamp);
+insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
+values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor', utc_timestamp);
+
+insert into `order` (id, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
+        address_name, address_number, address_complement, address_neighborhood,
+        status, created_at, subtotal, delivery_fee, total)
+values (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+    'CREATED', utc_timestamp, 79, 0, 79);
+
+insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
+values (3, 2, 5, 1, 79, 79, 'Ao ponto', utc_timestamp);

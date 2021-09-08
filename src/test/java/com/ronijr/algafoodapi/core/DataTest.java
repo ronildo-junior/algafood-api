@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 
 @Component
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public final class DataTest {
     private final PaymentMethodRepository paymentMethodRepository;
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     public final static Integer CUISINE_COUNT = 6;
     public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
@@ -38,6 +40,8 @@ public final class DataTest {
     public final static Integer USER_COUNT = 6;
     public final static Integer USER_RELATIONSHIP_BEGIN = 3;
     public final static Integer USER_NON_EXISTENT_ID = USER_COUNT + 1;
+    public final static Integer ORDER_COUNT = 6;
+    public final static Integer ORDER_NON_EXISTENT_ID = ORDER_COUNT + 1;
 
     public Cuisine createCuisine(int id) {
         Cuisine cuisine = Cuisine.builder().name(getCuisineName(id)).build();
@@ -136,6 +140,20 @@ public final class DataTest {
         return userRepository.save(userGroup);
     }
 
+    public Order createOrder(int id, User user, Restaurant restaurant, PaymentMethod paymentMethod) {
+        Order order = Order.builder().
+                deliveredAt(OffsetDateTime.now()).
+                status(OrderStatus.CREATED).
+                deliveryFee(restaurant.getDeliveryFee()).
+                restaurant(restaurant).
+                paymentMethod(paymentMethod).
+                customer(user).
+                deliveryAddress(restaurant.getAddress()).
+                build();
+        order.calculateTotal();
+        return orderRepository.save(order);
+    }
+
     public String getCuisineName(int id){
         return "Cuisine Test " + id;
     }
@@ -222,6 +240,16 @@ public final class DataTest {
                 user.linkUserGroup(userGroup);
                 userRepository.save(user);
             }
+        }
+    }
+
+    public void createOrderBaseData() {
+        for (int i = 1; i <= ORDER_COUNT; i++) {
+            User user = createUser(i);
+            Restaurant restaurant = createRestaurant(i);
+            PaymentMethod paymentMethod = createPaymentMethod(i);
+            addPaymentMethodRestaurant(restaurant, paymentMethod);
+            Order order = createOrder(i, user, restaurant, paymentMethod);
         }
     }
 }

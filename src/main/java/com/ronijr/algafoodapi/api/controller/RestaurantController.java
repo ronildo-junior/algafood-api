@@ -3,6 +3,8 @@ package com.ronijr.algafoodapi.api.controller;
 import com.ronijr.algafoodapi.api.assembler.RestaurantAssembler;
 import com.ronijr.algafoodapi.api.assembler.RestaurantDisassembler;
 import com.ronijr.algafoodapi.api.model.RestaurantModel;
+import com.ronijr.algafoodapi.domain.exception.BusinessException;
+import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.RestaurantQuery;
@@ -99,6 +101,26 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inactivate(@PathVariable Long id) {
         commandService.inactivateRestaurant(id);
+    }
+
+    @PutMapping("/activations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void multipleActivation(@RequestBody List<Long> restaurantIds) {
+        try {
+            commandService.activateRestaurant(restaurantIds);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
+    }
+
+    @DeleteMapping("/activations")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void multipleInactivation(@RequestBody List<Long> restaurantIds) {
+        try {
+            commandService.inactivateRestaurant(restaurantIds);
+        } catch (EntityNotFoundException e) {
+            throw new BusinessException(e.getMessage(), e);
+        }
     }
 
     @PutMapping("/{id}/opening")

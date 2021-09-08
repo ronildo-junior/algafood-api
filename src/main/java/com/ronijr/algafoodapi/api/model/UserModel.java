@@ -4,10 +4,11 @@ import lombok.Value;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public final class UserModel {
-    private interface Id { @Positive Long getId(); }
+    private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface UserEmail { @NotBlank @Email String getEmail(); }
     private interface Password { @NotBlank String getPassword(); }

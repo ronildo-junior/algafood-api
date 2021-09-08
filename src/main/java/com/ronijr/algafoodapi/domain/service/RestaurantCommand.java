@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -64,9 +65,17 @@ public class RestaurantCommand {
         restaurant.activate();
     }
 
+    public void activateRestaurant(List<Long> restaurantIds) throws EntityNotFoundException {
+        restaurantIds.forEach(this::activateRestaurant);
+    }
+
     public void inactivateRestaurant(Long id) throws EntityNotFoundException {
         Restaurant restaurant = findById(id);
         restaurant.inactivate();
+    }
+
+    public void inactivateRestaurant(List<Long> restaurantIds) throws EntityNotFoundException {
+        restaurantIds.forEach(this::inactivateRestaurant);
     }
 
     public void openRestaurant(Long id) throws EntityNotFoundException {
@@ -82,7 +91,7 @@ public class RestaurantCommand {
     public void associatePaymentMethod(Long restaurantId, Long paymentMethodId) {
         Restaurant restaurant = findById(restaurantId);
         PaymentMethod paymentMethod1 = paymentMethodQuery.findByIdOrElseThrow(paymentMethodId);
-        if (!restaurant.hasPaymentMethod(paymentMethod1)) {
+        if (!restaurant.acceptPaymentMethod(paymentMethod1)) {
             restaurant.addPaymentMethod(paymentMethod1);
         }
     }
@@ -90,7 +99,7 @@ public class RestaurantCommand {
     public void disassociatePaymentMethod(Long restaurantId, Long paymentMethodId) {
         Restaurant restaurant = findById(restaurantId);
         PaymentMethod paymentMethod1 = paymentMethodQuery.findByIdOrElseThrow(paymentMethodId);
-        if (restaurant.hasPaymentMethod(paymentMethod1)) {
+        if (restaurant.acceptPaymentMethod(paymentMethod1)) {
             restaurant.removePaymentMethod(paymentMethod1);
         }
     }

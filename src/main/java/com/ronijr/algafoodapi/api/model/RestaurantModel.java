@@ -10,7 +10,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public final class RestaurantModel {
-    private interface Id { @Positive Long getId(); }
+    private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface DeliveryFee { @NotNull @PositiveOrZero BigDecimal getDeliveryFee(); }
     private interface Active { @NotNull Boolean getActive(); }
@@ -19,6 +19,11 @@ public final class RestaurantModel {
     private interface CuisineOutput { @NotNull CuisineModel.Output getCuisine(); }
     private interface AddressOutput { @NotNull AddressModel.Output getAddress(); }
     private interface AddressInput { @NotNull @Valid AddressModel.Input getAddress(); }
+
+    @Value
+    public static class Identifier implements Id {
+        Long id;
+    }
 
     @Value
     public static class Input implements Name, DeliveryFee, CuisineIdentifier, AddressInput {
@@ -47,5 +52,11 @@ public final class RestaurantModel {
         Boolean active;
         Boolean opened;
         CuisineModel.Output cuisine;
+    }
+
+    @Value
+    public static class Simple implements Id, Name {
+        Long id;
+        String name;
     }
 }

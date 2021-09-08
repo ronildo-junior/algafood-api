@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public final class CityModel {
-    private interface Id { @Positive Long getId(); }
+    private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface StateIdentifier { @NotNull @Valid StateModel.Identifier getState(); }
     private interface StateOutput { @NotNull StateModel.Output getState(); }
