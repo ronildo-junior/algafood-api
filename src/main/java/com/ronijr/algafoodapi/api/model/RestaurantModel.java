@@ -1,5 +1,7 @@
 package com.ronijr.algafoodapi.api.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.ronijr.algafoodapi.api.model.view.RestaurantView;
 import lombok.Value;
 
 import javax.validation.Valid;
@@ -47,6 +49,7 @@ public final class RestaurantModel {
     @Value
     public static class Summary implements Id, Name, DeliveryFee, Active, Opened, CuisineOutput {
         Long id;
+        @JsonView(RestaurantView.OnlyName.class)
         String name;
         BigDecimal deliveryFee;
         Boolean active;

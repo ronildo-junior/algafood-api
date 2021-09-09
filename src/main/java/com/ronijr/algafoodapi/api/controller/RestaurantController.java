@@ -1,8 +1,10 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.ronijr.algafoodapi.api.assembler.RestaurantAssembler;
 import com.ronijr.algafoodapi.api.assembler.RestaurantDisassembler;
 import com.ronijr.algafoodapi.api.model.RestaurantModel;
+import com.ronijr.algafoodapi.api.model.view.RestaurantView;
 import com.ronijr.algafoodapi.domain.exception.BusinessException;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
@@ -35,6 +37,13 @@ public class RestaurantController {
     public List<RestaurantModel.Summary> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
+
+    @GetMapping(params = "projection=by-name")
+    @JsonView(RestaurantView.OnlyName.class)
+    public List<RestaurantModel.Summary> listByName() {
+        return list();
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long id) {
