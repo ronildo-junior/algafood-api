@@ -85,10 +85,10 @@ insert into user_group_user(user_id, user_group_id) values (1, 1), (1, 2), (2, 2
 
 insert into restaurant_manager (restaurant_id, user_id) values (1, 3), (3, 4);
 
-insert into `order` (id, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
+insert into `order` (id, code, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
     address_name, address_number, address_complement, address_neighborhood,
     status, created_at, subtotal, delivery_fee, total)
-values (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
+values (1, '933a9cec-53cd-48ac-8bf8-2538bb9941f7', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil',
     'CREATED', utc_timestamp, 298.90, 10, 308.90);
 
 insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
@@ -96,10 +96,10 @@ values (1, 1, 1, 1, 78.9, 78.9, null, utc_timestamp);
 insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
 values (2, 1, 2, 2, 110, 220, 'Menos picante, por favor', utc_timestamp);
 
-insert into `order` (id, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
+insert into `order` (id, code, restaurant_id, customer_id, payment_method_id, address_city_id, address_postal_code,
         address_name, address_number, address_complement, address_neighborhood,
         status, created_at, subtotal, delivery_fee, total)
-values (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
+values (2, '5d9ac98b-2cc2-472c-b099-1be4ed0f6994', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
     'CREATED', utc_timestamp, 79, 0, 79);
 
 insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)

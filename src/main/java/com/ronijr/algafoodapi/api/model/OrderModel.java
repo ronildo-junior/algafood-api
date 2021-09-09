@@ -5,7 +5,6 @@ import lombok.Value;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
@@ -13,9 +12,9 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public final class OrderModel {
-    private interface Id { @NotNull @Positive Long getId(); }
-    private interface CanceledAt { OffsetDateTime getCanceledAt(); }
+    private interface CancelledAt { OffsetDateTime getCancelledAt(); }
     private interface CreatedAt { OffsetDateTime getCreatedAt(); }
+    private interface Code { String getCode(); }
     private interface ConfirmedAt { OffsetDateTime getConfirmedAt(); }
     private interface Customer { UserModel.Output getCustomer(); }
     private interface CustomerIdentifier { @NotNull @Valid UserModel.Identifier getCustomer(); }
@@ -46,12 +45,12 @@ public final class OrderModel {
     @Value
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Output implements
-            Id, CreatedAt, ConfirmedAt, CanceledAt, DeliveryFee, DeliveredAt, Status, Subtotal, Total,
+            Code, CreatedAt, ConfirmedAt, CancelledAt, DeliveryFee, DeliveredAt, Status, Subtotal, Total,
             Customer, Restaurant, PaymentMethod, DeliveryAddress, ItemList {
-        Long id;
+        String code;
         OffsetDateTime createdAt;
         OffsetDateTime confirmedAt;
-        OffsetDateTime canceledAt;
+        OffsetDateTime cancelledAt;
         OffsetDateTime deliveredAt;
         String status;
         BigDecimal deliveryFee;
@@ -67,8 +66,8 @@ public final class OrderModel {
     @Value
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Summary implements
-            Id, CreatedAt, DeliveryFee, Status, Subtotal, Total, Customer, Restaurant {
-        Long id;
+            Code, CreatedAt, DeliveryFee, Status, Subtotal, Total, Customer, Restaurant {
+        String code;
         OffsetDateTime createdAt;
         String status;
         BigDecimal deliveryFee;
@@ -76,5 +75,14 @@ public final class OrderModel {
         BigDecimal total;
         RestaurantModel.Simple restaurant;
         UserModel.Output customer;
+    }
+
+    @Value
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class StatusInfo implements Status, CreatedAt, DeliveredAt, CancelledAt {
+        String status;
+        OffsetDateTime createdAt;
+        OffsetDateTime deliveredAt;
+        OffsetDateTime cancelledAt;
     }
 }

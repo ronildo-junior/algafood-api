@@ -22,17 +22,17 @@ public class OrderQuery {
         return orderRepository.findAll();
     }
 
-    public Optional<Order> findById(Long id) {
-        return orderRepository.findById(id);
+    public Order findByCodeOrElseThrow(String code) throws EntityNotFoundException {
+        return findByCode(code).orElseThrow(() -> new EntityNotFoundException(
+                messageSource.getMessage("order.not.found", code)));
     }
 
-    public Order findByIdOrElseThrow(Long id) throws EntityNotFoundException {
-        return findById(id).orElseThrow(() -> new EntityNotFoundException(
-                messageSource.getMessage("order.not.found", id)));
-    }
-
-    public Set<OrderItem> getOrderItemList(Long orderId) {
-        Order order = findByIdOrElseThrow(orderId);
+    public Set<OrderItem> getOrderItemList(String code) {
+        Order order = findByCodeOrElseThrow(code);
         return order.getItems();
+    }
+
+    private Optional<Order> findByCode(String code) {
+        return orderRepository.findByCode(code);
     }
 }

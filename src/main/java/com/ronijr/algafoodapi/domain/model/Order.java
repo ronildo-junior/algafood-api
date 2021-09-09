@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.domain.model;
 
+import com.ronijr.algafoodapi.domain.exception.StatusTransitionException;
 import com.ronijr.algafoodapi.domain.validation.ValidationGroups;
 import lombok.*;
 
@@ -23,6 +24,8 @@ public class Order extends AbstractEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String code;
+
     @NotNull @PositiveOrZero
     private BigDecimal deliveryFee;
     @NotNull @PositiveOrZero
@@ -36,9 +39,10 @@ public class Order extends AbstractEntity<Long> {
     private Address deliveryAddress;
 
     @NotNull
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.CREATED;
 
     private OffsetDateTime deliveredAt;
     private OffsetDateTime confirmedAt;
@@ -67,9 +71,17 @@ public class Order extends AbstractEntity<Long> {
     private Restaurant restaurant;
 
     @Size(min = 1)
+    @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderItem> items = new HashSet<>();
+
+    @PrePersist
+    private void setCode() {
+        if (this.code == null) {
+            this.setCode(this.getUUID().toString());
+        }
+    }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
@@ -90,5 +102,27 @@ public class Order extends AbstractEntity<Long> {
     public void calculateTotal() {
         this.calculateSubtotal();
         this.total = this.subtotal.add(deliveryFee);
+    }
+
+    private void setStatus(OrderStatus newStatus) {
+        if (!this.status.allowTransitionTo(newStatus)) {
+            throw new StatusTransitionException(status.getValue(), newStatus.getValue());
+        }
+        this.status = newStatus;
+    }
+
+    public void confirm() {
+        this.setStatus(OrderStatus.CONFIRMED);
+        this.setConfirmedAt(OffsetDateTime.now());
+    }
+
+    public void cancel() {
+        this.setStatus(OrderStatus.CANCELLED);
+        this.setCancelledAt(OffsetDateTime.now());
+    }
+
+    public void delivery() {
+        this.setStatus(OrderStatus.DELIVERED);
+        this.setDeliveredAt(OffsetDateTime.now());
     }
 }

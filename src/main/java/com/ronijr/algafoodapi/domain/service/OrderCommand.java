@@ -28,10 +28,9 @@ public class OrderCommand {
 
     public Order create(@Validated Order order) {
         verifyOrder(order);
-        sumEqualsProducts(order);
+        mergeEqualsItems(order);
         verifyItens(order);
         order.calculateTotal();
-        order.setStatus(OrderStatus.CREATED);
         return orderRepository.save(order);
     }
 
@@ -58,13 +57,15 @@ public class OrderCommand {
         });
     }
 
-    private void sumEqualsProducts(Order order) {
+    private void mergeEqualsItems(Order order) {
         Set<OrderItem> mergedItems = new HashSet<>();
-        order.getItems().forEach(item -> mergedItems.stream().
-                filter(this.getOrderItemPredicate(item)).
-                findAny().
-                ifPresentOrElse(newItem -> mergeItems(item, newItem),
-                () -> mergedItems.add(item))
+        order.getItems().forEach(item ->
+                mergedItems.stream().
+                        filter(this.getOrderItemPredicate(item)).
+                        findAny().
+                        ifPresentOrElse(
+                                newItem -> mergeItems(item, newItem),
+                                () -> mergedItems.add(item))
         );
         order.setItems(mergedItems);
     }

@@ -23,6 +23,10 @@ public class OrderAssembler {
         return mapper.entityToSummary(order);
     }
 
+    public OrderModel.StatusInfo toStatusInfo(Order order) {
+        return mapper.entityToStatusInfo(order);
+    }
+
     public List<OrderModel.Summary> toCollectionModel(Collection<Order> orders) {
         return orders.stream().
                 map(this::toSummary).

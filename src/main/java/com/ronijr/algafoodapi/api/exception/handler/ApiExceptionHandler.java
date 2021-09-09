@@ -156,8 +156,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleException(ex, webRequest, ProblemType.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(StatusTransitionException.class)
+    private ResponseEntity<Object> handleBusinessException(StatusTransitionException ex, WebRequest request){
+        return handleException(ex, request, ProblemType.INVALID_DATA, messenger.getMessage(
+                StatusTransitionException.RESOURCE_MESSAGE, ex.getCurrentStatus(), ex.getNewStatus()));
+    }
+
     @ExceptionHandler(BusinessException.class)
-    private ResponseEntity<Object> handleBusinessException(Exception ex, WebRequest request){
+    private ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request){
         return handleException(ex, request, ProblemType.INVALID_DATA, ex.getMessage());
     }
 

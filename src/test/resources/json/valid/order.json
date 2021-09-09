@@ -1,0 +1,28 @@
+{
+  "restaurant": {
+    "id": 1
+  },
+  "customer": {
+    "id": 1
+  },
+  "paymentMethod": {
+    "id": 1
+  },
+  "items": [
+    {
+      "productId": 1,
+      "amount": 1.00,
+      "notes": "Ao ponto"
+    }
+  ],
+  "deliveryAddress": {
+    "postalCode": "15830908",
+    "addressName": "Rua Teste 4",
+    "number": "4",
+    "complement": "Complemento 4",
+    "neighborhood": "Bairro 4",
+    "city": {
+      "id": 3
+    }
+  }
+}

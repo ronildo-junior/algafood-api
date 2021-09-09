@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -19,6 +22,8 @@ public final class DataTest {
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final List<String> uuidList = new ArrayList<>();
     public final static Integer CUISINE_COUNT = 6;
     public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
@@ -140,8 +145,19 @@ public final class DataTest {
         return userRepository.save(userGroup);
     }
 
-    public Order createOrder(int id, User user, Restaurant restaurant, PaymentMethod paymentMethod) {
+    public Product createProduct(int id, Restaurant restaurant) {
+        Product product = Product.builder().
+                name("Product Test " + id).
+                description("Description Test " + id).
+                price(BigDecimal.TEN).
+                restaurant(restaurant).
+                build();
+        return productRepository.save(product);
+    }
+
+    public Order createOrder(int id, String code, User user, Restaurant restaurant, PaymentMethod paymentMethod) {
         Order order = Order.builder().
+                code(code).
                 deliveredAt(OffsetDateTime.now()).
                 status(OrderStatus.CREATED).
                 deliveryFee(restaurant.getDeliveryFee()).
@@ -150,6 +166,14 @@ public final class DataTest {
                 customer(user).
                 deliveryAddress(restaurant.getAddress()).
                 build();
+        Product product = createProduct(id, restaurant);
+        OrderItem item = OrderItem.builder().
+                order(order).
+                amount(BigDecimal.ONE).
+                price(BigDecimal.TEN).
+                product(product).
+                build();
+        order.getItems().add(item);
         order.calculateTotal();
         return orderRepository.save(order);
     }
@@ -243,13 +267,24 @@ public final class DataTest {
         }
     }
 
+    public String getUUID(int id) {
+        return uuidList.get(id);
+    }
+
     public void createOrderBaseData() {
+        uuidList.clear();
         for (int i = 1; i <= ORDER_COUNT; i++) {
             User user = createUser(i);
             Restaurant restaurant = createRestaurant(i);
             PaymentMethod paymentMethod = createPaymentMethod(i);
             addPaymentMethodRestaurant(restaurant, paymentMethod);
-            Order order = createOrder(i, user, restaurant, paymentMethod);
+            String uuid = UUID.randomUUID().toString();
+            uuidList.add(uuid);
+            Order order = createOrder(i, uuid, user, restaurant, paymentMethod);
+            if (i >= USER_RELATIONSHIP_BEGIN) {
+                order.confirm();
+                orderRepository.save(order);
+            }
         }
     }
 }

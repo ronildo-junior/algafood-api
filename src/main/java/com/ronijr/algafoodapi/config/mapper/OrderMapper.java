@@ -12,6 +12,7 @@ public interface OrderMapper {
     Order inputToEntity(OrderModel.Input input);
     OrderModel.Output entityToOutput(Order entity);
     OrderModel.Summary entityToSummary(Order entity);
+    OrderModel.StatusInfo entityToStatusInfo(Order entity);
 
     @Mapping(target = "product.id", source = "productId")
     OrderItem inputToEntity(OrderItemModel.Input input);
