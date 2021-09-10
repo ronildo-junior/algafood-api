@@ -59,8 +59,8 @@ insert into permission (id, name, description, created_at)
 insert into restaurant_payment_method (restaurant_id, payment_method_id)
     values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
 
-insert into product(id, name, description, price, restaurant_id, created_at)
-    values (1, "Açaí", "Açaí + Complementos", 14.0, 1, utc_timestamp);
+insert into product(id, name, description, price, restaurant_id, created_at, active)
+    values (1, "Açaí", "Açaí + Complementos", 14.0, 1, utc_timestamp, 0);
 insert into product(id, name, description, price, restaurant_id, created_at)
     values (2, "Esfirra", "Esfirra de frango Catupiry", 2.5, 1, utc_timestamp);
 insert into product(id, name, description, price, restaurant_id, created_at)

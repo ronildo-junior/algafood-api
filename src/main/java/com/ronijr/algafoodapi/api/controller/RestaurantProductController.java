@@ -4,7 +4,9 @@ import com.ronijr.algafoodapi.api.assembler.ProductAssembler;
 import com.ronijr.algafoodapi.api.assembler.ProductDisassembler;
 import com.ronijr.algafoodapi.api.model.ProductModel;
 import com.ronijr.algafoodapi.domain.model.Product;
+import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.ProductCommand;
+import com.ronijr.algafoodapi.domain.service.ProductQuery;
 import com.ronijr.algafoodapi.domain.service.RestaurantQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,12 +21,22 @@ import java.util.List;
 public class RestaurantProductController {
     private final RestaurantQuery restaurantQuery;
     private final ProductCommand productCommand;
+    private final ProductQuery productQuery;
     private final ProductAssembler productAssembler;
     private final ProductDisassembler productDisassembler;
 
     @GetMapping
-    public List<ProductModel.Output> list(@PathVariable Long restaurantId) {
-        return productAssembler.toCollectionModel(restaurantQuery.getProductList(restaurantId));
+    public List<ProductModel.Output> listActive(@PathVariable Long restaurantId) {
+        Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(restaurantId);
+        return productAssembler.toCollectionModel(productQuery.findAllActive(restaurant.getId()));
+    }
+
+    @GetMapping(params = "includeInactive")
+    public List<ProductModel.Output> listAll(@RequestParam boolean includeInactive, @PathVariable Long restaurantId) {
+        if (includeInactive) {
+            return productAssembler.toCollectionModel(restaurantQuery.getProductList(restaurantId));
+        }
+        return listActive(restaurantId);
     }
 
     @GetMapping("/{productId}")

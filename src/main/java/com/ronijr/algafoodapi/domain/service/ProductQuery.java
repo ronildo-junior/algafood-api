@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +18,10 @@ public class ProductQuery {
 
     public Optional<Product> findById(Long productId, Long restaurantId) {
         return repository.findByIdAndRestaurantId(productId, restaurantId);
+    }
+
+    public Set<Product> findAllActive(Long restaurantId) {
+        return repository.findAllActiveByRestaurantId(restaurantId);
     }
 
     public Product findByIdOrElseThrow(Long productId, Long restaurantId) throws EntityNotFoundException {

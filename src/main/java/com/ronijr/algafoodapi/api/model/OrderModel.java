@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.api.model;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Value;
 
@@ -65,8 +64,7 @@ public final class OrderModel {
     }
 
     @Value
-    //@JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonFilter("orderFilter")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Summary implements
             Code, CreatedAt, DeliveryFee, Status, Subtotal, Total, Customer, Restaurant {
         String code;

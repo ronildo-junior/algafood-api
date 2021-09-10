@@ -11,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -39,7 +41,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             return super.handleExceptionInternal(ex,
                     problemBuilder().status(status.value()).title(status.getReasonPhrase()).build(), headers, status, request);
 
-        } else if (body instanceof String){
+        } else if (body instanceof String) {
             return super.handleExceptionInternal(ex,
                     problemBuilder().status(status.value()).title((String) body).build(), headers, status, request);
         }
@@ -56,9 +58,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return handleException(ex, request, problemType, problemBuilder(problemType, detail));
     }
 
-    private ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request, String detail){
+    private ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request, String detail) {
         return handleException(ex, request, ProblemType.BAD_REQUEST,
                 problemBuilder(ProblemType.BAD_REQUEST, detail, messenger.getMessage(INTERNAL_SERVER_ERROR)));
+    }
+
+    private ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request, BindingResult bindingResult) {
+        String detail = messenger.getMessage("exception.invalid.property.list");
+        var problem = problemBuilder(ProblemType.BAD_REQUEST, detail).
+                fields(getFields(bindingResult, messenger));
+        return handleException(ex, request, ProblemType.BAD_REQUEST, problem);
     }
 
     @Override
@@ -84,12 +93,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    protected ResponseEntity<Object> handleBindException(
+            BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleBadRequest(ex, request, ex.getBindingResult());
+    }
+
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String detail = messenger.getMessage("exception.invalid.property.list");
-        var problem = problemBuilder(ProblemType.BAD_REQUEST, detail).
-                fields(getFields(ex.getBindingResult(), messenger));
-        return handleException(ex, request, ProblemType.BAD_REQUEST, problem);
+        return handleBadRequest(ex, request, ex.getBindingResult());
     }
 
     @Override
@@ -130,10 +142,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Object> handleValidation(ValidationException ex, WebRequest request) {
-        String detail = messenger.getMessage("exception.invalid.property.list");
-        var problem = problemBuilder(ProblemType.BAD_REQUEST, detail).
-                fields(getFields(ex.getBindingResult(), messenger));
-        return handleException(ex, request, ProblemType.BAD_REQUEST, problem);
+        return handleBadRequest(ex, request, ex.getBindingResult());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -157,18 +166,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(StatusTransitionException.class)
-    private ResponseEntity<Object> handleBusinessException(StatusTransitionException ex, WebRequest request){
+    private ResponseEntity<Object> handleBusinessException(StatusTransitionException ex, WebRequest request) {
         return handleException(ex, request, ProblemType.INVALID_DATA, messenger.getMessage(
                 StatusTransitionException.RESOURCE_MESSAGE, ex.getCurrentStatus(), ex.getNewStatus()));
     }
 
     @ExceptionHandler(BusinessException.class)
-    private ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request){
+    private ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
         return handleException(ex, request, ProblemType.INVALID_DATA, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request){
+    private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
         ex.printStackTrace();
         return handleException(ex, request, ProblemType.SYSTEM_ERROR, messenger.getMessage(INTERNAL_SERVER_ERROR));
     }
