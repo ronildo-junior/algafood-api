@@ -1,7 +1,7 @@
 package com.ronijr.algafoodapi.infrastructure.repository.specification;
 
+import com.ronijr.algafoodapi.domain.filter.OrderFilter;
 import com.ronijr.algafoodapi.domain.model.Order;
-import com.ronijr.algafoodapi.domain.repository.filter.OrderFilter;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
@@ -11,12 +11,14 @@ public final class OrderSpecification {
     private OrderSpecification(){}
     public static Specification<Order> doFilter(OrderFilter orderFilter) {
         return (root, query, builder) -> {
-            root.fetch("restaurant").
-                    fetch("cuisine");
-            root.fetch("customer");
-            root.fetch("deliveryAddress").
-                    fetch("city").
+            if( Order.class.equals(query.getResultType())) {
+                root.fetch("restaurant").
+                        fetch("cuisine");
+                root.fetch("customer");
+                root.fetch("deliveryAddress").
+                        fetch("city").
                         fetch("state");
+            }
             var predicates = new ArrayList<Predicate>();
             if (orderFilter.getCustomerId() != null) {
                 predicates.add(builder.equal(root.get("customer"), orderFilter.getCustomerId()));

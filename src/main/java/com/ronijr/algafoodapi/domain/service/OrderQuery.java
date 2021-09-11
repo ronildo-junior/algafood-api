@@ -6,6 +6,8 @@ import com.ronijr.algafoodapi.domain.model.Order;
 import com.ronijr.algafoodapi.domain.model.OrderItem;
 import com.ronijr.algafoodapi.domain.repository.OrderRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,10 @@ public class OrderQuery {
 
     public List<Order> findAll(Specification<Order> specification) {
         return orderRepository.findAll(specification);
+    }
+
+    public Page<Order> findAll(Specification<Order> specification, Pageable pageable) {
+        return orderRepository.findAll(specification, pageable);
     }
 
     public Order findByCodeOrElseThrow(String code) throws EntityNotFoundException {

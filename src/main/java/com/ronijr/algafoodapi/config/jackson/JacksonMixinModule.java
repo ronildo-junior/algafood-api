@@ -1,4 +1,4 @@
-package com.ronijr.algafoodapi.config;
+package com.ronijr.algafoodapi.config.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.ronijr.algafoodapi.api.model.mixin.*;
