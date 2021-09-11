@@ -2,8 +2,8 @@ package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.api.assembler.UserGroupAssembler;
 import com.ronijr.algafoodapi.api.model.UserGroupModel;
-import com.ronijr.algafoodapi.domain.service.UserCommand;
-import com.ronijr.algafoodapi.domain.service.UserQuery;
+import com.ronijr.algafoodapi.domain.service.command.UserCommand;
+import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

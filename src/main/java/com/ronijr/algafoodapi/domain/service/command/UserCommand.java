@@ -1,10 +1,12 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.command;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.*;
 import com.ronijr.algafoodapi.domain.model.User;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
 import com.ronijr.algafoodapi.domain.repository.UserRepository;
+import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
+import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

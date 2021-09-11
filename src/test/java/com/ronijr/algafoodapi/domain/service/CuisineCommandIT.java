@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.exception.EntityRelationshipException;
 import com.ronijr.algafoodapi.domain.exception.ValidationException;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
+import com.ronijr.algafoodapi.domain.service.command.CuisineCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

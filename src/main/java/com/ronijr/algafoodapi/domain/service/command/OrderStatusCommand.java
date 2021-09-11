@@ -1,4 +1,4 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.command;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;

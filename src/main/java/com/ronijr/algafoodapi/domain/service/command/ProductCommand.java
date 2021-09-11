@@ -1,10 +1,11 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.command;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Product;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.repository.ProductRepository;
+import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;

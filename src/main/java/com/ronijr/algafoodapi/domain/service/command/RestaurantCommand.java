@@ -1,4 +1,4 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.command;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
@@ -7,6 +7,10 @@ import com.ronijr.algafoodapi.domain.exception.EntityRelationshipNotFoundExcepti
 import com.ronijr.algafoodapi.domain.exception.ValidationException;
 import com.ronijr.algafoodapi.domain.model.*;
 import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
+import com.ronijr.algafoodapi.domain.service.query.CityQuery;
+import com.ronijr.algafoodapi.domain.service.query.CuisineQuery;
+import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
+import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

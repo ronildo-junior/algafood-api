@@ -2,8 +2,8 @@ package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.api.assembler.PermissionAssembler;
 import com.ronijr.algafoodapi.api.model.PermissionModel;
-import com.ronijr.algafoodapi.domain.service.UserGroupCommand;
-import com.ronijr.algafoodapi.domain.service.UserGroupQuery;
+import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
+import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

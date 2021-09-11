@@ -1,4 +1,4 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.query;
 
 import com.ronijr.algafoodapi.domain.filter.DailySaleFilter;
 import com.ronijr.algafoodapi.domain.model.dto.DailySale;
@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SaleQuery {
-    List<DailySale> queryDailySales(DailySaleFilter filter);
+    List<DailySale> queryDailySales(DailySaleFilter filter, String timeOffset);
 }

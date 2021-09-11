@@ -1,10 +1,14 @@
-package com.ronijr.algafoodapi.domain.service;
+package com.ronijr.algafoodapi.domain.service.command;
 
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.BusinessException;
 import com.ronijr.algafoodapi.domain.model.*;
 import com.ronijr.algafoodapi.domain.repository.CityRepository;
 import com.ronijr.algafoodapi.domain.repository.OrderRepository;
+import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
+import com.ronijr.algafoodapi.domain.service.query.ProductQuery;
+import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
+import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

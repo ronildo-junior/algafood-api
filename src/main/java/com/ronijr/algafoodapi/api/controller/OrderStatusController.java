@@ -2,8 +2,8 @@ package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.api.assembler.OrderAssembler;
 import com.ronijr.algafoodapi.api.model.OrderModel;
-import com.ronijr.algafoodapi.domain.service.OrderQuery;
-import com.ronijr.algafoodapi.domain.service.OrderStatusCommand;
+import com.ronijr.algafoodapi.domain.service.command.OrderStatusCommand;
+import com.ronijr.algafoodapi.domain.service.query.OrderQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
