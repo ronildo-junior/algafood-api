@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.service.command.ProductPhotoCatalogCommand;
 import com.ronijr.algafoodapi.domain.service.query.ProductPhotoCatalogQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,16 +50,26 @@ public class RestaurantProductPhotoController {
     }
 
     @GetMapping
-    public ResponseEntity<InputStreamResource> getFile(
+    public ResponseEntity<Object> getFile(
             @PathVariable Long restaurantId, @PathVariable Long productId, @RequestHeader("accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
         try {
             ProductPhoto productPhoto = photoQuery.findByIdAndRestaurantId(productId, restaurantId);
             MediaType photoType = MediaType.parseMediaType(productPhoto.getContentType());
             List<MediaType> mediaTypes = MediaType.parseMediaTypes(acceptHeader);
+
             verifyCompatibility(photoType, mediaTypes);
-            return ResponseEntity.ok().
-                    contentType(photoType).
-                    body(new InputStreamResource(storageService.retrieve(productPhoto.getFileName())));
+
+            PhotoStorageService.PhotoRetrieved photoRetrieved = storageService.retrieve(productPhoto.getFileName());
+
+            if (photoRetrieved.hasInputStream()) {
+                return ResponseEntity.ok().
+                        contentType(photoType).
+                        body(new InputStreamResource(photoRetrieved.getInputStream()));
+            } else {
+                return ResponseEntity.status(HttpStatus.FOUND).
+                        header(HttpHeaders.LOCATION, photoRetrieved.getUrl()).
+                        build();
+            }
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }

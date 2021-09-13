@@ -1,29 +1,24 @@
-package com.ronijr.algafoodapi.infrastructure.service;
+package com.ronijr.algafoodapi.infrastructure.service.storage;
 
+import com.ronijr.algafoodapi.config.storage.StorageProperties;
 import com.ronijr.algafoodapi.domain.service.PhotoStorageService;
 import com.ronijr.algafoodapi.infrastructure.exception.StorageException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Service
 public final class LocalPhotoStorageService implements PhotoStorageService {
-    private final Path storagePath;
-
-    public LocalPhotoStorageService(@Value("${algafood.storage.local.photos-path}") Path storagePath) {
-        this.storagePath = storagePath;
-    }
+    @Autowired
+    private StorageProperties storageProperties;
 
     @Override
-    public InputStream retrieve(String photoName) {
+    public PhotoRetrieved retrieve(String photoName) {
         try {
             Path filePath = getFilePath(photoName);
-            return Files.newInputStream(filePath);
+            return PhotoRetrieved.builder().inputStream(Files.newInputStream(filePath)).build();
         } catch (IOException e) {
             throw new StorageException("Unable to retrieve file.", e);
         }
@@ -49,6 +44,6 @@ public final class LocalPhotoStorageService implements PhotoStorageService {
     }
 
     private Path getFilePath(String fileName) {
-        return storagePath.resolve(Path.of(fileName));
+        return storageProperties.getLocal().getPhotosPath().resolve(Path.of(fileName));
     }
 }

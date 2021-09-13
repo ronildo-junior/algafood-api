@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 public interface PhotoStorageService {
-    InputStream retrieve(String photoName);
+    PhotoRetrieved retrieve(String photoName);
     boolean store(Photo photo);
     boolean remove(String photoName);
 
@@ -27,7 +27,24 @@ public interface PhotoStorageService {
     @Getter
     @Builder
     class Photo {
-        String name;
-        InputStream inputStream;
+        private String name;
+        private String contentType;
+        private InputStream inputStream;
+        private Long size;
+    }
+
+    @Getter
+    @Builder
+    class PhotoRetrieved {
+        private InputStream inputStream;
+        private String url;
+
+        public boolean hasInputStream() {
+            return this.inputStream != null;
+        }
+
+        public boolean hasUrl() {
+            return StringUtils.hasLength(this.url);
+        }
     }
 }

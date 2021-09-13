@@ -38,7 +38,7 @@ public class ProductPhotoCatalogCommand {
         ProductPhoto saved = productRepository.save(photo);
         productRepository.flush();
 
-        updatePhoto(photoStream, photo.getFileName(), oldFileName);
+        updatePhoto(photoStream, photo.getFileName(), oldFileName, photo.getContentType(), photo.getSize());
         return saved;
     }
 
@@ -64,10 +64,12 @@ public class ProductPhotoCatalogCommand {
                 new EntityNotFoundException(messageSource.getMessage("product.photo.not.found", productId, productId)));
     }
 
-    private void updatePhoto(InputStream inputStream, String name, String oldFileName) {
+    private void updatePhoto(InputStream inputStream, String name, String oldFileName, String contentType, Long size) {
         Photo photo = Photo.builder().
                 inputStream(inputStream).
+                contentType(contentType).
                 name(name).
+                size(size).
                 build();
         storageService.replace(oldFileName, photo);
     }
