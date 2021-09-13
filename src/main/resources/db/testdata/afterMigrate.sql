@@ -6,6 +6,7 @@ truncate table `state`;
 truncate table `payment_method`;
 truncate table `permission`;
 truncate table `product`;
+truncate table `product_photo`;
 truncate table `restaurant`;
 truncate table `user`;
 truncate table `user_group`;
