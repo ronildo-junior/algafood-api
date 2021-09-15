@@ -4,12 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     </head>
     <body style="font: 14px Arial, Helvetica, sans-serif">
-        <h1 style="color: red; font-size: 26px" th:text="#{order.confirmed}">Order Confirmed</h1>
-        <p th:text="#{order.confirmed.message(${order.customer.name})}"></p>
-        <br>
-        <h2 style="font-size: 20px" th:text="#{order.code}">Order Code</h2>
-        <p th:text="#{order.message-code(${order.code})}"></p>
-        <br>
+        <h1 style="color: red; font-size: 26px" th:text="#{order.canceled}">Order Canceled</h1>
+        <p th:text="#{order.canceled.message(${order.customer.name})}"></p>
         <h2 style="font-size: 20px" th:text="${order.restaurant.name}">Restaurant Name</h2>
         <table width="100%" border="0" cellspacing="0" cellpadding="0"
                style="max-width: 600px; color: #6F6F6F">
@@ -28,7 +24,6 @@
                 <td style="width: 30px" th:text="${#numbers.formatCurrency(order.total)}">$ 15.00</td>
             </tr>
         </table>
-        <br>
         <h2 style="font-size: 20px" th:text="#{paymentMethod}">Payment Method</h2>
         <p style="color: #6F6F6F" th:text="${order.paymentMethod.description}">Payment Method</p>
     </body>
