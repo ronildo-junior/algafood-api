@@ -14,4 +14,15 @@ import javax.validation.constraints.NotBlank;
 public class EmailProperties {
     @NotBlank
     private String sender;
+
+    private Implementation impl = Implementation.FAKE;
+
+    private Sandbox sandbox = new Sandbox();
+
+    public enum Implementation { FAKE, SMTP, SMTP_SANDBOX }
+
+    @Getter @Setter
+    public static class Sandbox {
+        private String recipient;
+    }
 }
