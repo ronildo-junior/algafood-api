@@ -7,6 +7,7 @@ import com.ronijr.algafoodapi.domain.model.PaymentMethod;
 import com.ronijr.algafoodapi.domain.service.command.PaymentMethodCommand;
 import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
@@ -30,13 +32,17 @@ public class PaymentMethodController {
     private final PaymentMethodDisassembler disassembler;
 
     @GetMapping
-    public List<PaymentMethodModel.Output> list() {
-        return assembler.toCollectionModel(queryService.findAll());
+    public ResponseEntity<List<PaymentMethodModel.Output>> list() {
+        return ResponseEntity.ok().
+                cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
+                body(assembler.toCollectionModel(queryService.findAll()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+        return ResponseEntity.ok().
+                cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
+                body(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
