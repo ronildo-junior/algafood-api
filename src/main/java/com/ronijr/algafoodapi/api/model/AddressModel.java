@@ -10,7 +10,7 @@ public final class AddressModel {
     private interface PostalCode { @NotBlank String getPostalCode (); }
     private interface AddressName { @NotBlank String getAddressName(); }
     private interface Number { @NotBlank String getNumber(); }
-    private interface Complement { @NotBlank String getComplement(); }
+    private interface Complement { String getComplement(); }
     private interface Neighborhood { @NotBlank String getNeighborhood(); }
     private interface CityIdentifier { @NotNull @Valid CityModel.Identifier getCity(); }
     private interface CitySummary { @NotNull CityModel.Summary getCity(); }
