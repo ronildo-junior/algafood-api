@@ -34,7 +34,9 @@ public class PaymentMethodController {
     @GetMapping
     public ResponseEntity<List<PaymentMethodModel.Output>> list() {
         return ResponseEntity.ok().
-                cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
+                cacheControl(
+                        CacheControl.maxAge(10, TimeUnit.SECONDS).
+                        cachePublic()).
                 body(assembler.toCollectionModel(queryService.findAll()));
     }
 
