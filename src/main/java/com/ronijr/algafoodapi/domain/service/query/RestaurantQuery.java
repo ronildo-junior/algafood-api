@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,10 @@ public class RestaurantQuery {
     public Restaurant findByIdOrElseThrow(Long id) throws EntityNotFoundException {
         return findById(id).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("restaurant.not.found", id)));
+    }
+
+    public Optional<OffsetDateTime> getLastUpdateDate() {
+        return restaurantRepository.getLastUpdateDate();
     }
 
     public List<Restaurant> customQuery(Map<String, Object> parameters){

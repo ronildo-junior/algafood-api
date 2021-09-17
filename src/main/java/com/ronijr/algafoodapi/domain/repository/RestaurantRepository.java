@@ -4,8 +4,10 @@ import com.ronijr.algafoodapi.domain.model.Restaurant;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface RestaurantRepository
@@ -16,4 +18,6 @@ public interface RestaurantRepository
             "left join fetch r.address.city " +
             "left join fetch r.address.city.state")
     List<Restaurant> findAll();
+    @Query("select max(updatedAt) from Restaurant")
+    Optional<OffsetDateTime> getLastUpdateDate();
 }

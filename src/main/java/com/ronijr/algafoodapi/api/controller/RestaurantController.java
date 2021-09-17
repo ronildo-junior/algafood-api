@@ -11,15 +11,20 @@ import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
@@ -33,17 +38,30 @@ public class RestaurantController {
     private final RestaurantAssembler assembler;
     private final RestaurantDisassembler disassembler;
 
+    /** List all with Deep Filter for Cache, based in Update Date from Restaurant.
+     *  Checks if the last modification date is greater than the one stored in the cache. */
     @GetMapping
-    public List<RestaurantModel.Summary> list() {
-        return assembler.toCollectionModel(queryService.findAll());
+    public ResponseEntity<List<RestaurantModel.Summary>> list(ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+        long lastModificationDate = queryService.getLastUpdateDate().stream().
+                        map(OffsetDateTime::toEpochSecond).
+                        findAny().
+                        orElse(0L);
+        if (request.checkNotModified(lastModificationDate)) {
+            return null;
+        }
+        return ResponseEntity.
+                ok().
+                cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
+                lastModified(lastModificationDate).
+                body(assembler.toCollectionModel(queryService.findAll()));
     }
 
     @GetMapping(params = "projection=by-name")
     @JsonView(RestaurantView.OnlyName.class)
-    public List<RestaurantModel.Summary> listByName() {
-        return list();
+    public ResponseEntity<List<RestaurantModel.Summary>> listByName(ServletWebRequest request) {
+        return list(request);
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long id) {
