@@ -40,7 +40,7 @@ public class UserGroupController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid UserGroupModel.Input input) {
+    public ResponseEntity<UserGroupModel.Output> create(@RequestBody @Valid UserGroupModel.Input input) {
         UserGroup created = commandService.create(disassembler.toDomain(input));
         UserGroupModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.

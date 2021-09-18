@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid UserModel.Create input) {
+    public ResponseEntity<UserModel.Output> create(@RequestBody @Valid UserModel.Create input) {
         User created = commandService.create(disassembler.inputCreateToDomain(input));
         UserModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.

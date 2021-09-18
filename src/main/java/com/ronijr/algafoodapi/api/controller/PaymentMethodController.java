@@ -48,7 +48,7 @@ public class PaymentMethodController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid PaymentMethodModel.Input input) {
+    public ResponseEntity<PaymentMethodModel.Output> create(@RequestBody @Valid PaymentMethodModel.Input input) {
         PaymentMethod created = commandService.create(disassembler.toDomain(input));
         PaymentMethodModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.

@@ -45,7 +45,7 @@ public class CuisineController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid CuisineModel.Input input) {
+    public ResponseEntity<CuisineModel.Output> create(@RequestBody @Valid CuisineModel.Input input) {
         Cuisine created = commandService.create(disassembler.toDomain(input));
         CuisineModel.Output response = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder

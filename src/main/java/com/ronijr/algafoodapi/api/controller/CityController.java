@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.api.assembler.CityAssembler;
 import com.ronijr.algafoodapi.api.assembler.CityDisassembler;
+import com.ronijr.algafoodapi.api.controller.openapi.CityControllerOpenApi;
 import com.ronijr.algafoodapi.api.model.CityModel;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.service.command.CityCommand;
@@ -23,24 +24,27 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnly
 @RestController
 @RequestMapping("/cities")
 @AllArgsConstructor
-public class CityController {
+public class CityController implements CityControllerOpenApi {
     private final CityQuery queryService;
     private final CityCommand commandService;
     private final CityAssembler assembler;
     private final CityDisassembler disassembler;
 
+    @Override
     @GetMapping
     public List<CityModel.Summary> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<CityModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
     }
 
+    @Override
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid CityModel.Input input) {
+    public ResponseEntity<CityModel.Output> create(@RequestBody @Valid CityModel.Input input) {
         City created = commandService.create(disassembler.toDomain(input));
         CityModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.
@@ -51,6 +55,7 @@ public class CityController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.Output> update(@PathVariable Long id, @RequestBody @Valid CityModel.Input input) {
         City current = queryService.findByIdOrElseThrow(id);
@@ -58,6 +63,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
+    @Override
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CityModel.Input.class);
@@ -66,6 +72,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

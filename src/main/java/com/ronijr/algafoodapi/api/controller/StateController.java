@@ -40,7 +40,7 @@ public class StateController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid StateModel.Input input) {
+    public ResponseEntity<StateModel.Output> create(@RequestBody @Valid StateModel.Input input) {
         State created = commandService.create(disassembler.toDomain(input));
         StateModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.

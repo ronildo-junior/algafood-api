@@ -69,7 +69,7 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody @Valid RestaurantModel.Input input) {
+    public ResponseEntity<RestaurantModel.Output> create(@RequestBody @Valid RestaurantModel.Input input) {
         Restaurant created = commandService.create(disassembler.toDomain(input));
         RestaurantModel.Output output = assembler.toOutput(created);
         URI location = ServletUriComponentsBuilder.

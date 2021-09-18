@@ -12,7 +12,7 @@ import java.util.List;
  * Problem Details for HTTP APIs.*/
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter @Builder
-class ProblemDetails {
+public class ProblemDetails {
     private Integer status;
     private String type;
     private String title;
