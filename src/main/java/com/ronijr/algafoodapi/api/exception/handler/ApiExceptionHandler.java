@@ -16,8 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 import static com.ronijr.algafoodapi.api.exception.handler.ExceptionUtils.*;
 
-@ControllerAdvice
+@RestControllerAdvice
 @AllArgsConstructor
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private final HttpHeaders headers = new HttpHeaders();
@@ -143,47 +144,56 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidModelParseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     private ResponseEntity<Object> handleInvalidModelParse(InvalidModelParseException ex, WebRequest request) {
         return handleBadRequest(ex, request, ex.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleValidation(ValidationException ex, WebRequest request) {
         return handleBadRequest(ex, request, ex.getBindingResult());
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleNotFound(EntityNotFoundException ex, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.RESOURCE_NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler(EntityRelationshipNotFoundException.class)
-    public ResponseEntity<Object> handleRelationshipNotFound(EntityRelationshipNotFoundException ex, WebRequest webRequest) {
-        return handleException(ex, webRequest, ProblemType.INVALID_DATA, ex.getMessage());
-    }
-
     @ExceptionHandler(EntityRelationshipException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleConflict(EntityRelationshipException ex, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(EntityUniqueViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<Object> handleUniqueViolation(EntityUniqueViolationException ex, WebRequest webRequest) {
         return handleException(ex, webRequest, ProblemType.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(EntityRelationshipNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<Object> handleRelationshipNotFound(EntityRelationshipNotFoundException ex, WebRequest webRequest) {
+        return handleException(ex, webRequest, ProblemType.INVALID_DATA, ex.getMessage());
+    }
+
     @ExceptionHandler(StatusTransitionException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     private ResponseEntity<Object> handleBusinessException(StatusTransitionException ex, WebRequest request) {
         return handleException(ex, request, ProblemType.INVALID_DATA, messenger.getMessage(
                 StatusTransitionException.RESOURCE_MESSAGE, ex.getCurrentStatus(), ex.getNewStatus()));
     }
 
     @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     private ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
         return handleException(ex, request, ProblemType.INVALID_DATA, ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
         ex.printStackTrace();
         return handleException(ex, request, ProblemType.SYSTEM_ERROR, messenger.getMessage(INTERNAL_SERVER_ERROR));

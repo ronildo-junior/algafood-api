@@ -8,6 +8,7 @@ import com.ronijr.algafoodapi.domain.service.command.CuisineCommand;
 import com.ronijr.algafoodapi.domain.service.query.CuisineQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +22,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping("/cuisines")
+@RequestMapping(value = "/cuisines", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class CuisineController {
     private final CuisineCommand commandService;

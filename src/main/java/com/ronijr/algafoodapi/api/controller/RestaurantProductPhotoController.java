@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/restaurants/{restaurantId}/products/{productId}/photo")
+@RequestMapping(value = "/restaurants/{restaurantId}/products/{productId}/photo", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class RestaurantProductPhotoController {
     private final ProductPhotoCatalogCommand photoCommand;
@@ -44,12 +44,12 @@ public class RestaurantProductPhotoController {
         return ResponseEntity.ok(photoAssembler.toOutput(saved));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<ProductPhotoModel.Output> getInfo(@PathVariable Long restaurantId, @PathVariable Long productId) {
         return ResponseEntity.ok(photoAssembler.toOutput(photoQuery.findByIdAndRestaurantId(productId, restaurantId)));
     }
 
-    @GetMapping
+    @GetMapping(consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Object> getFile(
             @PathVariable Long restaurantId, @PathVariable Long productId, @RequestHeader("accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
         try {

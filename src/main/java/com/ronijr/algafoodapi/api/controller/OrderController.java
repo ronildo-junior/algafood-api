@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ import java.util.List;
 import static com.ronijr.algafoodapi.infrastructure.repository.specification.OrderSpecification.doFilter;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class OrderController {
     private static final int ORDER_PAGE_SIZE = 20;

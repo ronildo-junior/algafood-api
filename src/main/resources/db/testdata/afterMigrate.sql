@@ -70,9 +70,11 @@ insert into product(id, name, description, price, restaurant_id, created_at)
     values (4, "Shake", "Shake Mix Crocomenta c/ Negresco", 16.0, 3, utc_timestamp);
 insert into product(id, name, description, price, restaurant_id, created_at)
     values (5, "Picanha", "Picanha ao molho Mostrada", 16.0, 4, utc_timestamp);
+
 insert into user_group (id, name, created_at) values
     (1, 'Gerente', utc_timestamp), (2, 'Vendedor', utc_timestamp), (3, 'Secretária', utc_timestamp),
     (4, 'Cadastrador', utc_timestamp), (5, 'Administrador', utc_timestamp);
+
 insert into `user` (id, name, email, password, created_at) values
     (1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
     (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),

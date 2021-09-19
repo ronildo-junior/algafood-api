@@ -6,11 +6,12 @@ import com.ronijr.algafoodapi.domain.service.command.OrderStatusCommand;
 import com.ronijr.algafoodapi.domain.service.query.OrderQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/orders/{orderCode}")
+@RequestMapping(value = "/orders/{orderCode}", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class OrderStatusController {
     private final OrderStatusCommand statusCommand;
