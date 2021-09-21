@@ -18,6 +18,7 @@ import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 
@@ -39,6 +40,12 @@ public class SpringDocConfig implements OperationCustomizer {
         OpenAPI openAPI = new OpenAPI().info(this.getInfo());
         addTags(openAPI);
         return openAPI;
+    }
+
+    @Bean
+    @Lazy(false)
+    PageConverter pageableOpenAPIConverter() {
+        return new PageConverter();
     }
 
     @Bean

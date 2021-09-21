@@ -49,7 +49,7 @@ public class RestaurantProductPhotoController {
         return ResponseEntity.ok(photoAssembler.toOutput(photoQuery.findByIdAndRestaurantId(productId, restaurantId)));
     }
 
-    @GetMapping(consumes = MediaType.ALL_VALUE)
+    @GetMapping(produces = MediaType.ALL_VALUE)
     public ResponseEntity<Object> getFile(
             @PathVariable Long restaurantId, @PathVariable Long productId, @RequestHeader("accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
         try {
