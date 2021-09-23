@@ -9,10 +9,7 @@ import java.math.BigDecimal;
 
 public class OrderItemModel {
     private interface ProductId { @NotNull @Positive Long getProductId(); }
-    private interface ProductName { String getProductName(); }
     private interface Amount { @NotNull @PositiveOrZero BigDecimal getAmount(); }
-    private interface Price { @NotNull @PositiveOrZero BigDecimal getPrice(); }
-    private interface Total { @NotNull @PositiveOrZero BigDecimal getTotal(); }
     private interface Notes { String getNotes(); }
 
     @Value
@@ -23,7 +20,7 @@ public class OrderItemModel {
     }
 
     @Value
-    public static class Output implements ProductId, ProductName, Amount, Price, Total, Notes {
+    public static class Output {
         Long productId;
         String productName;
         BigDecimal amount;

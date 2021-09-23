@@ -11,6 +11,7 @@ import org.apache.commons.lang3.reflect.TypeUtils;
 import java.lang.reflect.ParameterizedType;
 import java.util.Iterator;
 
+/** Convert Page<?> types to PageSummary<?> */
 public class PageConverter implements ModelConverter {
     private static final Class<?> CLASS_TO_REPLACE = org.springframework.data.domain.Page.class;
     private static final Class<?> CLASS_FROM_REPLACE = com.ronijr.algafoodapi.config.documentation.model.PageSummary.class;

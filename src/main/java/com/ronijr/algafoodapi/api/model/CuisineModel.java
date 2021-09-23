@@ -21,7 +21,7 @@ public final class CuisineModel {
     }
 
     @Value
-    public static class Output implements Id, Name {
+    public static class Output {
         Long id;
         String name;
     }

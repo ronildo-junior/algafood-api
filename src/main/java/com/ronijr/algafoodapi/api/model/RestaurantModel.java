@@ -15,11 +15,7 @@ public final class RestaurantModel {
     private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface DeliveryFee { @NotNull @PositiveOrZero BigDecimal getDeliveryFee(); }
-    private interface Active { @NotNull Boolean getActive(); }
-    private interface Opened { @NotNull Boolean getOpened(); }
     private interface CuisineIdentifier { @NotNull @Valid CuisineModel.Identifier getCuisine(); }
-    private interface CuisineOutput { @NotNull CuisineModel.Output getCuisine(); }
-    private interface AddressOutput { @NotNull AddressModel.Output getAddress(); }
     private interface AddressInput { @NotNull @Valid AddressModel.Input getAddress(); }
 
     @Value
@@ -36,7 +32,7 @@ public final class RestaurantModel {
     }
 
     @Value
-    public static class Output implements Id, Name, DeliveryFee, Active, Opened, CuisineOutput, AddressOutput {
+    public static class Output {
         Long id;
         String name;
         BigDecimal deliveryFee;
@@ -47,7 +43,7 @@ public final class RestaurantModel {
     }
 
     @Value
-    public static class Summary implements Id, Name, DeliveryFee, Active, Opened, CuisineOutput {
+    public static class Summary {
         Long id;
         @JsonView(RestaurantView.OnlyName.class)
         String name;
@@ -58,7 +54,7 @@ public final class RestaurantModel {
     }
 
     @Value
-    public static class Simple implements Id, Name {
+    public static class Simple {
         Long id;
         String name;
     }

@@ -23,7 +23,7 @@ public final class StateModel {
     }
 
    @Value
-    public static class Output implements Id, Name, Abbreviation {
+    public static class Output {
         Long id;
         String name;
         String abbreviation;

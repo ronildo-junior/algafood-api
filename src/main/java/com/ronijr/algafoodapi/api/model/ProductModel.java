@@ -4,12 +4,10 @@ import lombok.Value;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public final class ProductModel {
-    private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface Description { @NotBlank String getDescription(); }
     private interface Price { @NotNull @PositiveOrZero BigDecimal getPrice(); }
@@ -22,7 +20,7 @@ public final class ProductModel {
     }
 
     @Value
-    public static class Output implements Id, Name, Description, Price {
+    public static class Output {
         Long id;
         String name;
         String description;

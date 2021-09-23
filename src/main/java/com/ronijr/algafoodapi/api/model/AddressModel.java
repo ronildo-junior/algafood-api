@@ -27,8 +27,7 @@ public final class AddressModel {
     }
 
     @Value
-    public static class Output
-            implements PostalCode, AddressName, Number, Complement, Neighborhood, CitySummary {
+    public static class Output {
         String postalCode;
         String addressName;
         String number;

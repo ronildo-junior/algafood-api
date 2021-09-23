@@ -53,7 +53,7 @@ public final class UserModel {
     }
 
    @Value
-    public static class Output implements Id, Name, UserEmail {
+    public static class Output {
         Long id;
         String name;
         String email;

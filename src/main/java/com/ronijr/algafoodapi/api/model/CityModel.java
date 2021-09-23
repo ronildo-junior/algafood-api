@@ -11,7 +11,6 @@ public final class CityModel {
     private interface Id { @NotNull @Positive Long getId(); }
     private interface Name { @NotBlank String getName(); }
     private interface StateIdentifier { @NotNull @Valid StateModel.Identifier getState(); }
-    private interface StateOutput { @NotNull StateModel.Output getState(); }
 
     @Value
     public static class Identifier implements Id {
@@ -25,13 +24,13 @@ public final class CityModel {
     }
 
     @Value
-    public static class Summary implements Id, Name {
+    public static class Summary {
         Long id;
         String name;
     }
 
     @Value
-    public static class Output implements Id, Name, StateOutput {
+    public static class Output {
         Long id;
         String name;
         StateModel.Output state;
