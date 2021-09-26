@@ -1,31 +1,37 @@
 package com.ronijr.algafoodapi.api.assembler;
 
+import com.ronijr.algafoodapi.api.controller.UserGroupPermissionController;
 import com.ronijr.algafoodapi.api.model.PermissionModel;
 import com.ronijr.algafoodapi.config.mapper.PermissionMapper;
 import com.ronijr.algafoodapi.domain.model.Permission;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-@AllArgsConstructor
-public class PermissionAssembler {
-    private final PermissionMapper mapper;
+public class PermissionAssembler extends RepresentationModelAssemblerSupport<Permission, PermissionModel.Output> {
+    @Autowired
+    private PermissionMapper mapper;
 
-    public PermissionModel.Output toOutput(Permission permission) {
-        return mapper.entityToOutput(permission);
+    public PermissionAssembler() {
+        super(Permission.class, PermissionModel.Output.class);
     }
 
-    public PermissionModel.Input toInput(Permission permission) {
-        return mapper.entityToInput(permission);
+    @Override
+    public PermissionModel.Output toModel(Permission permission) {
+        PermissionModel.Output model = mapper.entityToOutput(permission);
+        model.add(linkTo(methodOn(UserGroupPermissionController.class).get(1L, model.getId())).withSelfRel());
+        model.add(linkTo(methodOn(UserGroupPermissionController.class).list(1L)).withRel("permission-list"));
+        return model;
     }
 
-    public List<PermissionModel.Output> toCollectionModel(Collection<Permission> permissions) {
-        return permissions.stream().
-                map(this::toOutput).
-                collect(Collectors.toList());
+    @Override
+    public CollectionModel<PermissionModel.Output> toCollectionModel(Iterable<? extends Permission> permissions) {
+        return super.toCollectionModel(permissions)
+                .add(linkTo(UserGroupPermissionController.class).withSelfRel());
     }
 }

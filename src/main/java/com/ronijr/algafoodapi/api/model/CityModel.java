@@ -1,6 +1,8 @@
 package com.ronijr.algafoodapi.api.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -23,14 +25,16 @@ public final class CityModel {
         StateModel.Identifier state;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Summary {
+    public static class Summary extends RepresentationModel<Summary> {
         Long id;
         String name;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Output {
+    public static class Output extends RepresentationModel<Output> {
         Long id;
         String name;
         StateModel.Output state;

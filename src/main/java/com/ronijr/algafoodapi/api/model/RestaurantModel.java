@@ -2,13 +2,16 @@ package com.ronijr.algafoodapi.api.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ronijr.algafoodapi.api.model.view.RestaurantView;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
+
 import java.math.BigDecimal;
 
 public final class RestaurantModel {
@@ -31,8 +34,9 @@ public final class RestaurantModel {
         AddressModel.Input address;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Output {
+    public static class Output extends RepresentationModel<Output> {
         Long id;
         String name;
         BigDecimal deliveryFee;
@@ -42,8 +46,9 @@ public final class RestaurantModel {
         AddressModel.Output address;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Summary {
+    public static class Summary extends RepresentationModel<Summary> {
         Long id;
         @JsonView(RestaurantView.OnlyName.class)
         String name;

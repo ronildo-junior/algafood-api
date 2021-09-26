@@ -1,30 +1,37 @@
 package com.ronijr.algafoodapi.api.assembler;
 
+import com.ronijr.algafoodapi.api.controller.StateController;
 import com.ronijr.algafoodapi.api.model.StateModel;
 import com.ronijr.algafoodapi.config.mapper.StateMapper;
 import com.ronijr.algafoodapi.domain.model.State;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-@AllArgsConstructor
-public class StateAssembler {
-    private final StateMapper mapper;
+public class StateAssembler extends RepresentationModelAssemblerSupport<State, StateModel.Output> {
+    @Autowired
+    private StateMapper mapper;
 
-    public StateModel.Output toOutput(State state) {
-        return mapper.entityToOutput(state);
+    public StateAssembler() {
+        super(State.class, StateModel.Output.class);
     }
 
-    public StateModel.Input toInput(State state) {
-        return mapper.entityToInput(state);
+    @Override
+    public StateModel.Output toModel(State state) {
+        StateModel.Output model = mapper.entityToOutput(state);
+        model.add(linkTo(methodOn(StateController.class).get(model.getId())).withSelfRel());
+        model.add(linkTo(methodOn(StateController.class).list()).withRel("states-list"));
+        return model;
     }
 
-    public List<StateModel.Output> toCollectionModel(List<State> states) {
-        return states.stream().
-                map(this::toOutput).
-                collect(Collectors.toList());
+    @Override
+    public CollectionModel<StateModel.Output> toCollectionModel(Iterable<? extends State> states) {
+        return super.toCollectionModel(states)
+                .add(linkTo(StateController.class).withSelfRel());
     }
 }

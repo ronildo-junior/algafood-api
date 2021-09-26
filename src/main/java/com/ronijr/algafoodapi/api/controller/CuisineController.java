@@ -7,6 +7,7 @@ import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.service.command.CuisineCommand;
 import com.ronijr.algafoodapi.domain.service.query.CuisineQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
@@ -31,24 +32,24 @@ public class CuisineController {
     private final CuisineDisassembler disassembler;
 
     @GetMapping
-    public List<CuisineModel.Output> list() {
+    public CollectionModel<CuisineModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CuisineModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
     @GetMapping("/by-name")
-    public List<CuisineModel.Output> cuisinesByName(@RequestParam String name) {
+    public CollectionModel<CuisineModel.Output> cuisinesByName(@RequestParam String name) {
         return assembler.toCollectionModel(queryService.findByName(name));
     }
 
     @PostMapping
     public ResponseEntity<CuisineModel.Output> create(@RequestBody @Valid CuisineModel.Input input) {
         Cuisine created = commandService.create(disassembler.toDomain(input));
-        CuisineModel.Output response = assembler.toOutput(created);
+        CuisineModel.Output response = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -61,7 +62,7 @@ public class CuisineController {
     public ResponseEntity<CuisineModel.Output> update(@PathVariable Long id, @RequestBody @Valid CuisineModel.Input input) {
         Cuisine current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
@@ -69,7 +70,7 @@ public class CuisineController {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CuisineModel.Input.class);
         Cuisine current = queryService.findByIdOrElseThrow(id);
         mergeFieldsMapInObject(patchMap, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")

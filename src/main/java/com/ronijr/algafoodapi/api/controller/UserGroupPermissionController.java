@@ -5,12 +5,11 @@ import com.ronijr.algafoodapi.api.model.PermissionModel;
 import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user-groups/{groupId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,13 +20,13 @@ public class UserGroupPermissionController {
     private final PermissionAssembler permissionAssembler;
 
     @GetMapping
-    public List<PermissionModel.Output> list(@PathVariable Long groupId) {
+    public CollectionModel<PermissionModel.Output> list(@PathVariable Long groupId) {
         return permissionAssembler.toCollectionModel(userGroupQuery.listPermissions(groupId));
     }
 
     @GetMapping("/{permissionId}")
     public ResponseEntity<PermissionModel.Output> get(@PathVariable Long groupId, @PathVariable Long permissionId) {
-        return ResponseEntity.ok(permissionAssembler.toOutput(userGroupQuery.getPermission(groupId, permissionId)));
+        return ResponseEntity.ok(permissionAssembler.toModel(userGroupQuery.getPermission(groupId, permissionId)));
     }
 
     @PutMapping("/{permissionId}")

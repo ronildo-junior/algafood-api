@@ -7,6 +7,7 @@ import com.ronijr.algafoodapi.domain.model.User;
 import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
@@ -30,19 +31,19 @@ public class UserController {
     private final UserDisassembler disassembler;
 
     @GetMapping
-    public List<UserModel.Output> list() {
+    public CollectionModel<UserModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
     public ResponseEntity<UserModel.Output> create(@RequestBody @Valid UserModel.Create input) {
         User created = commandService.create(disassembler.inputCreateToDomain(input));
-        UserModel.Output output = assembler.toOutput(created);
+        UserModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
@@ -54,13 +55,13 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserModel.Update input) {
         User current = disassembler.inputUpdateToDomain(input);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(id, current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(id, current)));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, UserModel.Update.class);
-        return ResponseEntity.ok(assembler.toOutput(commandService.updatePartial(id, patchMap)));
+        return ResponseEntity.ok(assembler.toModel(commandService.updatePartial(id, patchMap)));
     }
 
     @DeleteMapping("/{id}")

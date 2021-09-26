@@ -1,31 +1,40 @@
 package com.ronijr.algafoodapi.api.assembler;
 
+import com.ronijr.algafoodapi.api.controller.RestaurantProductController;
 import com.ronijr.algafoodapi.api.model.ProductModel;
 import com.ronijr.algafoodapi.config.mapper.ProductMapper;
 import com.ronijr.algafoodapi.domain.model.Product;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-@AllArgsConstructor
-public class ProductAssembler {
-    private final ProductMapper mapper;
+public class ProductAssembler extends RepresentationModelAssemblerSupport<Product, ProductModel.Output> {
+    @Autowired
+    private ProductMapper mapper;
 
-    public ProductModel.Output toOutput(Product product) {
-        return mapper.entityToOutput(product);
+    public ProductAssembler() {
+        super(Product.class, ProductModel.Output.class);
     }
 
-    public ProductModel.Input toInput(Product product) {
-        return mapper.entityToInput(product);
+    @Override
+    public ProductModel.Output toModel(Product product) {
+        ProductModel.Output model = mapper.entityToOutput(product);
+        model.add(linkTo(methodOn(RestaurantProductController.class)
+                .get(product.getRestaurant().getId(), product.getId()))
+                .withSelfRel());
+        model.add(linkTo(methodOn(RestaurantProductController.class)
+                .listAll(true, product.getRestaurant().getId()))
+                .withRel("product-list"));
+        return model;
     }
 
-    public List<ProductModel.Output> toCollectionModel(Collection<Product> products) {
-        return products.stream().
-                map(this::toOutput).
-                collect(Collectors.toList());
+    public CollectionModel<ProductModel.Output> toCollectionModel(Iterable<? extends Product> products) {
+        return super.toCollectionModel(products)
+                .add(linkTo(RestaurantProductController.class).withSelfRel());
     }
 }

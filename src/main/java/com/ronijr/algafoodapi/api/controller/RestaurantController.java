@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ronijr.algafoodapi.api.assembler.RestaurantAssembler;
 import com.ronijr.algafoodapi.api.assembler.RestaurantDisassembler;
+import com.ronijr.algafoodapi.api.assembler.RestaurantSummaryAssembler;
 import com.ronijr.algafoodapi.api.model.RestaurantModel;
 import com.ronijr.algafoodapi.api.model.view.RestaurantView;
 import com.ronijr.algafoodapi.domain.exception.BusinessException;
@@ -11,6 +12,7 @@ import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -37,12 +40,13 @@ public class RestaurantController {
     private final RestaurantQuery queryService;
     private final RestaurantCommand commandService;
     private final RestaurantAssembler assembler;
+    private final RestaurantSummaryAssembler assemblerSummary;
     private final RestaurantDisassembler disassembler;
 
     /** List all with Deep Filter for Cache, based in Update Date from Restaurant.
      *  Checks if the last modification date is greater than the one stored in the cache. */
     @GetMapping
-    public ResponseEntity<List<RestaurantModel.Summary>> list(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<RestaurantModel.Summary>> list(ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
         long lastModificationDate = queryService.getLastUpdateDate().stream().
                         map(OffsetDateTime::toEpochSecond).
@@ -55,24 +59,24 @@ public class RestaurantController {
                 ok().
                 cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
                 lastModified(lastModificationDate).
-                body(assembler.toCollectionModel(queryService.findAll()));
+                body(assemblerSummary.toCollectionModel(queryService.findAll()));
     }
 
     @GetMapping(params = "projection=by-name")
     @JsonView(RestaurantView.OnlyName.class)
-    public ResponseEntity<List<RestaurantModel.Summary>> listByName(ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<RestaurantModel.Summary>> listByName(ServletWebRequest request) {
         return list(request);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
     public ResponseEntity<RestaurantModel.Output> create(@RequestBody @Valid RestaurantModel.Input input) {
         Restaurant created = commandService.create(disassembler.toDomain(input));
-        RestaurantModel.Output output = assembler.toOutput(created);
+        RestaurantModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
@@ -86,7 +90,7 @@ public class RestaurantController {
             @PathVariable Long id, @RequestBody @Valid RestaurantModel.Input input) {
         Restaurant current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
@@ -95,7 +99,7 @@ public class RestaurantController {
         verifyMapContainsOnlyFieldsOfClass(patchMap, RestaurantModel.Input.class);
         Restaurant current = queryService.findByIdOrElseThrow(id);
         mergeFieldsMapInObject(patchMap, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")
@@ -105,18 +109,18 @@ public class RestaurantController {
     }
 
     @GetMapping("/custom")
-    public List<RestaurantModel.Summary> customQueryTest(@RequestBody Map<String, Object> map) {
-        return assembler.toCollectionModel(queryService.customQuery(map));
+    public CollectionModel<RestaurantModel.Summary> customQueryTest(@RequestBody Map<String, Object> map) {
+        return assemblerSummary.toCollectionModel(queryService.customQuery(map));
     }
 
     @GetMapping("/with-free-delivery")
-    public List<RestaurantModel.Summary> listRestaurantsWithFreeDelivery() {
-        return assembler.toCollectionModel(queryService.findAllWithFreeDelivery());
+    public CollectionModel<RestaurantModel.Summary> listRestaurantsWithFreeDelivery() {
+        return assemblerSummary.toCollectionModel(queryService.findAllWithFreeDelivery());
     }
 
     @GetMapping("/first")
     public ResponseEntity<RestaurantModel.Output> getFirst() {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findFirst()));
+        return ResponseEntity.ok(assembler.toModel(queryService.findFirst()));
     }
 
     @PutMapping("/{id}/active")

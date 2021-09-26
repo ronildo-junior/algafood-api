@@ -1,31 +1,37 @@
 package com.ronijr.algafoodapi.api.assembler;
 
+import com.ronijr.algafoodapi.api.controller.UserController;
 import com.ronijr.algafoodapi.api.model.UserModel;
 import com.ronijr.algafoodapi.config.mapper.UserMapper;
 import com.ronijr.algafoodapi.domain.model.User;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-@AllArgsConstructor
-public class UserAssembler {
-    private final UserMapper mapper;
+public class UserAssembler extends RepresentationModelAssemblerSupport<User, UserModel.Output> {
+    @Autowired
+    private UserMapper mapper;
 
-    public UserModel.Output toOutput(User user) {
-        return mapper.entityToOutput(user);
+    public UserAssembler() {
+        super(User.class, UserModel.Output.class);
     }
 
-    public UserModel.Update toInputUpdate(User user) {
-        return mapper.entityToInputUpdate(user);
+    @Override
+    public UserModel.Output toModel(User user) {
+        UserModel.Output model = mapper.entityToOutput(user);
+        model.add(linkTo(methodOn(UserController.class).get(model.getId())).withSelfRel());
+        model.add(linkTo(methodOn(UserController.class).list()).withRel("user-list"));
+        return model;
     }
 
-    public List<UserModel.Output> toCollectionModel(Collection<User> users) {
-        return users.stream().
-                map(this::toOutput).
-                collect(Collectors.toList());
+    @Override
+    public CollectionModel<UserModel.Output> toCollectionModel(Iterable<? extends User> users) {
+        return super.toCollectionModel(users)
+                .add(linkTo(UserController.class).withSelfRel());
     }
 }

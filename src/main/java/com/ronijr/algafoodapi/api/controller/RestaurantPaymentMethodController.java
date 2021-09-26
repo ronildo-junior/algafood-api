@@ -6,11 +6,10 @@ import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/restaurants/{restaurantId}/payment-methods", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,7 +20,7 @@ public class RestaurantPaymentMethodController {
     private final PaymentMethodAssembler paymentMethodAssembler;
 
     @GetMapping
-    public List<PaymentMethodModel.Output> list(@PathVariable Long restaurantId){
+    public CollectionModel<PaymentMethodModel.Output> list(@PathVariable Long restaurantId){
         Restaurant restaurant = queryService.findByIdOrElseThrow(restaurantId);
         return paymentMethodAssembler.toCollectionModel(restaurant.getPaymentMethods());
     }

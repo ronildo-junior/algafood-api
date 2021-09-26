@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.ronijr.algafoodapi.api.exception.InvalidModelParseException;
+import lombok.experimental.UtilityClass;
 import org.springframework.util.ReflectionUtils;
 
 import java.beans.IntrospectionException;
@@ -17,22 +18,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public final class MapperUtils {
-    private MapperUtils() {}
-
-    public static void mergeFieldsMapInObject(Map<String, Object> fieldsMap, Object target)
+    @SuppressWarnings("unchecked")
+    public static Object mergeFieldsMapInObject(Map<String, Object> fieldsMap, Object target)
             throws InvalidModelParseException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-            Object mapObject = objectMapper.convertValue(fieldsMap, target.getClass());
             fieldsMap.forEach((key, value) -> {
                 Field field = ReflectionUtils.findField(target.getClass(), key);
                 if (field != null) {
-                    invokeSetter(target, field.getName(), invokeGetter(mapObject, field.getName()));
+                    if (value instanceof Map) {
+                        invokeSetter(target, field.getName(),
+                                mergeFieldsMapInObject((Map<String, Object>) value, invokeGetter(target, key)));
+                    } else {
+                        invokeSetter(target, field.getName(), parseValue(value, field.getType()));
+                    }
                 }
             });
+            return target;
         } catch (IllegalArgumentException e) {
             throw new InvalidModelParseException(
                     String.format("%s is not acceptable.",
@@ -64,6 +70,13 @@ public final class MapperUtils {
             throw new InvalidModelParseException(
                     String.format("%s is not acceptable.", (String.join(",", fieldsInvalid))));
         }
+    }
+
+    private static Object parseValue(Object value, Class<?> type) {
+        if (type == Long.class && value instanceof Integer)  {
+            return ((Integer) value).longValue();
+        }
+        return value;
     }
 
     private static void invokeSetter(Object object, String fieldName, Object value) {

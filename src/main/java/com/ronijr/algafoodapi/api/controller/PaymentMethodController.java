@@ -7,6 +7,7 @@ import com.ronijr.algafoodapi.domain.model.PaymentMethod;
 import com.ronijr.algafoodapi.domain.service.command.PaymentMethodCommand;
 import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +34,7 @@ public class PaymentMethodController {
     private final PaymentMethodDisassembler disassembler;
 
     @GetMapping
-    public ResponseEntity<List<PaymentMethodModel.Output>> list() {
+    public ResponseEntity<CollectionModel<PaymentMethodModel.Output>> list() {
         return ResponseEntity.ok().
                 cacheControl(
                         CacheControl.maxAge(10, TimeUnit.SECONDS).
@@ -45,13 +46,13 @@ public class PaymentMethodController {
     public ResponseEntity<PaymentMethodModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok().
                 cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS)).
-                body(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+                body(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
     public ResponseEntity<PaymentMethodModel.Output> create(@RequestBody @Valid PaymentMethodModel.Input input) {
         PaymentMethod created = commandService.create(disassembler.toDomain(input));
-        PaymentMethodModel.Output output = assembler.toOutput(created);
+        PaymentMethodModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
@@ -64,7 +65,7 @@ public class PaymentMethodController {
     public ResponseEntity<PaymentMethodModel.Output> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodModel.Input input) {
         PaymentMethod current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
@@ -72,7 +73,7 @@ public class PaymentMethodController {
         verifyMapContainsOnlyFieldsOfClass(patchMap, PaymentMethodModel.Input.class);
         PaymentMethod current = queryService.findByIdOrElseThrow(id);
         mergeFieldsMapInObject(patchMap, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")

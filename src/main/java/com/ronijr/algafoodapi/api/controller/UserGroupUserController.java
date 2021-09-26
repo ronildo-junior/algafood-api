@@ -5,11 +5,10 @@ import com.ronijr.algafoodapi.api.model.UserGroupModel;
 import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users/{userId}/user-groups", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -20,13 +19,13 @@ public class UserGroupUserController {
     private final UserGroupAssembler userGroupAssembler;
 
     @GetMapping
-    public List<UserGroupModel.Output> list(@PathVariable Long userId) {
+    public CollectionModel<UserGroupModel.Output> list(@PathVariable Long userId) {
         return userGroupAssembler.toCollectionModel(userQuery.getUserGroupList(userId));
     }
 
     @GetMapping("/{userGroupId}")
     public UserGroupModel.Output get(@PathVariable Long userId, @PathVariable Long userGroupId) {
-        return userGroupAssembler.toOutput(userQuery.getUserGroup(userId, userGroupId));
+        return userGroupAssembler.toModel(userQuery.getUserGroup(userId, userGroupId));
     }
 
     @PutMapping("/{userGroupId}")

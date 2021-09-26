@@ -1,6 +1,8 @@
 package com.ronijr.algafoodapi.api.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.NotBlank;
 
@@ -14,8 +16,9 @@ public final class PermissionModel {
         String description;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Output {
+    public static class Output extends RepresentationModel<Output> {
         Long id;
         String name;
         String description;

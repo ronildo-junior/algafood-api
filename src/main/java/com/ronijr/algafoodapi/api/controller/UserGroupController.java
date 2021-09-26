@@ -7,6 +7,7 @@ import com.ronijr.algafoodapi.domain.model.UserGroup;
 import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
@@ -31,19 +32,19 @@ public class UserGroupController {
     private final UserGroupDisassembler disassembler;
 
     @GetMapping
-    public List<UserGroupModel.Output> list() {
+    public CollectionModel<UserGroupModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserGroupModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toOutput(queryService.findByIdOrElseThrow(id)));
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
     @PostMapping
     public ResponseEntity<UserGroupModel.Output> create(@RequestBody @Valid UserGroupModel.Input input) {
         UserGroup created = commandService.create(disassembler.toDomain(input));
-        UserGroupModel.Output output = assembler.toOutput(created);
+        UserGroupModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
                 path("/{id}").
@@ -56,7 +57,7 @@ public class UserGroupController {
     public ResponseEntity<UserGroupModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserGroupModel.Input input) {
         UserGroup current = queryService.findByIdOrElseThrow(id);
         disassembler.copyToDomainObject(input, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @PatchMapping("/{id}")
@@ -64,7 +65,7 @@ public class UserGroupController {
         verifyMapContainsOnlyFieldsOfClass(patchMap, UserGroupModel.Input.class);
         UserGroup current = queryService.findByIdOrElseThrow(id);
         mergeFieldsMapInObject(patchMap, current);
-        return ResponseEntity.ok(assembler.toOutput(commandService.update(current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @DeleteMapping("/{id}")
