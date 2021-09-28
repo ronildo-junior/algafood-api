@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.controller;
 
+import com.ronijr.algafoodapi.api.model.StatisticsModel;
 import com.ronijr.algafoodapi.domain.filter.DailySaleFilter;
 import com.ronijr.algafoodapi.domain.model.dto.DailySale;
 import com.ronijr.algafoodapi.domain.service.query.SaleQuery;
@@ -15,12 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
+
 @RestController
 @RequestMapping(value = "/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class StatisticsController {
     private final SaleQuery saleQuery;
     private final SaleReport saleReport;
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public StatisticsModel statistics() {
+        var model = new StatisticsModel();
+        model.add(linkToStatisticsDailySales("daily-sales"));
+        return model;
+    }
 
     @GetMapping(value = "/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DailySale> list(

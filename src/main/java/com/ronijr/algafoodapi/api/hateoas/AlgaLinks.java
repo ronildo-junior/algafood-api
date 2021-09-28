@@ -93,7 +93,7 @@ public class AlgaLinks {
     }
 
     public Link linkToOrders(String rel) {
-        TemplateVariables filtroVariables = new TemplateVariables(
+        TemplateVariables variablesFilter = new TemplateVariables(
                 new TemplateVariable("customerId", VariableType.REQUEST_PARAM),
                 new TemplateVariable("restaurantId", VariableType.REQUEST_PARAM),
                 new TemplateVariable("creationDateFirst", VariableType.REQUEST_PARAM),
@@ -102,7 +102,7 @@ public class AlgaLinks {
         String ordersUrl = linkTo(OrderController.class).toUri().toString();
 
         return Link.of(UriTemplate.of(ordersUrl,
-                PAGE_VARIABLES.concat(filtroVariables)), rel);
+                PAGE_VARIABLES.concat(variablesFilter)), rel);
     }
 
     public Link linkToPaymentMethod(Long paymentMethodId, String rel) {
@@ -230,6 +230,23 @@ public class AlgaLinks {
 
     public Link linkToStates() {
         return linkToStates(IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToStatistics(String rel) {
+        return linkTo(StatisticsController.class).withRel(rel);
+    }
+
+    public Link linkToStatisticsDailySales(String rel) {
+        TemplateVariables variablesFilter = new TemplateVariables(
+                new TemplateVariable("restaurantId", VariableType.REQUEST_PARAM),
+                new TemplateVariable("creationDateFirst", VariableType.REQUEST_PARAM),
+                new TemplateVariable("creationDateLast", VariableType.REQUEST_PARAM),
+                new TemplateVariable("timeOffset", VariableType.REQUEST_PARAM));
+
+        String ordersUrl = linkTo(methodOn(StatisticsController.class)
+                .list(null, null)).toUri().toString();
+
+        return Link.of(UriTemplate.of(ordersUrl, variablesFilter), rel);
     }
 
     public Link linkToStatusOrder(String orderCode, String rel) {
