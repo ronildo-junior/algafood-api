@@ -8,7 +8,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @RestController
 @RequestMapping(value = "/restaurants/{restaurantId}/managers", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -20,7 +23,15 @@ public class RestaurantUserController {
 
     @GetMapping
     public CollectionModel<UserModel.Output> list(@PathVariable Long restaurantId) {
-        return userAssembler.toCollectionModel(restaurantQuery.getUsers(restaurantId));
+        var collectionModel =
+                userAssembler.toCollectionModel(restaurantQuery.getUsers(restaurantId))
+                        .removeLinks()
+                        .add(linkToManagersRestaurant(restaurantId))
+                        .add(linkToManagersRestaurantAssociation(restaurantId, "associate"));
+        collectionModel.forEach(user ->
+            user.add(linkToManagersRestaurantDisassociation(restaurantId, user.getId(), "disassociate"))
+        );
+        return collectionModel;
     }
 
     @GetMapping("/{userId}")
@@ -30,13 +41,15 @@ public class RestaurantUserController {
 
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {
+    public ResponseEntity<Void> associateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {
         restaurantCommand.addManager(restaurantId, userId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disassociateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {
+    public ResponseEntity<Void> disassociateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {
         restaurantCommand.removeManager(restaurantId, userId);
+        return ResponseEntity.noContent().build();
     }
 }

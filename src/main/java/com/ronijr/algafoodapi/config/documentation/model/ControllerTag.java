@@ -16,6 +16,7 @@ public enum ControllerTag {
     ORDER("Orders", "Manage Orders",
             OrderController.class.getSimpleName(), OrderStatusController.class.getSimpleName()),
     PAYMENT_METHOD( "Payment Methods", "Manage Payment Methods", PaymentMethodController.class.getSimpleName()),
+    PERMISSION("Permissions", "Manage Permissions", PermissionController.class.getSimpleName()),
     PRODUCT( "Products", "Manage Products",
             RestaurantProductController.class.getSimpleName(), RestaurantProductPhotoController.class.getSimpleName()),
     RESTAURANT( "Restaurants", "Manage Restaurants",

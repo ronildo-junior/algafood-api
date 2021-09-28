@@ -125,21 +125,24 @@ public class RestaurantController {
 
     @PutMapping("/{id}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void activate(@PathVariable Long id) {
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
         commandService.activateRestaurant(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inactivate(@PathVariable Long id) {
+    public ResponseEntity<Void> inactivate(@PathVariable Long id) {
         commandService.inactivateRestaurant(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void multipleActivation(@RequestBody List<Long> restaurantIds) {
+    public ResponseEntity<Void> multipleActivation(@RequestBody List<Long> restaurantIds) {
         try {
             commandService.activateRestaurant(restaurantIds);
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
@@ -147,9 +150,10 @@ public class RestaurantController {
 
     @DeleteMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void multipleInactivation(@RequestBody List<Long> restaurantIds) {
+    public ResponseEntity<Void> multipleInactivation(@RequestBody List<Long> restaurantIds) {
         try {
             commandService.inactivateRestaurant(restaurantIds);
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             throw new BusinessException(e.getMessage(), e);
         }
@@ -157,13 +161,15 @@ public class RestaurantController {
 
     @PutMapping("/{id}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void open(@PathVariable Long id) {
+    public ResponseEntity<Void> open(@PathVariable Long id) {
         commandService.openRestaurant(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void close(@PathVariable Long id) {
+    public ResponseEntity<Void> close(@PathVariable Long id) {
         commandService.closeRestaurant(id);
+        return ResponseEntity.noContent().build();
     }
 }

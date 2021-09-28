@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import javax.validation.groups.ConvertGroup;
+
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -124,5 +125,17 @@ public class Order extends AbstractEntity<Long> {
     public void delivery() {
         this.setStatus(OrderStatus.DELIVERED);
         this.setDeliveredAt(OffsetDateTime.now());
+    }
+
+    public boolean canCancel() {
+        return this.getStatus().allowTransitionTo(OrderStatus.CANCELLED);
+    }
+
+    public boolean canConfirm() {
+        return this.getStatus().allowTransitionTo(OrderStatus.CONFIRMED);
+    }
+
+    public boolean canDelivery() {
+        return this.getStatus().allowTransitionTo(OrderStatus.DELIVERED);
     }
 }

@@ -2,7 +2,9 @@ package com.ronijr.algafoodapi.api.model;
 
 import com.ronijr.algafoodapi.config.validation.FileContentType;
 import com.ronijr.algafoodapi.config.validation.FileSize;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +26,9 @@ public final class ProductPhotoModel {
         String description;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Output {
+    public static class Output extends RepresentationModel<Output> {
         Long id;
         String fileName;
         String description;

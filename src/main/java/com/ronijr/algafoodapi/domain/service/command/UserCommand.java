@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+
 import java.util.Map;
 
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObject;
@@ -34,6 +35,7 @@ public class UserCommand {
 
     public User update(Long id, User user) throws ValidationException {
         User current = findById(id);
+        userRepository.detach(current);
         copyProperties(user, current, "id", "password");
         validate(current);
         return userRepository.save(current);

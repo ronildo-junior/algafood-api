@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.api.assembler;
 
-import com.ronijr.algafoodapi.api.controller.StateController;
 import com.ronijr.algafoodapi.api.model.StateModel;
 import com.ronijr.algafoodapi.config.mapper.StateMapper;
 import com.ronijr.algafoodapi.domain.model.State;
@@ -9,8 +8,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @Component
 public class StateAssembler extends RepresentationModelAssemblerSupport<State, StateModel.Output> {
@@ -24,14 +22,13 @@ public class StateAssembler extends RepresentationModelAssemblerSupport<State, S
     @Override
     public StateModel.Output toModel(State state) {
         StateModel.Output model = mapper.entityToOutput(state);
-        model.add(linkTo(methodOn(StateController.class).get(model.getId())).withSelfRel());
-        model.add(linkTo(methodOn(StateController.class).list()).withRel("states-list"));
+        model.add(linkToState(model.getId()));
+        model.add(linkToStates("state-list"));
         return model;
     }
 
     @Override
     public CollectionModel<StateModel.Output> toCollectionModel(Iterable<? extends State> states) {
-        return super.toCollectionModel(states)
-                .add(linkTo(StateController.class).withSelfRel());
+        return super.toCollectionModel(states).add(linkToStates());
     }
 }

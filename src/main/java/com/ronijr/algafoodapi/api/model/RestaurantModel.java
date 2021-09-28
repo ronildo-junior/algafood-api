@@ -58,8 +58,9 @@ public final class RestaurantModel {
         CuisineModel.Output cuisine;
     }
 
+    @EqualsAndHashCode(callSuper = true)
     @Value
-    public static class Simple {
+    public static class Simple extends RepresentationModel<Simple> {
         Long id;
         String name;
     }

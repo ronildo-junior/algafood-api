@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
+
 @RestController
 @RequestMapping(value = "restaurants/{restaurantId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
@@ -28,13 +30,15 @@ public class RestaurantProductController {
     @GetMapping
     public CollectionModel<ProductModel.Output> listActive(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(restaurantId);
-        return productAssembler.toCollectionModel(productQuery.findAllActive(restaurant.getId()));
+        return productAssembler.toCollectionModel(productQuery.findAllActive(restaurant.getId()))
+                .add(linkToProducts(restaurantId));
     }
 
     @GetMapping(params = "includeInactive")
-    public CollectionModel<ProductModel.Output> listAll(@RequestParam boolean includeInactive, @PathVariable Long restaurantId) {
-        if (includeInactive) {
-            return productAssembler.toCollectionModel(restaurantQuery.getProductList(restaurantId));
+    public CollectionModel<ProductModel.Output> listAll(@RequestParam(required = false, defaultValue = "false") Boolean includeInactive, @PathVariable Long restaurantId) {
+        if (Boolean.TRUE.equals(includeInactive)) {
+            return productAssembler.toCollectionModel(restaurantQuery.getProductList(restaurantId))
+                    .add(linkToProducts(restaurantId));
         }
         return listActive(restaurantId);
     }

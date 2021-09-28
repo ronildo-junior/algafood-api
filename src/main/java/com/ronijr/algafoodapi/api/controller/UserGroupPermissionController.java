@@ -11,8 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
+
 @RestController
-@RequestMapping(value = "/user-groups/{groupId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/user-groups/{userGroupId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
 public class UserGroupPermissionController {
     private final UserGroupCommand userGroupCommand;
@@ -20,24 +22,34 @@ public class UserGroupPermissionController {
     private final PermissionAssembler permissionAssembler;
 
     @GetMapping
-    public CollectionModel<PermissionModel.Output> list(@PathVariable Long groupId) {
-        return permissionAssembler.toCollectionModel(userGroupQuery.listPermissions(groupId));
+    public CollectionModel<PermissionModel.Output> list(@PathVariable Long userGroupId) {
+        CollectionModel<PermissionModel.Output> collectionModel =
+                permissionAssembler.toCollectionModel(userGroupQuery.listPermissions(userGroupId))
+                        .removeLinks()
+                        .add(linkToUserGroupPermissions(userGroupId))
+                        .add(linkToUserGroupPermissionAssociation(userGroupId, "associate"));
+        collectionModel.forEach(permission ->
+            permission.add(linkToUserGroupPermissionDisassociation(userGroupId, permission.getId(), "disassociate"))
+        );
+        return collectionModel;
     }
 
     @GetMapping("/{permissionId}")
-    public ResponseEntity<PermissionModel.Output> get(@PathVariable Long groupId, @PathVariable Long permissionId) {
-        return ResponseEntity.ok(permissionAssembler.toModel(userGroupQuery.getPermission(groupId, permissionId)));
+    public ResponseEntity<PermissionModel.Output> get(@PathVariable Long userGroupId, @PathVariable Long permissionId) {
+        return ResponseEntity.ok(permissionAssembler.toModel(userGroupQuery.getPermission(userGroupId, permissionId)));
     }
 
     @PutMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void associatePermission(@PathVariable Long groupId, @PathVariable Long permissionId) {
-        userGroupCommand.grantPermission(groupId, permissionId);
+    public ResponseEntity<Void> associatePermission(@PathVariable Long userGroupId, @PathVariable Long permissionId) {
+        userGroupCommand.grantPermission(userGroupId, permissionId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void disassociatePermission(@PathVariable Long groupId, @PathVariable Long permissionId) {
-        userGroupCommand.revokePermission(groupId, permissionId);
+    public ResponseEntity<Void> disassociatePermission(@PathVariable Long userGroupId, @PathVariable Long permissionId) {
+        userGroupCommand.revokePermission(userGroupId, permissionId);
+        return ResponseEntity.noContent().build();
     }
 }

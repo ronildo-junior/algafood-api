@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
+
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Optional;
@@ -118,5 +119,45 @@ public class Restaurant extends AbstractEntity<Long> {
 
     public void removeManager(User user) {
         users.remove(user);
+    }
+
+    private boolean getOpened() {
+        return this.opened;
+    }
+
+    private boolean getActive() {
+        return this.active;
+    }
+
+    public boolean isOpened() {
+        return this.getOpened();
+    }
+
+    public boolean isClosed() {
+        return !this.getOpened();
+    }
+
+    public boolean isInactive() {
+        return !this.isActive();
+    }
+
+    public boolean isActive() {
+        return this.getActive();
+    }
+
+    public boolean canOpen() {
+        return this.isActive() && this.isClosed();
+    }
+
+    public boolean canClose() {
+        return isOpened();
+    }
+
+    public boolean canActivate() {
+        return isInactive();
+    }
+
+    public boolean canInactivate() {
+        return this.isActive();
     }
 }

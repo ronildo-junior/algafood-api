@@ -1,6 +1,5 @@
 package com.ronijr.algafoodapi.api.assembler;
 
-import com.ronijr.algafoodapi.api.controller.UserGroupController;
 import com.ronijr.algafoodapi.api.model.UserGroupModel;
 import com.ronijr.algafoodapi.config.mapper.UserGroupMapper;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
@@ -10,8 +9,7 @@ import org.springframework.hateoas.server.core.Relation;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @Relation(collectionRelation = "user-groups")
 @Component
@@ -26,14 +24,14 @@ public class UserGroupAssembler extends RepresentationModelAssemblerSupport<User
     @Override
     public UserGroupModel.Output toModel(UserGroup resource) {
         UserGroupModel.Output model = mapper.entityToOutput(resource);
-        model.add(linkTo(methodOn(UserGroupController.class).get(model.getId())).withSelfRel());
-        model.add(linkTo(methodOn(UserGroupController.class).list()).withRel("user-group-list"));
+        model.add(linkToUserGroup(resource.getId()));
+        model.add(linkToUserGroups("user-group-list"));
+        model.add(linkToUserGroupPermissions(resource.getId(), "permissions"));
         return model;
     }
 
     @Override
     public CollectionModel<UserGroupModel.Output> toCollectionModel(Iterable<? extends UserGroup> entities) {
-        return super.toCollectionModel(entities)
-                .add(linkTo(UserGroupController.class).withSelfRel());
+        return super.toCollectionModel(entities).add(linkToUserGroups());
     }
 }

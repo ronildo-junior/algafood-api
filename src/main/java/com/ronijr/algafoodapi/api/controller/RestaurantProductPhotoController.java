@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -41,12 +42,12 @@ public class RestaurantProductPhotoController {
                 size(photoFile.getSize()).
                 build();
         ProductPhoto saved = photoCommand.save(productId, restaurantId, productPhoto, photoFile.getInputStream());
-        return ResponseEntity.ok(photoAssembler.toOutput(saved));
+        return ResponseEntity.ok(photoAssembler.toModel(saved));
     }
 
     @GetMapping
     public ResponseEntity<ProductPhotoModel.Output> getInfo(@PathVariable Long restaurantId, @PathVariable Long productId) {
-        return ResponseEntity.ok(photoAssembler.toOutput(photoQuery.findByIdAndRestaurantId(productId, restaurantId)));
+        return ResponseEntity.ok(photoAssembler.toModel(photoQuery.findByIdAndRestaurantId(productId, restaurantId)));
     }
 
     @GetMapping(produces = MediaType.ALL_VALUE)
