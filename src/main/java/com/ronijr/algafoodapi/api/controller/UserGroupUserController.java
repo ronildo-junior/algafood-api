@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/user-groups", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/users/{userId}/user-groups",
+        produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class UserGroupUserController {
     private final UserCommand userCommand;

@@ -22,6 +22,7 @@ public enum ControllerTag {
     RESTAURANT( "Restaurants", "Manage Restaurants",
             RestaurantController.class.getSimpleName(), RestaurantPaymentMethodController.class.getSimpleName(),
             RestaurantUserController.class.getSimpleName()),
+    ROOT_ENTRY_POINT("Root", "Discover API", RootEntryPointController.class.getSimpleName()),
     STATE( "States", "Manage States", StateController.class.getSimpleName()),
     STATISTIC( "Statistics", "Manage Statistics", StatisticsController.class.getSimpleName()),
     USER( "Users", "Manage Users",

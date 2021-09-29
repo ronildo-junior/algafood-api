@@ -10,6 +10,7 @@ import com.ronijr.algafoodapi.domain.service.query.ProductQuery;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(value = "restaurants/{restaurantId}/products", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "restaurants/{restaurantId}/products",
+        produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class RestaurantProductController {
     private final RestaurantQuery restaurantQuery;

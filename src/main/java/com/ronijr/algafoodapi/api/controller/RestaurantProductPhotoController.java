@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.service.command.ProductPhotoCatalogCommand;
 import com.ronijr.algafoodapi.domain.service.query.ProductPhotoCatalogQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +24,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/restaurants/{restaurantId}/products/{productId}/photo", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/restaurants/{restaurantId}/products/{productId}/photo",
+        produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class RestaurantProductPhotoController {
     private final ProductPhotoCatalogCommand photoCommand;

@@ -1,6 +1,7 @@
 package com.ronijr.algafoodapi.api.controller;
 
 import com.ronijr.algafoodapi.api.hateoas.RootEntryPointModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-public class RootEntryPoint {
+@RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+public class RootEntryPointController {
     @GetMapping
     public RootEntryPointModel root() {
         var rootEntry = new RootEntryPointModel();

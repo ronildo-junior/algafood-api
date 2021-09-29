@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.domain.model.dto.DailySale;
 import com.ronijr.algafoodapi.domain.service.query.SaleQuery;
 import com.ronijr.algafoodapi.domain.service.report.SaleReport;
 import lombok.AllArgsConstructor;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import java.util.List;
 import static com.ronijr.algafoodapi.api.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(value = "/statistics", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/statistics", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class StatisticsController {
     private final SaleQuery saleQuery;

@@ -8,6 +8,7 @@ import com.ronijr.algafoodapi.domain.service.command.StateCommand;
 import com.ronijr.algafoodapi.domain.service.query.StateQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping(value = "/states", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/states", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class StateController {
     private final StateQuery queryService;

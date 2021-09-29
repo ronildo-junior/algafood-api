@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.service.command.CityCommand;
 import com.ronijr.algafoodapi.domain.service.query.CityQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping(value = "/cities", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/cities", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class CityController {
     private final CityQuery queryService;

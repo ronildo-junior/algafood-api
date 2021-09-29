@@ -8,6 +8,7 @@ import com.ronijr.algafoodapi.domain.service.command.PaymentMethodCommand;
 import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +26,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping(value = "/payment-methods", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/payment-methods", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class PaymentMethodController {
     private final PaymentMethodQuery queryService;
