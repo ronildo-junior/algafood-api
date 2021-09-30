@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.config.mapper;
 
-import com.ronijr.algafoodapi.api.model.UserGroupModel;
+import com.ronijr.algafoodapi.api.v1.model.UserGroupModel;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

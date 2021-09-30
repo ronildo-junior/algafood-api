@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.config.mapper;
 
-import com.ronijr.algafoodapi.api.model.ProductPhotoModel;
+import com.ronijr.algafoodapi.api.v1.model.ProductPhotoModel;
 import com.ronijr.algafoodapi.domain.model.ProductPhoto;
 import org.mapstruct.Mapper;
 

@@ -1,7 +1,7 @@
 package com.ronijr.algafoodapi.config.documentation;
 
-import com.ronijr.algafoodapi.api.controller.CuisineController;
 import com.ronijr.algafoodapi.api.exception.handler.ProblemDetails;
+import com.ronijr.algafoodapi.api.v1.controller.CuisineController;
 import com.ronijr.algafoodapi.config.documentation.model.ControllerTag;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.OpenAPI;

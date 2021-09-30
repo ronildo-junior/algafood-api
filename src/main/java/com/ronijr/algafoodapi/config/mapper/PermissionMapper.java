@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.config.mapper;
 
-import com.ronijr.algafoodapi.api.model.PermissionModel;
+import com.ronijr.algafoodapi.api.v1.model.PermissionModel;
 import com.ronijr.algafoodapi.domain.model.Permission;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

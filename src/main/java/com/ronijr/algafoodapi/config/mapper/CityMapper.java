@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.config.mapper;
 
-import com.ronijr.algafoodapi.api.model.CityModel;
+import com.ronijr.algafoodapi.api.v1.model.CityModel;
 import com.ronijr.algafoodapi.domain.model.City;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

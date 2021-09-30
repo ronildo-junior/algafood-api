@@ -1,6 +1,6 @@
 package com.ronijr.algafoodapi.config.documentation.model;
 
-import com.ronijr.algafoodapi.api.controller.*;
+import com.ronijr.algafoodapi.api.v1.controller.*;
 import io.swagger.v3.oas.models.tags.Tag;
 import lombok.Getter;
 

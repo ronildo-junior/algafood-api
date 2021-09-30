@@ -1,7 +1,7 @@
 package com.ronijr.algafoodapi.config.jackson;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.ronijr.algafoodapi.api.model.mixin.*;
+import com.ronijr.algafoodapi.api.v1.model.mixin.*;
 import com.ronijr.algafoodapi.domain.model.*;
 import org.springframework.stereotype.Component;
 

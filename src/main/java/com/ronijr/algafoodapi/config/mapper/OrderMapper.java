@@ -1,7 +1,7 @@
 package com.ronijr.algafoodapi.config.mapper;
 
-import com.ronijr.algafoodapi.api.model.OrderItemModel;
-import com.ronijr.algafoodapi.api.model.OrderModel;
+import com.ronijr.algafoodapi.api.v1.model.OrderItemModel;
+import com.ronijr.algafoodapi.api.v1.model.OrderModel;
 import com.ronijr.algafoodapi.domain.model.Order;
 import com.ronijr.algafoodapi.domain.model.OrderItem;
 import org.mapstruct.Mapper;
