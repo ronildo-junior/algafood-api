@@ -9,19 +9,19 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @UtilityClass
 public class AlgaLinksV2 {
-    public Link linkToCity(Long cityId, String rel) {
+    public static Link linkToCity(Long cityId, String rel) {
         return linkTo(methodOn(CityControllerV2.class).get(cityId)).withRel(rel);
     }
 
-    public Link linkToCity(Long cityId) {
+    public static Link linkToCity(Long cityId) {
         return linkToCity(cityId, IanaLinkRelations.SELF.value());
     }
 
-    public Link linkToCities(String rel) {
+    public static Link linkToCities(String rel) {
         return linkTo(CityControllerV2.class).withRel(rel);
     }
 
-    public Link linkToCities() {
+    public static Link linkToCities() {
         return linkToCities(IanaLinkRelations.SELF.value());
     }
 }
