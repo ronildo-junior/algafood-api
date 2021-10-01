@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.api.exception.InvalidModelParseException;
 import com.ronijr.algafoodapi.config.message.AppMessageSource;
 import com.ronijr.algafoodapi.domain.exception.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.Optional;
 
 import static com.ronijr.algafoodapi.api.exception.handler.ExceptionUtils.*;
 
+@Slf4j
 @RestControllerAdvice
 @AllArgsConstructor
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -195,7 +197,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
-        ex.printStackTrace();
+        log.error(ex.getMessage(), ex);
         return handleException(ex, request, ProblemType.SYSTEM_ERROR, messenger.getMessage(INTERNAL_SERVER_ERROR));
     }
 }
