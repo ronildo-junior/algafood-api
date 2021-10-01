@@ -34,16 +34,19 @@ public class CityController {
     private final CitySummaryAssembler assemblerSummary;
     private final CityDisassembler disassembler;
 
+    @Deprecated
     @GetMapping
     public CollectionModel<CityModel.Summary> list() {
         return assemblerSummary.toCollectionModel(queryService.findAll());
     }
 
+    @Deprecated
     @GetMapping("/{id}")
     public ResponseEntity<CityModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @Deprecated
     @PostMapping
     public ResponseEntity<CityModel.Output> create(@RequestBody @Valid CityModel.Input input) {
         City created = commandService.create(disassembler.toDomain(input));
@@ -56,6 +59,7 @@ public class CityController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @Deprecated
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.Output> update(@PathVariable Long id, @RequestBody @Valid CityModel.Input input) {
         City current = queryService.findByIdOrElseThrow(id);
@@ -63,6 +67,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @Deprecated
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CityModel.Input.class);
@@ -71,6 +76,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @Deprecated
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
