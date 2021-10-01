@@ -20,7 +20,7 @@ import java.util.List;
 import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.linkToStatisticsDailySales;
 
 @RestController
-@RequestMapping(value = "/statistics", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/v1/statistics", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class StatisticsController {
     private final SaleQuery saleQuery;

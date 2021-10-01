@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(path = "/v1", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 public class RootEntryPointController {
     @GetMapping
     public RootEntryPointModel root() {

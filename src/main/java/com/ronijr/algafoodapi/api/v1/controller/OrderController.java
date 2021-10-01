@@ -25,7 +25,7 @@ import javax.validation.Valid;
 import static com.ronijr.algafoodapi.infrastructure.repository.specification.OrderSpecification.doFilter;
 
 @RestController
-@RequestMapping(value = "/orders", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/v1/orders", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class OrderController {
     private static final int ORDER_PAGE_SIZE = 20;

@@ -282,7 +282,6 @@ public class SpringDocConfig implements OperationCustomizer {
         return new Info()
                 .title("AlgaFood API")
                 .description("Open API for delivery food.")
-                .version("v1")
                 .contact(this.getContact())
                 .license(new License().name("Apache 2.0"));
     }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 
 @RestController
-@RequestMapping(value = "/users/{userId}/user-groups",
+@RequestMapping(value = "/v1/users/{userId}/user-groups",
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class UserGroupUserController {

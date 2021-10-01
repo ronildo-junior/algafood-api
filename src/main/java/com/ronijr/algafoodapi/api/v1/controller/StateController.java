@@ -24,7 +24,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping(value = "/states", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/v1/states", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class StateController {
     private final StateQuery queryService;

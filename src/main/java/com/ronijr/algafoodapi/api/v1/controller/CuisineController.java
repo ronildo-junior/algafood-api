@@ -24,7 +24,7 @@ import static com.ronijr.algafoodapi.api.utils.MapperUtils.mergeFieldsMapInObjec
 import static com.ronijr.algafoodapi.api.utils.MapperUtils.verifyMapContainsOnlyFieldsOfClass;
 
 @RestController
-@RequestMapping(value = "/cuisines", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
+@RequestMapping(value = "/v1/cuisines", produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class CuisineController {
     private final CuisineCommand commandService;

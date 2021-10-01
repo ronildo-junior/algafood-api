@@ -1,6 +1,7 @@
 package com.ronijr.algafoodapi.config.documentation.model;
 
 import com.ronijr.algafoodapi.api.v1.controller.*;
+import com.ronijr.algafoodapi.api.v2.controller.CityControllerV2;
 import io.swagger.v3.oas.models.tags.Tag;
 import lombok.Getter;
 
@@ -11,7 +12,8 @@ import java.util.Set;
 
 @Getter
 public enum ControllerTag {
-    CITY( "Cities", "Manage Cities", CityController.class.getSimpleName()),
+    CITY( "Cities", "Manage Cities",
+            CityController.class.getSimpleName(), CityControllerV2.class.getSimpleName()),
     CUISINE("Cuisines", "Manage Cuisines", CuisineController.class.getSimpleName()),
     ORDER("Orders", "Manage Orders",
             OrderController.class.getSimpleName(), OrderStatusController.class.getSimpleName()),

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/restaurants/{restaurantId}/products/{productId}/photo",
+@RequestMapping(value = "/v1/restaurants/{restaurantId}/products/{productId}/photo",
         produces = { MediaType.APPLICATION_JSON_VALUE, MediaTypes.HAL_JSON_VALUE })
 @AllArgsConstructor
 public class RestaurantProductPhotoController {
