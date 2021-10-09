@@ -76,10 +76,10 @@ insert into user_group (id, name, created_at) values
     (4, 'Cadastrador', utc_timestamp), (5, 'Administrador', utc_timestamp);
 
 insert into `user` (id, name, email, password, created_at) values
-    (1, 'João da Silva', 'joao.ger@algafood.com', '123', utc_timestamp),
-    (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '123', utc_timestamp),
-    (3, 'José Souza', 'jose.aux@algafood.com', '123', utc_timestamp),
-    (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '123', utc_timestamp);
+    (1, 'João da Silva', 'joao.ger@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
+    (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
+    (3, 'José Souza', 'jose.aux@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
+    (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp);
 
 insert into user_group_permission (user_group_id, permission_id) values
     (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);

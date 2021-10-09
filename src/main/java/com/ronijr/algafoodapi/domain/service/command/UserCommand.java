@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,9 +28,11 @@ public class UserCommand {
     private final UserGroupQuery userGroupQuery;
     private final AppMessageSource messageSource;
     private final ResourceValidator validator;
+    private final PasswordEncoder passwordEncoder;
 
     public User create(User user) throws ValidationException {
         validate(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -48,14 +51,12 @@ public class UserCommand {
         return userRepository.save(current);
     }
 
-    /**
-     * Not safe, only tests. */
     public void updatePassword(Long id, String password, String newPassword) throws BusinessException {
         User user = userQuery.findByIdOrElseThrow(id);
-        if (!user.passwordEquals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BusinessException(messageSource.getMessage("password.incorrect"));
         }
-        user.updatePassword(newPassword);
+        user.updatePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
