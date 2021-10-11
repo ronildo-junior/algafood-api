@@ -52,11 +52,6 @@ insert into payment_method (id, description, created_at) values (1, "Cartão de 
 insert into payment_method (id, description, created_at) values (2, "Cartão de Débito", utc_timestamp);
 insert into payment_method (id, description, created_at) values (3, "Dinheiro", utc_timestamp);
 
-insert into permission (id, name, description, created_at)
-    values (1, "CONSULTAR_COZINHAS", "Permite consultar cozinhas", utc_timestamp);
-insert into permission (id, name, description, created_at)
-    values (2, "EDITAR_COZINHAS", "Permite editar cozinhas", utc_timestamp);
-
 insert into restaurant_payment_method (restaurant_id, payment_method_id)
     values (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
 
@@ -72,17 +67,17 @@ insert into product(id, name, description, price, restaurant_id, created_at)
     values (5, "Picanha", "Picanha ao molho Mostrada", 16.0, 4, utc_timestamp);
 
 insert into user_group (id, name, created_at) values
-    (1, 'Gerente', utc_timestamp), (2, 'Vendedor', utc_timestamp), (3, 'Secretária', utc_timestamp),
-    (4, 'Cadastrador', utc_timestamp), (5, 'Administrador', utc_timestamp);
+    (1, 'Gerente', utc_timestamp),
+    (2, 'Vendedor', utc_timestamp),
+    (3, 'Secretária', utc_timestamp),
+    (4, 'Cadastrador', utc_timestamp),
+    (5, 'Administrador', utc_timestamp);
 
 insert into `user` (id, name, email, password, created_at) values
     (1, 'João da Silva', 'joao.ger@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
     (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
     (3, 'José Souza', 'jose.aux@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
     (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp);
-
-insert into user_group_permission (user_group_id, permission_id) values
-    (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
 insert into user_group_user(user_id, user_group_id) values (1, 1), (1, 2), (2, 2);
 
@@ -107,3 +102,16 @@ values (2, '5d9ac98b-2cc2-472c-b099-1be4ed0f6994', 4, 1, 2, 1, '38400-111', 'Rua
 
 insert into `order_item` (id, `order_id`, product_id, amount, price, total, notes, created_at)
 values (3, 2, 5, 1, 79, 79, 'Ao ponto', utc_timestamp);
+
+insert into permission (id, name, description)
+values (1, 'READ', 'Read'),
+       (2, 'WRITE', 'Write'),
+       (3, 'DELETE', 'Delete'),
+       (4, 'READ_REPORTS', 'Read reports');
+
+insert into user_group_permission (user_group_id, permission_id)
+values (1, 1), (1, 2), (1, 3), (1, 4),
+       (2, 1),
+       (3, 1), (3, 4),
+       (4, 1), (4, 2),
+       (5, 1), (5, 2), (5, 3), (5, 4);
