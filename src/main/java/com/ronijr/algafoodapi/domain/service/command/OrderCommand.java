@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -30,17 +31,17 @@ public class OrderCommand {
     private final UserQuery userQuery;
     private final AppMessageSource messageSource;
 
-    public Order create(@Validated Order order) {
-        verifyOrder(order);
+    public Order create(@Validated Order order, Long userId) {
+        verifyOrder(order, userId);
         mergeEqualsItems(order);
         verifyItens(order);
         order.calculateTotal();
         return orderRepository.save(order);
     }
 
-    private void verifyOrder(Order order) {
+    private void verifyOrder(Order order, Long userId) {
+        User customer = userQuery.findByIdOrElseThrow(userId);
         City city = cityRepository.findByIdOrElseThrow(order.getDeliveryAddress().getCity().getId());
-        User customer = userQuery.findByIdOrElseThrow(order.getCustomer().getId());
         PaymentMethod paymentMethod = paymentMethodQuery.findByIdOrElseThrow(order.getPaymentMethod().getId());
         Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(order.getRestaurant().getId());
         if (!restaurant.acceptPaymentMethod(paymentMethod)) {

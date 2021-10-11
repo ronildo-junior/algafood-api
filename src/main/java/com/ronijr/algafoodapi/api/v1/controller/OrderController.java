@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.api.v1.assembler.OrderAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.OrderDisassembler;
 import com.ronijr.algafoodapi.api.v1.assembler.OrderSummaryAssembler;
 import com.ronijr.algafoodapi.api.v1.model.OrderModel;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.filter.OrderFilter;
 import com.ronijr.algafoodapi.domain.model.Order;
 import com.ronijr.algafoodapi.domain.service.command.OrderCommand;
@@ -36,6 +37,7 @@ public class OrderController {
     private final OrderSummaryAssembler assemblerSummary;
     private final OrderDisassembler disassembler;
     private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
+    private final AlgaSecurity security;
 
     @GetMapping
     public PagedModel<OrderModel.Summary> customSearch(OrderFilter filter, @PageableDefault(size = ORDER_PAGE_SIZE) Pageable pageable) {
@@ -51,6 +53,6 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderModel.Output create(@RequestBody @Valid OrderModel.Input input) {
-        return assembler.toModel(command.create(disassembler.toDomain(input)));
+        return assembler.toModel(command.create(disassembler.toDomain(input), security.getUserId()));
     }
 }
