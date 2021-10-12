@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -199,5 +200,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleGenericException(Exception ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return handleException(ex, request, ProblemType.SYSTEM_ERROR, messenger.getMessage(INTERNAL_SERVER_ERROR));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleForbidden(AccessDeniedException ex, WebRequest request) {
+        return handleException(ex, request, ProblemType.ACCESS_DENIED, messenger.getMessage("access.denied"));
     }
 }

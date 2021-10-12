@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.exception.handler;
 import org.springframework.http.HttpStatus;
 
 public enum ProblemType {
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "exception.title.access.denied", "access-denied"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "exception.title.bad.request", "bad-request"),
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND,"exception.title.not.found", "not-found"),
     INVALID_DATA(HttpStatus.UNPROCESSABLE_ENTITY, "exception.title.unprocessable.entity", "unprocessable"),
