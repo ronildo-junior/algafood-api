@@ -104,14 +104,56 @@ insert into `order_item` (id, `order_id`, product_id, amount, price, total, note
 values (3, 2, 5, 1, 79, 79, 'Ao ponto', utc_timestamp);
 
 insert into permission (id, name, description)
-values (1, 'READ', 'Read'),
-       (2, 'WRITE', 'Write'),
-       (3, 'DELETE', 'Delete'),
-       (4, 'READ_REPORTS', 'Read reports');
+values (01, 'CREATE_CITIES', 'Create Cities'),
+       (02, 'CREATE_CUISINES', 'Create Cuisines'),
+       (03, 'CREATE_ORDERS', 'Create Orders'),
+       (04, 'CREATE_PAYMENT_METHODS', 'Create Payment Methods'),
+       (05, 'CREATE_PERMISSIONS', 'Create Permissions'),
+       (06, 'CREATE_PRODUCTS', 'Create Products'),
+       (07, 'CREATE_RESTAURANTS', 'Create Restaurants'),
+       (08, 'CREATE_STATES', 'Create States'),
+       (09, 'CREATE_USERS', 'Create Users'),
+       (10, 'CREATE_USER_GROUPS', 'Create User Groups');
+insert into permission (id, name, description)
+values (11, 'EDIT_CITIES', 'Edit Cities'),
+       (12, 'EDIT_CUISINES', 'Edit Cuisines'),
+       (13, 'EDIT_ORDERS', 'Edit Orders'),
+       (14, 'EDIT_PAYMENT_METHODS', 'Edit Payment Methods'),
+       (15, 'EDIT_PERMISSIONS', 'Edit Permissions'),
+       (16, 'EDIT_PRODUCTS', 'Edit Products'),
+       (17, 'EDIT_RESTAURANTS', 'Edit Restaurants'),
+       (18, 'EDIT_STATES', 'Edit States'),
+       (19, 'EDIT_USERS', 'Edit Users'),
+       (20, 'EDIT_USER_GROUPS', 'Edit User Groups');
+insert into permission (id, name, description)
+values (21, 'DELETE_CITIES', 'Delete Cities'),
+       (22, 'DELETE_CUISINES', 'Delete Cuisines'),
+       (23, 'DELETE_ORDERS', 'Delete Orders'),
+       (24, 'DELETE_PAYMENT_METHODS', 'Delete Payment Methods'),
+       (25, 'DELETE_PERMISSIONS', 'Delete Permissions'),
+       (26, 'DELETE_PRODUCTS', 'Delete Products'),
+       (27, 'DELETE_RESTAURANTS', 'Delete Restaurants'),
+       (28, 'DELETE_STATES', 'Delete States'),
+       (29, 'DELETE_USERS', 'Delete Users'),
+       (30, 'DELETE_USER_GROUPS', 'Delete User Groups');
+insert into permission (id, name, description)
+values (31, 'READ_ORDERS', 'Read Orders'),
+       (32, 'READ_PERMISSIONS', 'Read Permissions'),
+       (33, 'READ_USERS', 'Read Users'),
+       (34, 'READ_USER_GROUPS', 'Read User Groups'),
+       (35, 'READ_DAILY_SALES', 'Read Daily Sales');
 
 insert into user_group_permission (user_group_id, permission_id)
-values (1, 1), (1, 2), (1, 3), (1, 4),
-       (2, 1),
-       (3, 1), (3, 4),
-       (4, 1), (4, 2),
-       (5, 1), (5, 2), (5, 3), (5, 4);
+values (01, 01), (01, 02), (01, 03), (01, 04), (01, 06), (01, 08),
+       (01, 13), (01, 14), (01, 16), (01, 17),
+       (01, 23), (01, 24), (01, 26),
+       (01, 31), (01, 32), (01, 33), (01, 34), (01, 35);
+insert into user_group_permission (user_group_id, permission_id)
+values (02, 03), (02, 04), (02, 06), (02, 13), (02, 14), (02, 16);
+insert into user_group_permission (user_group_id, permission_id)
+values (03, 13), (03, 16), (03, 31), (03, 35);
+insert into user_group_permission (user_group_id, permission_id)
+values (04, 03), (04, 04), (04, 06), (04, 13), (04, 14), (04, 16), (04, 17);
+insert into user_group_permission (user_group_id, permission_id)
+select 05, id
+from permission;

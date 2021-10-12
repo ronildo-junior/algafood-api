@@ -1,14 +1,16 @@
 package com.ronijr.algafoodapi.config.security;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,18 @@ import java.util.stream.Collectors;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
     @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            //only tests, not safe to production.
+            .csrf().disable()
+            .cors().and()
+            .oauth2ResourceServer()
+                //DEFAULT_MAX_CLOCK_SKEW = 60 Seconds, then token expiration time = exp + 60s
+                .jwt()
+                    .jwtAuthenticationConverter(jwtAuthenticationConverter());
+    }
+
+    /*@Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST).hasAuthority("WRITE")
@@ -31,7 +45,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                     //DEFAULT_MAX_CLOCK_SKEW = 60 Seconds, then token expiration time = exp + 60s
                 .jwt()
                     .jwtAuthenticationConverter(jwtAuthenticationConverter());
-    }
+    }*/
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();
@@ -40,9 +54,12 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
             if (authorities == null) {
                 authorities = Collections.emptyList();
             }
-            return authorities.stream()
+            var scopesAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+            Collection<GrantedAuthority> grantedAuthorities = scopesAuthoritiesConverter.convert(jwt);
+            grantedAuthorities.addAll(authorities.stream()
                     .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
+            return grantedAuthorities;
         });
         return jwtAuthenticationConverter;
     }

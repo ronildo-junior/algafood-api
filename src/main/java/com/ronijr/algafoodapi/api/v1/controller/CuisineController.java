@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.CuisineAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.CuisineDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.CuisineModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import com.ronijr.algafoodapi.domain.service.command.CuisineCommand;
 import com.ronijr.algafoodapi.domain.service.query.CuisineQuery;
@@ -12,7 +13,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -48,7 +48,7 @@ public class CuisineController {
         return assembler.toCollectionModel(queryService.findByName(name));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @CheckSecurity.Cuisines.AllowCreate
     @PostMapping
     public ResponseEntity<CuisineModel.Output> create(@RequestBody @Valid CuisineModel.Input input) {
         Cuisine created = commandService.create(disassembler.toDomain(input));
@@ -61,6 +61,8 @@ public class CuisineController {
         return ResponseEntity.created(location).body(response);
     }
 
+
+    @CheckSecurity.Cuisines.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<CuisineModel.Output> update(@PathVariable Long id, @RequestBody @Valid CuisineModel.Input input) {
         Cuisine current = queryService.findByIdOrElseThrow(id);
@@ -68,6 +70,7 @@ public class CuisineController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cuisines.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<CuisineModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CuisineModel.Input.class);
@@ -76,6 +79,7 @@ public class CuisineController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cuisines.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
