@@ -5,6 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class SecurityConstants {
     public static final String AND = " and ";
+    public static final String OR = " or ";
     public static final String HAS_AUTHORITY = "hasAuthority";
     public static final String IS_AUTHENTICATED = "isAuthenticated()";
 

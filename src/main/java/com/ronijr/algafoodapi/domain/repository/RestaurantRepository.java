@@ -20,4 +20,6 @@ public interface RestaurantRepository
     List<Restaurant> findAll();
     @Query("select max(updatedAt) from Restaurant")
     Optional<OffsetDateTime> getLastUpdateDate();
+    @Query("select count(r) > 0 from Restaurant r join r.users u where r.id = :restaurantId and u.id = :userId")
+    boolean existsManagerInRestaurant(Long userId, Long restaurantId);
 }

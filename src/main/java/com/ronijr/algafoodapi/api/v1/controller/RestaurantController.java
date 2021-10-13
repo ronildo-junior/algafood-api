@@ -70,9 +70,9 @@ public class RestaurantController {
         return list(request);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<RestaurantModel.Output> get(@PathVariable Long restaurantId) {
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(restaurantId)));
     }
 
     @CheckSecurity.Restaurants.AllowCreate
@@ -82,36 +82,36 @@ public class RestaurantController {
         RestaurantModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
-                path("/{id}").
+                path("/{restaurantId}").
                 buildAndExpand(output.getId()).
                 toUri();
         return ResponseEntity.created(location).body(output);
     }
 
-    @CheckSecurity.Restaurants.AllowEdit
-    @PutMapping("/{id}")
+    @CheckSecurity.Restaurants.AllowManage
+    @PutMapping("/{restaurantId}")
     public ResponseEntity<RestaurantModel.Output> update(
-            @PathVariable Long id, @RequestBody @Valid RestaurantModel.Input input) {
-        Restaurant current = queryService.findByIdOrElseThrow(id);
+            @PathVariable Long restaurantId, @RequestBody @Valid RestaurantModel.Input input) {
+        Restaurant current = queryService.findByIdOrElseThrow(restaurantId);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
-    @CheckSecurity.Restaurants.AllowEdit
-    @PatchMapping("/{id}")
+    @CheckSecurity.Restaurants.AllowManage
+    @PatchMapping("/{restaurantId}")
     public ResponseEntity<RestaurantModel.Output> updatePartial(
-            @PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+            @PathVariable Long restaurantId, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, RestaurantModel.Input.class);
-        Restaurant current = queryService.findByIdOrElseThrow(id);
+        Restaurant current = queryService.findByIdOrElseThrow(restaurantId);
         mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
     @CheckSecurity.Restaurants.AllowDelete
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{restaurantId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        commandService.delete(id);
+    public void delete(@PathVariable Long restaurantId) {
+        commandService.delete(restaurantId);
     }
 
     @GetMapping("/custom")
@@ -129,20 +129,23 @@ public class RestaurantController {
         return ResponseEntity.ok(assembler.toModel(queryService.findFirst()));
     }
 
-    @PutMapping("/{id}/active")
+    @CheckSecurity.Restaurants.AllowEdit
+    @PutMapping("/{restaurantId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> activate(@PathVariable Long id) {
-        commandService.activateRestaurant(id);
+    public ResponseEntity<Void> activate(@PathVariable Long restaurantId) {
+        commandService.activateRestaurant(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/active")
+    @CheckSecurity.Restaurants.AllowEdit
+    @DeleteMapping("/{restaurantId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> inactivate(@PathVariable Long id) {
-        commandService.inactivateRestaurant(id);
+    public ResponseEntity<Void> inactivate(@PathVariable Long restaurantId) {
+        commandService.inactivateRestaurant(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> multipleActivation(@RequestBody List<Long> restaurantIds) {
@@ -154,6 +157,7 @@ public class RestaurantController {
         }
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @DeleteMapping("/activations")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> multipleInactivation(@RequestBody List<Long> restaurantIds) {
@@ -165,19 +169,19 @@ public class RestaurantController {
         }
     }
 
-    @CheckSecurity.Restaurants.AllowEdit
-    @PutMapping("/{id}/opening")
+    @CheckSecurity.Restaurants.AllowManage
+    @PutMapping("/{restaurantId}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> open(@PathVariable Long id) {
-        commandService.openRestaurant(id);
+    public ResponseEntity<Void> open(@PathVariable Long restaurantId) {
+        commandService.openRestaurant(restaurantId);
         return ResponseEntity.noContent().build();
     }
 
-    @CheckSecurity.Restaurants.AllowEdit
-    @PutMapping("/{id}/closing")
+    @CheckSecurity.Restaurants.AllowManage
+    @PutMapping("/{restaurantId}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> close(@PathVariable Long id) {
-        commandService.closeRestaurant(id);
+    public ResponseEntity<Void> close(@PathVariable Long restaurantId) {
+        commandService.closeRestaurant(restaurantId);
         return ResponseEntity.noContent().build();
     }
 }

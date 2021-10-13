@@ -74,4 +74,8 @@ public class RestaurantQuery {
         return restaurant.getUser(userId).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("user.not.found", userId)));
     }
+
+    public boolean userManageRestaurant(Long restaurantId, Long userId) {
+        return restaurantRepository.existsManagerInRestaurant(userId, restaurantId);
+    }
 }
