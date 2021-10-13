@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.PaymentMethodAssembler;
 import com.ronijr.algafoodapi.api.v1.model.PaymentMethodModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
@@ -39,6 +40,7 @@ public class RestaurantPaymentMethodController {
         return collectionModel;
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/{paymentMethodId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId) {
@@ -46,6 +48,7 @@ public class RestaurantPaymentMethodController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @DeleteMapping("/{paymentMethodId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long restaurantId, @PathVariable Long paymentMethodId) {

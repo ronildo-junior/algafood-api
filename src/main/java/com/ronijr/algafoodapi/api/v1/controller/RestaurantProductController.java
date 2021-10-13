@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.ProductAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.ProductDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.ProductModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.Product;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.ProductCommand;
@@ -50,12 +51,14 @@ public class RestaurantProductController {
         return ResponseEntity.ok(productAssembler.toModel(restaurantQuery.getProduct(restaurantId, productId)));
     }
 
+    @CheckSecurity.Products.AllowCreate
     @PostMapping
     public ProductModel.Output create(@PathVariable Long restaurantId, @RequestBody ProductModel.Input input) {
         Product product = productDisassembler.toDomain(input);
         return productAssembler.toModel(productCommand.create(restaurantId, product));
     }
 
+    @CheckSecurity.Products.AllowEdit
     @PutMapping("/{productId}")
     public ProductModel.Output update(
             @PathVariable Long restaurantId, @PathVariable Long productId, @RequestBody ProductModel.Input input) {
@@ -63,12 +66,14 @@ public class RestaurantProductController {
         return productAssembler.toModel(productCommand.update(restaurantId, productId, product));
     }
 
+    @CheckSecurity.Products.AllowEdit
     @PutMapping("/{productId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void activateProduct(@PathVariable Long restaurantId, @PathVariable Long productId) {
         productCommand.activate(productId, restaurantId);
     }
 
+    @CheckSecurity.Products.AllowEdit
     @DeleteMapping("/{productId}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void inactivateProduct(@PathVariable Long restaurantId, @PathVariable Long productId) {

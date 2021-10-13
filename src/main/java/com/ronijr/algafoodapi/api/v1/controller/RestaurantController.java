@@ -6,6 +6,7 @@ import com.ronijr.algafoodapi.api.v1.assembler.RestaurantDisassembler;
 import com.ronijr.algafoodapi.api.v1.assembler.RestaurantSummaryAssembler;
 import com.ronijr.algafoodapi.api.v1.model.RestaurantModel;
 import com.ronijr.algafoodapi.api.v1.model.view.RestaurantView;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.exception.BusinessException;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
@@ -74,6 +75,7 @@ public class RestaurantController {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.Restaurants.AllowCreate
     @PostMapping
     public ResponseEntity<RestaurantModel.Output> create(@RequestBody @Valid RestaurantModel.Input input) {
         Restaurant created = commandService.create(disassembler.toDomain(input));
@@ -86,6 +88,7 @@ public class RestaurantController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> update(
             @PathVariable Long id, @RequestBody @Valid RestaurantModel.Input input) {
@@ -94,6 +97,7 @@ public class RestaurantController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<RestaurantModel.Output> updatePartial(
             @PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
@@ -103,6 +107,7 @@ public class RestaurantController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Restaurants.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
@@ -160,6 +165,7 @@ public class RestaurantController {
         }
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/{id}/opening")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> open(@PathVariable Long id) {
@@ -167,6 +173,7 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/{id}/closing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> close(@PathVariable Long id) {

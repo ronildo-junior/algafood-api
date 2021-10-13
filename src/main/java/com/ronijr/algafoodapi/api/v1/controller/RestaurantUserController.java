@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.UserAssembler;
 import com.ronijr.algafoodapi.api.v1.model.UserModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,7 @@ public class RestaurantUserController {
         return userAssembler.toModel(restaurantQuery.getUser(restaurantId, userId));
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {
@@ -48,6 +50,7 @@ public class RestaurantUserController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Restaurants.AllowEdit
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociateManager(@PathVariable Long restaurantId, @PathVariable Long userId) {

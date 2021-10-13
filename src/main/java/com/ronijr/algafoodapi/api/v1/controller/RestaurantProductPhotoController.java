@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.ProductPhotoAssembler;
 import com.ronijr.algafoodapi.api.v1.model.ProductPhotoModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.exception.EntityNotFoundException;
 import com.ronijr.algafoodapi.domain.model.ProductPhoto;
 import com.ronijr.algafoodapi.domain.service.PhotoStorageService;
@@ -33,6 +34,7 @@ public class RestaurantProductPhotoController {
     private final ProductPhotoAssembler photoAssembler;
     private final PhotoStorageService storageService;
 
+    @CheckSecurity.Products.AllowEdit
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ProductPhotoModel.Output> updateProductPhoto(
             @PathVariable Long restaurantId, @PathVariable Long productId, @Valid ProductPhotoModel.Input photoModel) throws IOException {
@@ -78,6 +80,7 @@ public class RestaurantProductPhotoController {
         }
     }
 
+    @CheckSecurity.Products.AllowEdit
     @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long restaurantId, @PathVariable Long productId) {
