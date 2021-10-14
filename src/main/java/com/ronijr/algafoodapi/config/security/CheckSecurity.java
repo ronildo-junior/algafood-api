@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.config.security;
 
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.lang.annotation.ElementType;
@@ -50,6 +51,13 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + Order.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @PostAuthorize(Order.ALLOW_READ
+                + OR + "@algaSecurity.getUserId() == returnObject.body.customer.id"
+                + OR + "@algaSecurity.manageRestaurant(returnObject.body.restaurant.id)")
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowQuery {}
     }
 
     @interface PaymentMethods {
@@ -82,17 +90,17 @@ public @interface CheckSecurity {
 
     @interface Products {
         @PreAuthorize(Scope.ALLOW_WRITE + AND +
-                "(" + Product.ALLOW_CREATE + OR + "@algaSecurity.manageRestaurant(#restaurantId)" + ")")
+                "(" + Product.ALLOW_CREATE + OR + Restaurant.MANAGE_RESTAURANT + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowCreate {}
 
         @PreAuthorize(Scope.ALLOW_WRITE + AND +
-                "(" + Product.ALLOW_EDIT + OR + "@algaSecurity.manageRestaurant(#restaurantId)" + ")")
+                "(" + Product.ALLOW_EDIT + OR + Restaurant.MANAGE_RESTAURANT + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowEdit {}
 
         @PreAuthorize(Scope.ALLOW_WRITE + AND  +
-                "(" + Product.ALLOW_DELETE + OR + "@algaSecurity.manageRestaurant(#restaurantId)" + ")")
+                "(" + Product.ALLOW_DELETE + OR + Restaurant.MANAGE_RESTAURANT + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
     }
@@ -107,7 +115,7 @@ public @interface CheckSecurity {
         @interface AllowEdit {}
 
         @PreAuthorize(Scope.ALLOW_WRITE + AND +
-                "(" + Restaurant.ALLOW_EDIT + OR + "@algaSecurity.manageRestaurant(#restaurantId)" + ")")
+                "(" + Restaurant.ALLOW_EDIT + OR + Restaurant.MANAGE_RESTAURANT + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowManage {}
 

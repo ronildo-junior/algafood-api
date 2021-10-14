@@ -89,6 +89,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String MANAGE_RESTAURANT = "@algaSecurity.manageRestaurant(#restaurantId)";
     }
 
     @UtilityClass

@@ -5,6 +5,7 @@ import com.ronijr.algafoodapi.api.v1.assembler.OrderDisassembler;
 import com.ronijr.algafoodapi.api.v1.assembler.OrderSummaryAssembler;
 import com.ronijr.algafoodapi.api.v1.model.OrderModel;
 import com.ronijr.algafoodapi.config.security.AlgaSecurity;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.filter.OrderFilter;
 import com.ronijr.algafoodapi.domain.model.Order;
 import com.ronijr.algafoodapi.domain.service.command.OrderCommand;
@@ -45,6 +46,7 @@ public class OrderController {
         return pagedResourcesAssembler.toModel(ordersPage, assemblerSummary);
     }
 
+    @CheckSecurity.Orders.AllowQuery
     @GetMapping("/{code}")
     public ResponseEntity<OrderModel.Output> get(@PathVariable String code) {
         return ResponseEntity.ok(assembler.toModel(query.findByCodeOrElseThrow(code)));
