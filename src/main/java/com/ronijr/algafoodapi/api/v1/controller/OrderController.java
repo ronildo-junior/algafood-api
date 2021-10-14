@@ -40,6 +40,7 @@ public class OrderController {
     private final PagedResourcesAssembler<Order> pagedResourcesAssembler;
     private final AlgaSecurity security;
 
+    @CheckSecurity.Orders.AllowList
     @GetMapping
     public PagedModel<OrderModel.Summary> customSearch(OrderFilter filter, @PageableDefault(size = ORDER_PAGE_SIZE) Pageable pageable) {
         Page<Order> ordersPage = query.findAll(doFilter(filter), pageable);

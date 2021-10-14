@@ -52,6 +52,14 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
+        @PreAuthorize(Scope.ALLOW_READ + AND
+                + "(" + Order.ALLOW_READ
+                + OR + "@algaSecurity.getUserId() == #filter.customerId"
+                + OR + "@algaSecurity.manageRestaurant(#filter.restaurantId)" + ")")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        @interface AllowList {}
+
         @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
         @PostAuthorize(Order.ALLOW_READ
                 + OR + "@algaSecurity.getUserId() == returnObject.body.customer.id"
