@@ -14,4 +14,10 @@ public interface OrderRepository extends CustomJpaRepository<Order, Long> {
     List<Order> findAll();
 
     Optional<Order> findByCode(String code);
+
+    @Query("select count(o) > 0 from Order o " +
+            "join o.restaurant r " +
+            "join r.users u " +
+            "where o.code = :orderCode and u.id = :userId")
+    boolean userManageOrder(Long userId, String orderCode);
 }

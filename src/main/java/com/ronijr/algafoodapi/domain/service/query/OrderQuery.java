@@ -43,6 +43,10 @@ public class OrderQuery {
         return order.getItems();
     }
 
+    public boolean userManageOrder(Long userId, String orderCode) {
+        return orderRepository.userManageOrder(userId, orderCode);
+    }
+
     private Optional<Order> findByCode(String code) {
         return orderRepository.findByCode(code);
     }

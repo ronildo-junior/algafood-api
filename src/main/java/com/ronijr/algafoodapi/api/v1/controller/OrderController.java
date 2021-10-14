@@ -53,6 +53,7 @@ public class OrderController {
         return ResponseEntity.ok(assembler.toModel(query.findByCodeOrElseThrow(code)));
     }
 
+    @CheckSecurity.Orders.AllowCreate
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderModel.Output create(@RequestBody @Valid OrderModel.Input input) {

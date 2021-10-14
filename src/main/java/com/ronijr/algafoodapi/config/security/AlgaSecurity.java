@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.config.security;
 
+import com.ronijr.algafoodapi.domain.service.query.OrderQuery;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class AlgaSecurity {
     private final RestaurantQuery restaurantQuery;
+    private final OrderQuery orderQuery;
 
     public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
@@ -26,5 +28,12 @@ public class AlgaSecurity {
             return false;
         }
         return restaurantQuery.userManageRestaurant(restaurantId, getUserId());
+    }
+
+    public boolean userManageOrder(String code) {
+        if (code == null) {
+            return false;
+        }
+        return orderQuery.userManageOrder(getUserId(), code);
     }
 }

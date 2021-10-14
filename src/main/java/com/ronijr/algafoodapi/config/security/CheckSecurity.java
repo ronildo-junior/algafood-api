@@ -40,7 +40,7 @@ public @interface CheckSecurity {
     }
 
     @interface Orders {
-        @PreAuthorize(Scope.ALLOW_WRITE + AND + Order.ALLOW_CREATE)
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + IS_AUTHENTICATED)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowCreate {}
 
@@ -59,6 +59,13 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         @interface AllowList {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND +
+                "(" + Order.ALLOW_EDIT
+                + OR + "@algaSecurity.userManageOrder(#orderCode))")
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.METHOD)
+        @interface AllowManage {}
 
         @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
         @PostAuthorize(Order.ALLOW_READ

@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.OrderStatusAssembler;
 import com.ronijr.algafoodapi.api.v1.model.OrderModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.OrderStatusCommand;
 import com.ronijr.algafoodapi.domain.service.query.OrderQuery;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,7 @@ public class OrderStatusController {
         return ResponseEntity.ok(statusAssembler.toModel(orderQuery.findByCodeOrElseThrow(orderCode)));
     }
 
+    @CheckSecurity.Orders.AllowManage
     @PutMapping("/confirmation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> confirmation(@PathVariable String orderCode) {
@@ -32,6 +34,7 @@ public class OrderStatusController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Orders.AllowManage
     @PutMapping("/cancellation")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> cancellation(@PathVariable String orderCode) {
@@ -39,6 +42,7 @@ public class OrderStatusController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.Orders.AllowManage
     @PutMapping("/delivery")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delivery(@PathVariable String orderCode) {
