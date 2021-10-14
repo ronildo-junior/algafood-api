@@ -87,6 +87,10 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + PaymentMethod.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 
     @interface Permissions {

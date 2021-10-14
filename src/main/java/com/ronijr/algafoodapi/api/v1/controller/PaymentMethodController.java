@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.PaymentMethodAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.PaymentMethodDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.PaymentMethodModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.PaymentMethod;
 import com.ronijr.algafoodapi.domain.service.command.PaymentMethodCommand;
 import com.ronijr.algafoodapi.domain.service.query.PaymentMethodQuery;
@@ -34,6 +35,7 @@ public class PaymentMethodController {
     private final PaymentMethodAssembler assembler;
     private final PaymentMethodDisassembler disassembler;
 
+    @CheckSecurity.PaymentMethods.AllowRead
     @GetMapping
     public ResponseEntity<CollectionModel<PaymentMethodModel.Output>> list() {
         return ResponseEntity.ok().
@@ -43,6 +45,7 @@ public class PaymentMethodController {
                 body(assembler.toCollectionModel(queryService.findAll()));
     }
 
+    @CheckSecurity.PaymentMethods.AllowRead
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok().
@@ -50,6 +53,7 @@ public class PaymentMethodController {
                 body(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.PaymentMethods.AllowCreate
     @PostMapping
     public ResponseEntity<PaymentMethodModel.Output> create(@RequestBody @Valid PaymentMethodModel.Input input) {
         PaymentMethod created = commandService.create(disassembler.toDomain(input));
@@ -62,6 +66,7 @@ public class PaymentMethodController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @CheckSecurity.PaymentMethods.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<PaymentMethodModel.Output> update(@PathVariable Long id, @RequestBody @Valid PaymentMethodModel.Input input) {
         PaymentMethod current = queryService.findByIdOrElseThrow(id);
@@ -69,6 +74,7 @@ public class PaymentMethodController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.PaymentMethods.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<PaymentMethodModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, PaymentMethodModel.Input.class);
@@ -77,6 +83,7 @@ public class PaymentMethodController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.PaymentMethods.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
