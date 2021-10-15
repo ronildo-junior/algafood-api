@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.api.v1.assembler.CityAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.CityDisassembler;
 import com.ronijr.algafoodapi.api.v1.assembler.CitySummaryAssembler;
 import com.ronijr.algafoodapi.api.v1.model.CityModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.service.command.CityCommand;
 import com.ronijr.algafoodapi.domain.service.query.CityQuery;
@@ -34,18 +35,21 @@ public class CityController {
     private final CitySummaryAssembler assemblerSummary;
     private final CityDisassembler disassembler;
 
+    @CheckSecurity.Cities.AllowRead
     @Deprecated
     @GetMapping
     public CollectionModel<CityModel.Summary> list() {
         return assemblerSummary.toCollectionModel(queryService.findAll());
     }
 
+    @CheckSecurity.Cities.AllowRead
     @Deprecated
     @GetMapping("/{id}")
     public ResponseEntity<CityModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.Cities.AllowCreate
     @Deprecated
     @PostMapping
     public ResponseEntity<CityModel.Output> create(@RequestBody @Valid CityModel.Input input) {
@@ -59,6 +63,7 @@ public class CityController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @CheckSecurity.Cities.AllowEdit
     @Deprecated
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.Output> update(@PathVariable Long id, @RequestBody @Valid CityModel.Input input) {
@@ -67,6 +72,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cities.AllowEdit
     @Deprecated
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
@@ -76,6 +82,7 @@ public class CityController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cities.AllowDelete
     @Deprecated
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

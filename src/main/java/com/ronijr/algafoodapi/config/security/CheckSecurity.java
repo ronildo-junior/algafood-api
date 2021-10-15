@@ -23,6 +23,10 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + City.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 
     @interface Cuisines {
@@ -141,5 +145,23 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + Restaurant.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+    }
+
+    @interface States {
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + State.ALLOW_CREATE)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowCreate {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + State.ALLOW_EDIT)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowEdit {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + State.ALLOW_DELETE)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 }

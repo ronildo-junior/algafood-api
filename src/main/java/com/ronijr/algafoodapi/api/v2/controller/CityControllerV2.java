@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.api.v2.assembler.CityAssemblerV2;
 import com.ronijr.algafoodapi.api.v2.assembler.CityDisassemblerV2;
 import com.ronijr.algafoodapi.api.v2.assembler.CitySummaryAssemblerV2;
 import com.ronijr.algafoodapi.api.v2.model.CityModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.City;
 import com.ronijr.algafoodapi.domain.service.command.CityCommand;
 import com.ronijr.algafoodapi.domain.service.query.CityQuery;
@@ -34,16 +35,19 @@ public class CityControllerV2 {
     private final CitySummaryAssemblerV2 assemblerSummary;
     private final CityDisassemblerV2 disassembler;
 
+    @CheckSecurity.Cities.AllowRead
     @GetMapping
     public CollectionModel<CityModel.SummaryV2> list() {
         return assemblerSummary.toCollectionModel(queryService.findAll());
     }
 
+    @CheckSecurity.Cities.AllowRead
     @GetMapping("/{id}")
     public ResponseEntity<CityModel.OutputV2> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.Cities.AllowCreate
     @PostMapping
     public ResponseEntity<CityModel.OutputV2> create(@RequestBody @Valid CityModel.InputV2 input) {
         City created = commandService.create(disassembler.toDomain(input));
@@ -56,6 +60,7 @@ public class CityControllerV2 {
         return ResponseEntity.created(location).body(outputV2);
     }
 
+    @CheckSecurity.Cities.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.OutputV2> update(@PathVariable Long id, @RequestBody @Valid CityModel.InputV2 input) {
         City current = queryService.findByIdOrElseThrow(id);
@@ -63,6 +68,7 @@ public class CityControllerV2 {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cities.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.OutputV2> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CityModel.InputV2.class);
@@ -71,6 +77,7 @@ public class CityControllerV2 {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.Cities.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

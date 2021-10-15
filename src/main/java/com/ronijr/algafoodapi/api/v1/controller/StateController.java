@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.StateAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.StateDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.StateModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.State;
 import com.ronijr.algafoodapi.domain.service.command.StateCommand;
 import com.ronijr.algafoodapi.domain.service.query.StateQuery;
@@ -32,16 +33,19 @@ public class StateController {
     private final StateAssembler assembler;
     private final StateDisassembler disassembler;
 
+    @CheckSecurity.States.AllowRead
     @GetMapping
     public CollectionModel<StateModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
+    @CheckSecurity.States.AllowRead
     @GetMapping("/{id}")
     public ResponseEntity<StateModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.States.AllowCreate
     @PostMapping
     public ResponseEntity<StateModel.Output> create(@RequestBody @Valid StateModel.Input input) {
         State created = commandService.create(disassembler.toDomain(input));
@@ -54,6 +58,7 @@ public class StateController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @CheckSecurity.States.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<StateModel.Output> update(@PathVariable Long id, @RequestBody @Valid StateModel.Input input) {
         State current = queryService.findByIdOrElseThrow(id);
@@ -61,6 +66,7 @@ public class StateController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.States.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<StateModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, StateModel.Input.class);
@@ -69,6 +75,7 @@ public class StateController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.States.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
