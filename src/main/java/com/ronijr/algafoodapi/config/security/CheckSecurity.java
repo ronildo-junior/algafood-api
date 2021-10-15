@@ -97,20 +97,6 @@ public @interface CheckSecurity {
         @interface AllowRead {}
     }
 
-    @interface Permissions {
-        @PreAuthorize(Scope.ALLOW_WRITE + AND + Permission.ALLOW_CREATE)
-        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
-        @interface AllowCreate {}
-
-        @PreAuthorize(Scope.ALLOW_WRITE + AND + Permission.ALLOW_EDIT)
-        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
-        @interface AllowEdit {}
-
-        @PreAuthorize(Scope.ALLOW_WRITE + AND + Permission.ALLOW_DELETE)
-        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
-        @interface AllowDelete {}
-    }
-
     @interface Products {
         @PreAuthorize(Scope.ALLOW_WRITE + AND +
                 "(" + Product.ALLOW_CREATE + OR + Restaurant.MANAGE_RESTAURANT + ")")
@@ -161,6 +147,42 @@ public @interface CheckSecurity {
         @interface AllowDelete {}
 
         @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
+    }
+
+    @interface Users {
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + "(" + User.ALLOW_EDIT + OR + User.SELF + ")")
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowEdit {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + User.SELF)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowEditPassword {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + User.ALLOW_DELETE)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + User.ALLOW_READ)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
+    }
+
+    @interface UserGroups {
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + UserGroup.ALLOW_CREATE)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowCreate {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + UserGroup.ALLOW_EDIT)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowEdit {}
+
+        @PreAuthorize(Scope.ALLOW_WRITE + AND + UserGroup.ALLOW_DELETE)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowDelete {}
+
+        @PreAuthorize(Scope.ALLOW_READ + AND + UserGroup.ALLOW_READ)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }

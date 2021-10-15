@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.UserGroupAssembler;
 import com.ronijr.algafoodapi.api.v1.model.UserGroupModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class UserGroupUserController {
     private final UserQuery userQuery;
     private final UserGroupAssembler userGroupAssembler;
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping
     public CollectionModel<UserGroupModel.Output> list(@PathVariable Long userId) {
         CollectionModel<UserGroupModel.Output> model =
@@ -36,11 +38,13 @@ public class UserGroupUserController {
         return model;
     }
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping("/{userGroupId}")
     public UserGroupModel.Output get(@PathVariable Long userId, @PathVariable Long userGroupId) {
         return userGroupAssembler.toModel(userQuery.getUserGroup(userId, userGroupId));
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @PutMapping("/{userGroupId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associate(@PathVariable Long userId, @PathVariable Long userGroupId) {
@@ -48,6 +52,7 @@ public class UserGroupUserController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @DeleteMapping("/{userGroupId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociate(@PathVariable Long userId, @PathVariable Long userGroupId) {

@@ -112,6 +112,7 @@ public class SecurityConstants {
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
         public static final String ALLOW_READ = HAS_AUTHORITY + "('" + READ + "')";
+        public static final String SELF = "@algaSecurity.getUserId() == #userId";
     }
 
     @UtilityClass

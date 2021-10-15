@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.UserAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.UserDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.UserModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.User;
 import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
@@ -31,14 +32,16 @@ public class UserController {
     private final UserAssembler assembler;
     private final UserDisassembler disassembler;
 
+    @CheckSecurity.Users.AllowRead
     @GetMapping
     public CollectionModel<UserModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserModel.Output> get(@PathVariable Long id) {
-        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
+    @CheckSecurity.Users.AllowRead
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserModel.Output> get(@PathVariable Long userId) {
+        return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(userId)));
     }
 
     @PostMapping
@@ -47,33 +50,37 @@ public class UserController {
         UserModel.Output output = assembler.toModel(created);
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest().
-                path("/{id}").
+                path("/{userId}").
                 buildAndExpand(output.getId()).
                 toUri();
         return ResponseEntity.created(location).body(output);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserModel.Update input) {
+    @CheckSecurity.Users.AllowEdit
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserModel.Output> update(@PathVariable Long userId, @RequestBody @Valid UserModel.Update input) {
         User current = disassembler.inputUpdateToDomain(input);
-        return ResponseEntity.ok(assembler.toModel(commandService.update(id, current)));
+        return ResponseEntity.ok(assembler.toModel(commandService.update(userId, current)));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
+    @CheckSecurity.Users.AllowEdit
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UserModel.Output> updatePartial(@PathVariable Long userId, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, UserModel.Update.class);
-        return ResponseEntity.ok(assembler.toModel(commandService.updatePartial(id, patchMap)));
+        return ResponseEntity.ok(assembler.toModel(commandService.updatePartial(userId, patchMap)));
     }
 
-    @DeleteMapping("/{id}")
+    @CheckSecurity.Users.AllowDelete
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        commandService.delete(id);
+    public void delete(@PathVariable Long userId) {
+        commandService.delete(userId);
     }
 
-    @PutMapping("/{id}/password")
+    @CheckSecurity.Users.AllowEditPassword
+    @PutMapping("/{userId}/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updatePassword(@PathVariable Long id, @RequestBody @Valid UserModel.UpdatePassword input) {
-        commandService.updatePassword(id, input.getPassword(), input.getNewPassword());
+    public void updatePassword(@PathVariable Long userId, @RequestBody @Valid UserModel.UpdatePassword input) {
+        commandService.updatePassword(userId, input.getPassword(), input.getNewPassword());
     }
 }

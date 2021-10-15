@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.PermissionAssembler;
 import com.ronijr.algafoodapi.api.v1.model.PermissionModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class UserGroupPermissionController {
     private final UserGroupQuery userGroupQuery;
     private final PermissionAssembler permissionAssembler;
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping
     public CollectionModel<PermissionModel.Output> list(@PathVariable Long userGroupId) {
         CollectionModel<PermissionModel.Output> collectionModel =
@@ -36,11 +38,13 @@ public class UserGroupPermissionController {
         return collectionModel;
     }
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping("/{permissionId}")
     public ResponseEntity<PermissionModel.Output> get(@PathVariable Long userGroupId, @PathVariable Long permissionId) {
         return ResponseEntity.ok(permissionAssembler.toModel(userGroupQuery.getPermission(userGroupId, permissionId)));
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @PutMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> associatePermission(@PathVariable Long userGroupId, @PathVariable Long permissionId) {
@@ -48,6 +52,7 @@ public class UserGroupPermissionController {
         return ResponseEntity.noContent().build();
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @DeleteMapping("/{permissionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> disassociatePermission(@PathVariable Long userGroupId, @PathVariable Long permissionId) {

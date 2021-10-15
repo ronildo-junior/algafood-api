@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 import com.ronijr.algafoodapi.api.v1.assembler.UserGroupAssembler;
 import com.ronijr.algafoodapi.api.v1.assembler.UserGroupDisassembler;
 import com.ronijr.algafoodapi.api.v1.model.UserGroupModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
 import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
@@ -32,16 +33,19 @@ public class UserGroupController {
     private final UserGroupAssembler assembler;
     private final UserGroupDisassembler disassembler;
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping
     public CollectionModel<UserGroupModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
+    @CheckSecurity.UserGroups.AllowRead
     @GetMapping("/{id}")
     public ResponseEntity<UserGroupModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.UserGroups.AllowCreate
     @PostMapping
     public ResponseEntity<UserGroupModel.Output> create(@RequestBody @Valid UserGroupModel.Input input) {
         UserGroup created = commandService.create(disassembler.toDomain(input));
@@ -54,6 +58,7 @@ public class UserGroupController {
         return ResponseEntity.created(location).body(output);
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<UserGroupModel.Output> update(@PathVariable Long id, @RequestBody @Valid UserGroupModel.Input input) {
         UserGroup current = queryService.findByIdOrElseThrow(id);
@@ -61,6 +66,7 @@ public class UserGroupController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.UserGroups.AllowEdit
     @PatchMapping("/{id}")
     public ResponseEntity<UserGroupModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, UserGroupModel.Input.class);
@@ -69,6 +75,7 @@ public class UserGroupController {
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
 
+    @CheckSecurity.UserGroups.AllowDelete
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
