@@ -158,3 +158,36 @@ values (04, 03), (04, 04), (04, 06), (04, 13), (04, 14), (04, 16), (04, 17);
 insert into user_group_permission (user_group_id, permission_id)
 select 05, id
 from permission;
+
+insert into oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+values (
+  'algafood-web', null, '$2a$12$qRYYYoZdeDP7E8vuCDBMWuJDUmxE0sluZny3J8sO/Pym6WGFwmbGC',
+  'READ,WRITE', 'password', null, null,
+  60 * 60 * 6, 60 * 24 * 60 * 60, null
+);
+
+insert into oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+values (
+  'food-analytics', null, '$2a$12$X5vvcu9sgULqj/Dp7Cssten2bN8yqqO0xb/WSYj9gjxxBnLNsCWBC',
+  'READ,WRITE', 'authorization_code', 'http://127.0.0.1:8082', null,
+  null, null, null
+);
+
+insert into oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+values (
+  'external-service', null, '$2a$12$G6cmHFDIZD3a0vw01DvjkuH.ir8FWqnQbbsWngHoUVZJB/uYvqMGO',
+  'READ,WRITE', 'client_credentials', null, 'READ_ORDERS',
+  null, null, null
+);
