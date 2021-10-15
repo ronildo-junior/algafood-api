@@ -151,6 +151,13 @@ public @interface CheckSecurity {
         @interface AllowRead {}
     }
 
+    @interface Statistics {
+        @PreAuthorize(Scope.ALLOW_READ + AND +
+                "(" + Order.ALLOW_READ + OR + Restaurant.MANAGE_RESTAURANT + ")")
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowIssueDailySales {}
+    }
+
     @interface Users {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + "(" + User.ALLOW_EDIT + OR + User.SELF + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)

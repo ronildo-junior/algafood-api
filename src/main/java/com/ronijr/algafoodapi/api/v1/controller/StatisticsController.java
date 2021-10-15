@@ -1,6 +1,7 @@
 package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.model.StatisticsModel;
+import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.filter.DailySaleFilter;
 import com.ronijr.algafoodapi.domain.model.dto.DailySale;
 import com.ronijr.algafoodapi.domain.service.query.SaleQuery;
@@ -26,6 +27,7 @@ public class StatisticsController {
     private final SaleQuery saleQuery;
     private final SaleReport saleReport;
 
+    @CheckSecurity.Statistics.AllowIssueDailySales
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public StatisticsModel statistics() {
         var model = new StatisticsModel();
@@ -33,12 +35,14 @@ public class StatisticsController {
         return model;
     }
 
+    @CheckSecurity.Statistics.AllowIssueDailySales
     @GetMapping(value = "/daily-sales", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<DailySale> list(
             DailySaleFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
          return saleQuery.queryDailySales(filter, timeOffset);
     }
 
+    @CheckSecurity.Statistics.AllowIssueDailySales
     @GetMapping(value = "/daily-sales", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> listPDF(
             DailySaleFilter filter, @RequestParam(required = false, defaultValue = "+00:00") String timeOffset) {
