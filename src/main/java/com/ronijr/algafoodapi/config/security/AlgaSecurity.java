@@ -36,4 +36,18 @@ public class AlgaSecurity {
         }
         return orderQuery.userManageOrder(getUserId(), code);
     }
+
+    public boolean userAuthenticatedEquals(Long userId) {
+        return getUserId() != null && userId != null && getUserId().equals(userId);
+    }
+
+    public boolean hasAuthority(String authorityName) {
+        return getAuthentication().getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals(authorityName));
+    }
+
+    public boolean allowManageOrder(String orderCode) {
+        return hasAuthority(SecurityConstants.Scope.ALLOW_WRITE) &&
+                (hasAuthority(SecurityConstants.Order.ALLOW_EDIT) || userManageOrder(orderCode));
+    }
 }

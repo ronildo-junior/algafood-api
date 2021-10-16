@@ -58,15 +58,13 @@ public @interface CheckSecurity {
 
         @PreAuthorize(Scope.ALLOW_READ + AND
                 + "(" + Order.ALLOW_READ
-                + OR + "@algaSecurity.getUserId() == #filter.customerId"
+                + OR + "@algaSecurity.userAuthenticatedEquals(#filter.customerId)"
                 + OR + "@algaSecurity.manageRestaurant(#filter.restaurantId)" + ")")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         @interface AllowList {}
 
-        @PreAuthorize(Scope.ALLOW_WRITE + AND +
-                "(" + Order.ALLOW_EDIT
-                + OR + "@algaSecurity.userManageOrder(#orderCode))")
+        @PreAuthorize("@algaSecurity.allowManageOrder(#orderCode)")
         @Retention(RetentionPolicy.RUNTIME)
         @Target(ElementType.METHOD)
         @interface AllowManage {}

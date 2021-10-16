@@ -16,6 +16,7 @@ truncate table `user_group_permission`;
 truncate table `restaurant_manager`;
 truncate table `order`;
 truncate table `order_item`;
+truncate table `oauth_client_details`;
 -- enable foreign key check
 set foreign_key_checks = 1;
 

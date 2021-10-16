@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.OrderModel;
 import com.ronijr.algafoodapi.config.mapper.OrderMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -14,6 +15,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 public class OrderAssembler extends RepresentationModelAssemblerSupport<Order, OrderModel.Output> {
     @Autowired
     private OrderMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public OrderAssembler() {
         super(Order.class, OrderModel.Output.class);
@@ -24,14 +27,16 @@ public class OrderAssembler extends RepresentationModelAssemblerSupport<Order, O
         OrderModel.Output model = mapper.entityToOutput(order);
 
         model.add(linkToOrder(order.getCode()));
-        if (order.canCancel()) {
-            model.add(linkToOrderCancellation(order.getCode(), "cancellation"));
-        }
-        if (order.canConfirm()) {
-            model.add(linkToOrderConfirmation(order.getCode(), "confirmation"));
-        }
-        if (order.canDelivery()) {
-            model.add(linkToOrderDelivery(order.getCode(), "delivery"));
+        if (algaSecurity.allowManageOrder(order.getCode())) {
+            if (order.canCancel()) {
+                model.add(linkToOrderCancellation(order.getCode(), "cancellation"));
+            }
+            if (order.canConfirm()) {
+                model.add(linkToOrderConfirmation(order.getCode(), "confirmation"));
+            }
+            if (order.canDelivery()) {
+                model.add(linkToOrderDelivery(order.getCode(), "delivery"));
+            }
         }
         model.add(linkToStatusOrder(order.getCode(), "status-info"));
         model.add(linkToOrders("order-list"));
