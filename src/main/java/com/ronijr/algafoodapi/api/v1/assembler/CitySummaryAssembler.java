@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.CityModel;
 import com.ronijr.algafoodapi.config.mapper.CityMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -15,6 +16,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.linkToCity;
 public class CitySummaryAssembler extends RepresentationModelAssemblerSupport<City, CityModel.Summary> {
     @Autowired
     private CityMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public CitySummaryAssembler() {
         super(City.class, CityModel.Summary.class);
@@ -24,7 +27,9 @@ public class CitySummaryAssembler extends RepresentationModelAssemblerSupport<Ci
     public CityModel.Summary toModel(City city) {
         CityModel.Summary model = mapper.entityToSummary(city);
         model.add(linkToCity(city.getId()));
-        model.add(linkToCities("city-list"));
+        if (algaSecurity.allowQueryCities()) {
+            model.add(linkToCities("city-list"));
+        }
         return model;
     }
 

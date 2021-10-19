@@ -25,8 +25,9 @@ public class OrderAssembler extends RepresentationModelAssemblerSupport<Order, O
     @Override
     public OrderModel.Output toModel(Order order) {
         OrderModel.Output model = mapper.entityToOutput(order);
-
         model.add(linkToOrder(order.getCode()));
+        model.add(linkToStatusOrder(order.getCode(), "status-info"));
+        model.getDeliveryAddress().getCity().add(linkToCity(order.getDeliveryAddress().getCity().getId()));
         if (algaSecurity.allowManageOrder(order.getCode())) {
             if (order.canCancel()) {
                 model.add(linkToOrderCancellation(order.getCode(), "cancellation"));
@@ -38,17 +39,23 @@ public class OrderAssembler extends RepresentationModelAssemblerSupport<Order, O
                 model.add(linkToOrderDelivery(order.getCode(), "delivery"));
             }
         }
-        model.add(linkToStatusOrder(order.getCode(), "status-info"));
-        model.add(linkToOrders("order-list"));
-
-        model.getCustomer().add(linkToUser(order.getCustomer().getId()));
-        model.getDeliveryAddress().getCity().add(linkToCity(order.getDeliveryAddress().getCity().getId()));
-        model.getPaymentMethod().add(linkToPaymentMethod(order.getPaymentMethod().getId()));
-        model.getRestaurant().add(linkToRestaurant(order.getRestaurant().getId()));
-        model.getItems().forEach(item ->
-            item.add(linkToProduct(order.getRestaurant().getId(), item.getProductId(), "product"))
-        );
-
+        if (algaSecurity.allowQueryOrders()) {
+            model.add(linkToOrders("order-list"));
+        }
+        if (algaSecurity.allowQueryUsers()) {
+            model.getCustomer().add(linkToUser(order.getCustomer().getId()));
+        }
+        if (algaSecurity.allowQueryPaymentMethods()) {
+            model.getPaymentMethod().add(linkToPaymentMethod(order.getPaymentMethod().getId()));
+        }
+        if (algaSecurity.allowQueryRestaurants()) {
+            model.getRestaurant().add(linkToRestaurant(order.getRestaurant().getId()));
+        }
+        if (algaSecurity.allowQueryProducts()) {
+            model.getItems().forEach(item ->
+                item.add(linkToProduct(order.getRestaurant().getId(), item.getProductId(), "product"))
+            );
+        }
         return model;
     }
 

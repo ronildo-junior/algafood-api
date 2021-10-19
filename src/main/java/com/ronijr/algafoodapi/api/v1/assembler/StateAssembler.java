@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.StateModel;
 import com.ronijr.algafoodapi.config.mapper.StateMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -15,6 +16,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.linkToStates;
 public class StateAssembler extends RepresentationModelAssemblerSupport<State, StateModel.Output> {
     @Autowired
     private StateMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public StateAssembler() {
         super(State.class, StateModel.Output.class);
@@ -24,7 +27,9 @@ public class StateAssembler extends RepresentationModelAssemblerSupport<State, S
     public StateModel.Output toModel(State state) {
         StateModel.Output model = mapper.entityToOutput(state);
         model.add(linkToState(model.getId()));
-        model.add(linkToStates("state-list"));
+        if (algaSecurity.allowQueryStates()) {
+            model.add(linkToStates("state-list"));
+        }
         return model;
     }
 

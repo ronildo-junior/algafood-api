@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.PaymentMethodModel;
 import com.ronijr.algafoodapi.config.mapper.PaymentMethodMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.PaymentMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -15,6 +16,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.linkToPaymentMetho
 public class PaymentMethodAssembler extends RepresentationModelAssemblerSupport<PaymentMethod, PaymentMethodModel.Output> {
     @Autowired
     private PaymentMethodMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public PaymentMethodAssembler() {
         super(PaymentMethod.class, PaymentMethodModel.Output.class);
@@ -24,7 +27,9 @@ public class PaymentMethodAssembler extends RepresentationModelAssemblerSupport<
     public PaymentMethodModel.Output toModel(PaymentMethod paymentMethod) {
         PaymentMethodModel.Output model = mapper.entityToOutput(paymentMethod);
         model.add(linkToPaymentMethod(paymentMethod.getId()));
-        model.add(linkToPaymentMethods("payment-method-list"));
+        if (algaSecurity.allowQueryPaymentMethods()) {
+            model.add(linkToPaymentMethods("payment-method-list"));
+        }
         return model;
     }
 

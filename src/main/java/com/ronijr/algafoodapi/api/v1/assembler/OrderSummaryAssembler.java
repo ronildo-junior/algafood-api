@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.OrderModel;
 import com.ronijr.algafoodapi.config.mapper.OrderMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -14,6 +15,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 public class OrderSummaryAssembler extends RepresentationModelAssemblerSupport<Order, OrderModel.Summary> {
     @Autowired
     private OrderMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public OrderSummaryAssembler() {
         super(Order.class, OrderModel.Summary.class);
@@ -22,13 +25,17 @@ public class OrderSummaryAssembler extends RepresentationModelAssemblerSupport<O
     @Override
     public OrderModel.Summary toModel(Order order) {
         OrderModel.Summary model = mapper.entityToSummary(order);
-
         model.add(linkToOrder(order.getCode()));
         model.add(linkToStatusOrder(order.getCode(), "status-info"));
-        model.add(linkToOrders("order-list"));
-
-        model.getCustomer().add(linkToUser(order.getCustomer().getId()));
-        model.getRestaurant().add(linkToRestaurant(order.getRestaurant().getId()));
+        if (algaSecurity.allowQueryOrders()) {
+            model.add(linkToOrders("order-list"));
+        }
+        if (algaSecurity.allowQueryUsers()) {
+            model.getCustomer().add(linkToUser(order.getCustomer().getId()));
+        }
+        if (algaSecurity.allowQueryRestaurants()) {
+            model.getRestaurant().add(linkToRestaurant(order.getRestaurant().getId()));
+        }
         return model;
     }
 

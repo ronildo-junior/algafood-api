@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.CuisineModel;
 import com.ronijr.algafoodapi.config.mapper.CuisineMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.Cuisine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -15,6 +16,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.linkToCuisines;
 public class CuisineAssembler extends RepresentationModelAssemblerSupport<Cuisine, CuisineModel.Output> {
     @Autowired
     private CuisineMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public CuisineAssembler() {
         super(Cuisine.class, CuisineModel.Output.class);
@@ -24,7 +27,9 @@ public class CuisineAssembler extends RepresentationModelAssemblerSupport<Cuisin
     public CuisineModel.Output toModel(Cuisine cuisine) {
         CuisineModel.Output model = mapper.entityToOutput(cuisine);
         model.add(linkToCuisine(cuisine.getId()));
-        model.add(linkToCuisines("cuisine-list"));
+        if (algaSecurity.allowQueryCuisines()) {
+            model.add(linkToCuisines("cuisine-list"));
+        }
         return model;
     }
 

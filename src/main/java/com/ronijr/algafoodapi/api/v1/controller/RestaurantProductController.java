@@ -30,6 +30,7 @@ public class RestaurantProductController {
     private final ProductAssembler productAssembler;
     private final ProductDisassembler productDisassembler;
 
+    @CheckSecurity.Products.AllowRead
     @GetMapping
     public CollectionModel<ProductModel.Output> listActive(@PathVariable Long restaurantId) {
         Restaurant restaurant = restaurantQuery.findByIdOrElseThrow(restaurantId);
@@ -37,6 +38,7 @@ public class RestaurantProductController {
                 .add(linkToProducts(restaurantId));
     }
 
+    @CheckSecurity.Products.AllowRead
     @GetMapping(params = "includeInactive")
     public CollectionModel<ProductModel.Output> listAll(@RequestParam(required = false, defaultValue = "false") Boolean includeInactive, @PathVariable Long restaurantId) {
         if (Boolean.TRUE.equals(includeInactive)) {
@@ -46,6 +48,7 @@ public class RestaurantProductController {
         return listActive(restaurantId);
     }
 
+    @CheckSecurity.Products.AllowRead
     @GetMapping("/{productId}")
     public ResponseEntity<ProductModel.Output> get(@PathVariable Long restaurantId, @PathVariable Long productId) {
         return ResponseEntity.ok(productAssembler.toModel(restaurantQuery.getProduct(restaurantId, productId)));

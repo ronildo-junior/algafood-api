@@ -25,6 +25,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryCities()";
     }
 
     @UtilityClass
@@ -35,6 +36,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryCuisines()";
     }
 
     @UtilityClass
@@ -57,6 +59,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryPaymentMethods()";
     }
 
     @UtilityClass
@@ -79,6 +82,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryProducts()";
     }
 
     @UtilityClass
@@ -89,6 +93,7 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryRestaurants()";
         public static final String MANAGE_RESTAURANT = "@algaSecurity.manageRestaurant(#restaurantId)";
     }
 
@@ -100,6 +105,12 @@ public class SecurityConstants {
         public static final String ALLOW_CREATE = HAS_AUTHORITY + "('" + CREATE + "')";
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryStates()";
+    }
+
+    @UtilityClass
+    public static class Statistics {
+        public static final String READ_DAILY_SALES = "READ_DAILY_SALES";
     }
 
     @UtilityClass
@@ -112,6 +123,7 @@ public class SecurityConstants {
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
         public static final String ALLOW_READ = HAS_AUTHORITY + "('" + READ + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryUsers()";
         public static final String SELF = "@algaSecurity.userAuthenticatedEquals(#userId)";
     }
 
@@ -125,5 +137,6 @@ public class SecurityConstants {
         public static final String ALLOW_EDIT = HAS_AUTHORITY + "('" + EDIT + "')";
         public static final String ALLOW_DELETE = HAS_AUTHORITY + "('" + DELETE + "')";
         public static final String ALLOW_READ = HAS_AUTHORITY + "('" + READ + "')";
+        public static final String ALLOW_QUERY = "@algaSecurity.allowQueryUsers()";
     }
 }

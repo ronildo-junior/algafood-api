@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.PaymentMethodAssembler;
 import com.ronijr.algafoodapi.api.v1.model.PaymentMethodModel;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.model.Restaurant;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
@@ -24,6 +25,7 @@ public class RestaurantPaymentMethodController {
     private final RestaurantQuery queryService;
     private final RestaurantCommand restaurantCommand;
     private final PaymentMethodAssembler paymentMethodAssembler;
+    private final AlgaSecurity algaSecurity;
 
     @GetMapping
     public CollectionModel<PaymentMethodModel.Output> list(@PathVariable Long restaurantId){
@@ -31,12 +33,14 @@ public class RestaurantPaymentMethodController {
         var collectionModel =
                 paymentMethodAssembler.toCollectionModel(restaurant.getPaymentMethods())
                         .removeLinks()
-                        .add(linkToRestaurantPaymentMethods(restaurantId))
-                        .add(linkToRestaurantPaymentMethodAssociation(restaurantId, "associate"));
-        collectionModel.getContent().forEach(paymentMethod ->
-            paymentMethod
-                    .add(linkToRestaurantPaymentMethodDisassociation(restaurantId, paymentMethod.getId(), "disassociate"))
-        );
+                        .add(linkToRestaurantPaymentMethods(restaurantId));
+        if (algaSecurity.allowManageRestaurant(restaurantId)) {
+            collectionModel.add(linkToRestaurantPaymentMethodAssociation(restaurantId, "associate"));
+            collectionModel.getContent().forEach(paymentMethod ->
+                    paymentMethod
+                            .add(linkToRestaurantPaymentMethodDisassociation(restaurantId, paymentMethod.getId(), "disassociate"))
+            );
+        }
         return collectionModel;
     }
 

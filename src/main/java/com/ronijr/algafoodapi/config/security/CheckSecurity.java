@@ -24,7 +24,7 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
-        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @PreAuthorize(City.ALLOW_QUERY)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }
@@ -41,6 +41,10 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + Cuisine.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Cuisine.ALLOW_QUERY)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 
     @interface Orders {
@@ -90,7 +94,7 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
-        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @PreAuthorize(PaymentMethod.ALLOW_QUERY)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }
@@ -110,6 +114,10 @@ public @interface CheckSecurity {
                 "(" + Product.ALLOW_DELETE + OR + Restaurant.MANAGE_RESTAURANT + ")")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Product.ALLOW_QUERY)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 
     @interface Restaurants {
@@ -129,6 +137,10 @@ public @interface CheckSecurity {
         @PreAuthorize(Scope.ALLOW_WRITE + AND + Restaurant.ALLOW_DELETE)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
+
+        @PreAuthorize(Restaurant.ALLOW_QUERY)
+        @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
+        @interface AllowRead {}
     }
 
     @interface States {
@@ -144,14 +156,13 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
-        @PreAuthorize(Scope.ALLOW_READ + AND + IS_AUTHENTICATED)
+        @PreAuthorize(State.ALLOW_QUERY)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }
 
     @interface Statistics {
-        @PreAuthorize(Scope.ALLOW_READ + AND +
-                "(" + Order.ALLOW_READ + OR + Restaurant.MANAGE_RESTAURANT + ")")
+        @PreAuthorize("@algaSecurity.allowQueryDailySales()")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowIssueDailySales {}
     }
@@ -169,7 +180,7 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
-        @PreAuthorize(Scope.ALLOW_READ + AND + User.ALLOW_READ)
+        @PreAuthorize(User.ALLOW_QUERY)
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }
@@ -187,7 +198,7 @@ public @interface CheckSecurity {
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowDelete {}
 
-        @PreAuthorize(Scope.ALLOW_READ + AND + UserGroup.ALLOW_READ)
+        @PreAuthorize("@algaSecurity.allowEditUserGroup")
         @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD)
         @interface AllowRead {}
     }

@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.assembler;
 
 import com.ronijr.algafoodapi.api.v1.model.UserGroupModel;
 import com.ronijr.algafoodapi.config.mapper.UserGroupMapper;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.domain.model.UserGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -16,6 +17,8 @@ import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 public class UserGroupAssembler extends RepresentationModelAssemblerSupport<UserGroup, UserGroupModel.Output> {
     @Autowired
     private UserGroupMapper mapper;
+    @Autowired
+    private AlgaSecurity algaSecurity;
 
     public UserGroupAssembler() {
         super(UserGroup.class, UserGroupModel.Output.class);
@@ -25,8 +28,10 @@ public class UserGroupAssembler extends RepresentationModelAssemblerSupport<User
     public UserGroupModel.Output toModel(UserGroup resource) {
         UserGroupModel.Output model = mapper.entityToOutput(resource);
         model.add(linkToUserGroup(resource.getId()));
-        model.add(linkToUserGroups("user-group-list"));
-        model.add(linkToUserGroupPermissions(resource.getId(), "permissions"));
+        if (algaSecurity.allowQueryUserGroupPermissions()) {
+            model.add(linkToUserGroups("user-group-list"));
+            model.add(linkToUserGroupPermissions(resource.getId(), "permissions"));
+        }
         return model;
     }
 

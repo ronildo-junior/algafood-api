@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.UserAssembler;
 import com.ronijr.algafoodapi.api.v1.model.UserModel;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.RestaurantCommand;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
@@ -23,17 +24,20 @@ public class RestaurantUserController {
     private final RestaurantCommand restaurantCommand;
     private final RestaurantQuery restaurantQuery;
     private final UserAssembler userAssembler;
+    private final AlgaSecurity algaSecurity;
 
     @GetMapping
     public CollectionModel<UserModel.Output> list(@PathVariable Long restaurantId) {
         var collectionModel =
                 userAssembler.toCollectionModel(restaurantQuery.getUsers(restaurantId))
                         .removeLinks()
-                        .add(linkToManagersRestaurant(restaurantId))
-                        .add(linkToManagersRestaurantAssociation(restaurantId, "associate"));
-        collectionModel.forEach(user ->
-            user.add(linkToManagersRestaurantDisassociation(restaurantId, user.getId(), "disassociate"))
-        );
+                        .add(linkToManagersRestaurant(restaurantId));
+        if (algaSecurity.allowEditRestaurant()) {
+            collectionModel.add(linkToManagersRestaurantAssociation(restaurantId, "associate"));
+            collectionModel.forEach(user ->
+                    user.add(linkToManagersRestaurantDisassociation(restaurantId, user.getId(), "disassociate"))
+            );
+        }
         return collectionModel;
     }
 

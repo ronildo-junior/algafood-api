@@ -2,7 +2,9 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.PermissionAssembler;
 import com.ronijr.algafoodapi.api.v1.model.PermissionModel;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.config.security.CheckSecurity;
+import com.ronijr.algafoodapi.domain.model.Permission;
 import com.ronijr.algafoodapi.domain.service.command.UserGroupCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 import static com.ronijr.algafoodapi.api.v1.hateoas.AlgaLinks.*;
 
@@ -23,18 +27,21 @@ public class UserGroupPermissionController {
     private final UserGroupCommand userGroupCommand;
     private final UserGroupQuery userGroupQuery;
     private final PermissionAssembler permissionAssembler;
+    private final AlgaSecurity algaSecurity;
 
     @CheckSecurity.UserGroups.AllowRead
     @GetMapping
     public CollectionModel<PermissionModel.Output> list(@PathVariable Long userGroupId) {
+        Set<Permission> permissions = userGroupQuery.listPermissions(userGroupId);
         CollectionModel<PermissionModel.Output> collectionModel =
-                permissionAssembler.toCollectionModel(userGroupQuery.listPermissions(userGroupId))
-                        .removeLinks()
-                        .add(linkToUserGroupPermissions(userGroupId))
-                        .add(linkToUserGroupPermissionAssociation(userGroupId, "associate"));
-        collectionModel.forEach(permission ->
-            permission.add(linkToUserGroupPermissionDisassociation(userGroupId, permission.getId(), "disassociate"))
-        );
+                permissionAssembler.toCollectionModel(permissions).removeLinks();
+        if (algaSecurity.allowEditUserGroup()) {
+            collectionModel.add(linkToUserGroupPermissions(userGroupId))
+                    .add(linkToUserGroupPermissionAssociation(userGroupId, "associate"));
+            collectionModel.forEach(permission ->
+                    permission.add(linkToUserGroupPermissionDisassociation(userGroupId, permission.getId(), "disassociate"))
+            );
+        }
         return collectionModel;
     }
 

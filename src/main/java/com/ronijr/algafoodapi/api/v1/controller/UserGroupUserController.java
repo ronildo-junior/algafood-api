@@ -2,6 +2,7 @@ package com.ronijr.algafoodapi.api.v1.controller;
 
 import com.ronijr.algafoodapi.api.v1.assembler.UserGroupAssembler;
 import com.ronijr.algafoodapi.api.v1.model.UserGroupModel;
+import com.ronijr.algafoodapi.config.security.AlgaSecurity;
 import com.ronijr.algafoodapi.config.security.CheckSecurity;
 import com.ronijr.algafoodapi.domain.service.command.UserCommand;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
@@ -23,6 +24,7 @@ public class UserGroupUserController {
     private final UserCommand userCommand;
     private final UserQuery userQuery;
     private final UserGroupAssembler userGroupAssembler;
+    private final AlgaSecurity algaSecurity;
 
     @CheckSecurity.UserGroups.AllowRead
     @GetMapping
@@ -30,11 +32,13 @@ public class UserGroupUserController {
         CollectionModel<UserGroupModel.Output> model =
                 userGroupAssembler.toCollectionModel(userQuery.getUserGroupList(userId))
                         .removeLinks()
-                        .add(linkToUserGroupUser(userId))
-                        .add(linkToUserGroupAssociation(userId, "associate"));
-        model.forEach(userGroup ->
-            userGroup.add(linkToUserGroupDisassociation(userId, userGroup.getId(),"disassociate"))
-        );
+                        .add(linkToUserGroupUser(userId));
+        if (algaSecurity.allowEditUserGroup()) {
+            model.add(linkToUserGroupAssociation(userId, "associate"));
+            model.forEach(userGroup ->
+                    userGroup.add(linkToUserGroupDisassociation(userId, userGroup.getId(), "disassociate"))
+            );
+        }
         return model;
     }
 

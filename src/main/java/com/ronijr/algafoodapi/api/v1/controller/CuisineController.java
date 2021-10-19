@@ -33,16 +33,19 @@ public class CuisineController {
     private final CuisineAssembler assembler;
     private final CuisineDisassembler disassembler;
 
+    @CheckSecurity.Cuisines.AllowRead
     @GetMapping
     public CollectionModel<CuisineModel.Output> list() {
         return assembler.toCollectionModel(queryService.findAll());
     }
 
+    @CheckSecurity.Cuisines.AllowRead
     @GetMapping("/{id}")
     public ResponseEntity<CuisineModel.Output> get(@PathVariable Long id) {
         return ResponseEntity.ok(assembler.toModel(queryService.findByIdOrElseThrow(id)));
     }
 
+    @CheckSecurity.Cuisines.AllowRead
     @GetMapping("/by-name")
     public CollectionModel<CuisineModel.Output> cuisinesByName(@RequestParam String name) {
         return assembler.toCollectionModel(queryService.findByName(name));
