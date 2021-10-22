@@ -79,7 +79,9 @@ insert into `user` (id, name, email, password, created_at) values
     (2, 'Maria Joaquina', 'maria.vnd@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
     (3, 'José Souza', 'jose.aux@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
     (4, 'Sebastião Martins', 'sebastiao.cad@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
-    (5, 'Administrador', 'admin@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp);
+    (5, 'Administrador', 'admin@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp),
+    (6, 'Customer', 'customer@algafood.com', '$2a$12$7y5e.HiMFegfH/A3bT8YBuDRl/sSC8lMUEAnqP7bYhAAgrtoSFAl6', utc_timestamp);
+
 
 insert into user_group_user(user_id, user_group_id) values (1, 1), (1, 2), (2, 2), (5, 5);
 

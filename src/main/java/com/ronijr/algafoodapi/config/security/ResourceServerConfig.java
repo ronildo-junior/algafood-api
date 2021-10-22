@@ -1,6 +1,8 @@
 package com.ronijr.algafoodapi.config.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,28 +26,20 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
             //only tests, not safe to production.
             .csrf().disable()
             .cors().and()
+            .formLogin().loginPage("/login").and()
+                .authorizeRequests()
+                    .antMatchers("/oauth/**").authenticated().and()
             .oauth2ResourceServer()
                 //DEFAULT_MAX_CLOCK_SKEW = 60 Seconds, then token expiration time = exp + 60s
                 .jwt()
                     .jwtAuthenticationConverter(jwtAuthenticationConverter());
     }
 
-    /*@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST).hasAuthority("WRITE")
-                .antMatchers(HttpMethod.PUT).hasAuthority("WRITE")
-                .antMatchers(HttpMethod.GET).authenticated()
-                .anyRequest().denyAll()
-            .and()
-                .cors()
-            .and()
-                .oauth2ResourceServer()
-                        //.opaqueToken()
-                    //DEFAULT_MAX_CLOCK_SKEW = 60 Seconds, then token expiration time = exp + 60s
-                .jwt()
-                    .jwtAuthenticationConverter(jwtAuthenticationConverter());
-    }*/
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtAuthenticationConverter = new JwtAuthenticationConverter();
@@ -63,11 +57,4 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
         });
         return jwtAuthenticationConverter;
     }
-
-    /* Symmetric Key
-    @Bean
-    public JwtDecoder jwtDecoder() {
-        var secretKey = new SecretKeySpec("1234567890-!@#$%¨&*()-qwertyuiop-asdfghjklç-mnbvzxcv".getBytes(), "HmacSHA256");
-        return NimbusJwtDecoder.withSecretKey(secretKey).build();
-    }*/
 }

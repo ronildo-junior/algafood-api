@@ -24,7 +24,7 @@ public class OrderConfirmedNotifier {
         var message = EmailService.Message.builder().
                 subject(order.getRestaurant().getName() + " - " + messageSource.getMessage("order.confirmed")).
                 recipient(order.getCustomer().getEmail()).
-                body("order-confirmed.html").
+                body("emails/order-confirmed.html").
                 variable("order", order).
                 build();
 

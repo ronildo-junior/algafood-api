@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.api.exception.handler.ProblemDetails;
 import com.ronijr.algafoodapi.api.v1.controller.CuisineController;
 import com.ronijr.algafoodapi.config.documentation.model.ControllerTag;
 import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -16,6 +17,8 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +52,7 @@ public class SpringDocConfig implements OperationCustomizer {
     public OpenAPI springShopOpenAPI() {
         OpenAPI openAPI = new OpenAPI().info(this.getInfo());
         addTags(openAPI);
+        addSecurity(openAPI);
         return openAPI;
     }
 
@@ -82,14 +86,12 @@ public class SpringDocConfig implements OperationCustomizer {
      */
     @Override
     public Operation customize(final Operation operation, final HandlerMethod handlerMethod) {
-        ControllerTag tag = ControllerTag.findByType(handlerMethod.getBeanType().getSimpleName()).stream().
-                findAny().
-                orElseThrow(() ->
-                        new EnumConstantNotPresentException(ControllerTag.class,
-                                handlerMethod.getBeanType().getSimpleName()));
-        operation.getTags().clear();
-        operation.addTagsItem(tag.getTitle());
-        addDefaultResponsesInMethod(handlerMethod, operation);
+        var tag = ControllerTag.findByType(handlerMethod.getBeanType().getSimpleName());
+        if (tag.isPresent()) {
+            operation.getTags().clear();
+            operation.addTagsItem(tag.get().getTitle());
+            addDefaultResponsesInMethod(handlerMethod, operation);
+        }
         return operation;
     }
 
@@ -276,6 +278,14 @@ public class SpringDocConfig implements OperationCustomizer {
                 .addTagsItem(ControllerTag.STATISTIC.getTag())
                 .addTagsItem(ControllerTag.USER.getTag())
                 .addTagsItem(ControllerTag.USER_GROUP.getTag());
+    }
+
+    private void addSecurity(final OpenAPI openAPI) {
+        openAPI.components(new Components().addSecuritySchemes("bearer-jwt",
+                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER).name("Authorization")))
+                .addSecurityItem(
+                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("READ", "WRITE")));
     }
 
     private Info getInfo() {
