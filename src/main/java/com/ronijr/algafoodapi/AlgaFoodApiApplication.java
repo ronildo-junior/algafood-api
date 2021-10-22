@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi;
 
+import com.ronijr.algafoodapi.config.io.Base64ProtocolResolver;
 import com.ronijr.algafoodapi.infrastructure.repository.CustomJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,8 @@ import java.util.TimeZone;
 public class AlgaFoodApiApplication {
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-		SpringApplication.run(AlgaFoodApiApplication.class, args);
+		var app = new SpringApplication(AlgaFoodApiApplication.class);
+		app.addListeners(new Base64ProtocolResolver());
+		app.run(args);
 	}
 }
