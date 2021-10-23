@@ -1,4 +1,10 @@
 -- disable foreign key check
+lock tables `city` write, `cuisine` write, `state` write, `payment_method` write,
+            `permission` write, `product` write, `product_photo` write, `restaurant` write,
+            `user` write, `user_group` write, `restaurant_payment_method` write, `user_group_user` write,
+            `user_group_permission` write, `restaurant_manager` write, `order` write, `order_item` write,
+            `oauth_client_details` write;
+
 set foreign_key_checks = 0;
 truncate table `city`;
 truncate table `cuisine`;
@@ -194,3 +200,5 @@ values (
   'READ,WRITE', 'client_credentials', null, 'READ_ORDERS',
   null, null, null
 );
+
+unlock tables;
