@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,8 @@ import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.approval.ApprovalStore;
 import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -37,15 +40,17 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	private final UserDetailsService userDetailsService;
 	private final JwtKeyStoreProperties jwtKeyStoreProperties;
 	private final DataSource dataSource;
+	private final RedisConnectionFactory redisConnectionFactory;
 
 	public AuthorizationServerConfig(PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
 									 UserDetailsService userDetailsService, JwtKeyStoreProperties jwtKeyStoreProperties,
-									 DataSource dataSource) {
+									 DataSource dataSource, RedisConnectionFactory redisConnectionFactory) {
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManager = authenticationManager;
 		this.userDetailsService = userDetailsService;
 		this.jwtKeyStoreProperties = jwtKeyStoreProperties;
 		this.dataSource = dataSource;
+		this.redisConnectionFactory = redisConnectionFactory;
 	}
 
 	@Override
@@ -65,11 +70,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		endpoints
 			.authenticationManager(authenticationManager)
 			.userDetailsService(userDetailsService)
+			.authorizationCodeServices(getStorageAuthCode())
 			.reuseRefreshTokens(false)
 			.accessTokenConverter(jwtAccessTokenConverter())
 			.approvalStore(approvalStore(endpoints.getTokenStore()))
 			.tokenGranter(tokenGranter(endpoints))
 			.tokenEnhancer(tokenEnhancerChain());
+	}
+
+	private AuthorizationCodeServices getStorageAuthCode() {
+		if (redisConnectionFactory != null) {
+			return new RedisAuthorizationCodeServices(redisConnectionFactory);
+		} else {
+			return new InMemoryAuthorizationCodeServices();
+		}
 	}
 
 	private TokenGranter tokenGranter(AuthorizationServerEndpointsConfigurer endpoints) {
