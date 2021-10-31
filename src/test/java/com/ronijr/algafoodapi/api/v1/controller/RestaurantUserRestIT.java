@@ -25,7 +25,7 @@ class RestaurantUserRestIT extends AbstractTest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = String.format("/restaurants/%s/managers", DataTest.USER_COUNT);
+        RestAssured.basePath = String.format("/v1/restaurants/%s/managers", DataTest.USER_COUNT);
         cleaner.clearTables();
         testData.createRestaurantBaseData();
     }

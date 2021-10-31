@@ -34,7 +34,7 @@ public class CustomJpaRepositoryImpl<T, D> extends SimpleJpaRepository<T, D> imp
     }
 
     @Override
-    public void detach(T entity) {
+    public void detach(Object entity) {
         entityManager.detach(entity);
     }
 }

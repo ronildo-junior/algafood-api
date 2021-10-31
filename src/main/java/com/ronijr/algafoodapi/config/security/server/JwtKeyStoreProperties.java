@@ -1,8 +1,10 @@
 package com.ronijr.algafoodapi.config.security.server;
 
+import com.ronijr.algafoodapi.infrastructure.EnvironmentConstants;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -10,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+@Profile(value = { EnvironmentConstants.HOMOLOGATION, EnvironmentConstants.PRODUCTION })
 @Getter @Setter
 @Validated
 @Component

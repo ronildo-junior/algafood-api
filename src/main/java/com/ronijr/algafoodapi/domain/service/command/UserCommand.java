@@ -9,6 +9,7 @@ import com.ronijr.algafoodapi.domain.service.query.UserGroupQuery;
 import com.ronijr.algafoodapi.domain.service.query.UserQuery;
 import com.ronijr.algafoodapi.domain.validation.ResourceValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +62,13 @@ public class UserCommand {
     }
 
     public void delete(Long id) throws EntityRelationshipException, EntityNotFoundException {
-        User user = findById(id);
-        userRepository.delete(user);
-        userRepository.flush();
+        try {
+            User user = findById(id);
+            userRepository.delete(user);
+            userRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new EntityRelationshipException(messageSource.getMessage("user.relationship.found", id));
+        }
     }
 
     public void associateUserGroup(Long userId, Long userGroupId) {

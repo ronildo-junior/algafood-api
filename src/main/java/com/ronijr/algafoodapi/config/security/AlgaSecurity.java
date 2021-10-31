@@ -2,7 +2,9 @@ package com.ronijr.algafoodapi.config.security;
 
 import com.ronijr.algafoodapi.domain.service.query.OrderQuery;
 import com.ronijr.algafoodapi.domain.service.query.RestaurantQuery;
-import lombok.AllArgsConstructor;
+import com.ronijr.algafoodapi.infrastructure.EnvironmentConstants;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -11,16 +13,21 @@ import org.springframework.stereotype.Component;
 import static com.ronijr.algafoodapi.config.security.SecurityConstants.*;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AlgaSecurity {
     private final RestaurantQuery restaurantQuery;
     private final OrderQuery orderQuery;
+    @Value("${spring.profiles.active:unknown}")
+    private String activeProfile;
 
     public Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
     public Long getUserId() {
+        if (currentProfileSkipSecurity()) {
+            return 1L;
+        }
         Jwt jwt = (Jwt) getAuthentication().getPrincipal();
         return jwt.getClaim("user_id");
     }
@@ -44,7 +51,7 @@ public class AlgaSecurity {
     }
 
     public boolean hasAuthority(String authorityName) {
-        return getAuthentication().getAuthorities().stream()
+        return currentProfileSkipSecurity() || getAuthentication().getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals(authorityName));
     }
 
@@ -53,15 +60,15 @@ public class AlgaSecurity {
     }
 
     public boolean isAuthenticated() {
-        return getAuthentication().isAuthenticated();
+        return currentProfileSkipSecurity() || getAuthentication().isAuthenticated();
     }
 
     public boolean hasScopeWrite() {
-        return hasAuthority(Scope.WRITE);
+        return currentProfileSkipSecurity() || hasAuthority(Scope.WRITE);
     }
 
     public boolean hasScopeRead() {
-        return hasAuthority(Scope.READ);
+        return currentProfileSkipSecurity() || hasAuthority(Scope.READ);
     }
 
     public boolean allowEditRestaurant() {
@@ -119,5 +126,10 @@ public class AlgaSecurity {
 
     public boolean allowQueryDailySales() {
         return hasScopeRead() && hasAuthority(Statistics.READ_DAILY_SALES);
+    }
+
+    private boolean currentProfileSkipSecurity() {
+        return !activeProfile.equals(EnvironmentConstants.HOMOLOGATION) &&
+                !activeProfile.equals(EnvironmentConstants.PRODUCTION);
     }
 }

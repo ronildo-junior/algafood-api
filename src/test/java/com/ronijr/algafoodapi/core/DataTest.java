@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.core;
 import com.ronijr.algafoodapi.domain.model.*;
 import com.ronijr.algafoodapi.domain.repository.*;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public final class DataTest {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final List<String> uuidList = new ArrayList<>();
+    private final PasswordEncoder passwordEncoder;
     public final static Integer CUISINE_COUNT = 6;
     public final static Integer CUISINE_RELATIONSHIP_BEGIN = 3;
     public final static Integer CUISINE_NON_EXISTENT_ID = CUISINE_COUNT + 1;
@@ -137,12 +139,12 @@ public final class DataTest {
     }
 
     public User createUser(int id) {
-        User userGroup = User.builder().
+        User user = User.builder().
                 name(getUserName(id)).
                 email("email" + id + "@gmail.com").
-                password("123").
+                password(passwordEncoder.encode("123")).
                 build();
-        return userRepository.save(userGroup);
+        return userRepository.save(user);
     }
 
     public Product createProduct(int id, Restaurant restaurant) {

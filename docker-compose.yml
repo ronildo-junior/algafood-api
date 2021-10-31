@@ -17,10 +17,18 @@ services:
   algafood-api:
     image: algafood-api
     command: ["/wait-for-it.sh", "algafood-mysql:3306", "-t", "30", "--", "java", "-jar", "api.jar"]
+    env_file: ./.env
     environment:
+      ALGAFOOD_EMAIL_SENDER: $ALGAFOOD_EMAIL_SENDER
+      ALGAFOOD_EMAIL_SANDBOX_RECIPIENT: $ALGAFOOD_EMAIL_SANDBOX_RECIPIENT
+      ALGAFOOD_STORAGE_S3_ACCESS-KEY: $ALGAFOOD_STORAGE_S3_ACCESS-KEY
+      ALGAFOOD_STORAGE_S3_SECRET-KEY: $ALGAFOOD_STORAGE_S3_SECRET-KEY
       DATABASE_HOST: algafood-mysql
-      SPRING_SESSION_STORE_TYPE: redis
+      LOGGING_LOGGLY_TOKEN: $LOGGING_LOGGLY_TOKEN
+      SPRING_MAIL_PASSWORD: $SPRING_MAIL_PASSWORD
+      SPRING_PROFILES_ACTIVE: homo
       SPRING_REDIS_HOST: algafood-redis
+      SPRING_SESSION_STORE_TYPE: redis
     networks:
       - algafood-network
     depends_on:

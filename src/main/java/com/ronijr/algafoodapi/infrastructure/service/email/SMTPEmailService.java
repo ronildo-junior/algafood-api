@@ -4,6 +4,7 @@ import com.ronijr.algafoodapi.config.email.EmailProperties;
 import com.ronijr.algafoodapi.domain.service.EmailService;
 import com.ronijr.algafoodapi.infrastructure.exception.EmailException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -12,9 +13,9 @@ import javax.mail.internet.MimeMessage;
 
 @RequiredArgsConstructor
 public class SMTPEmailService implements EmailService {
-    protected final JavaMailSender mailSender;
     protected final EmailProperties emailProperties;
     protected final EmailTemplateRenderer renderer;
+    @Autowired protected JavaMailSender mailSender;
 
     @Override
     public void send(Message message) {

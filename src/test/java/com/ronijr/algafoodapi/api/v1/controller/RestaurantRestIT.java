@@ -31,16 +31,16 @@ class RestaurantRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/restaurants";
+        RestAssured.basePath = "/v1/restaurants";
         cleaner.clearTables();
         testData.createRestaurantBaseData();
     }
 
     @Test
-    void shouldContainCountRestaurants_WhenListingAllRestaurants() {
+    void shouldContainsCountRestaurants_WhenListingAllRestaurants() {
         given().accept(ContentType.JSON).
         when().get().
-        then().body("", hasSize(DataTest.RESTAURANT_COUNT));
+        then().body("content", hasSize(DataTest.RESTAURANT_COUNT));
     }
 
     @Test

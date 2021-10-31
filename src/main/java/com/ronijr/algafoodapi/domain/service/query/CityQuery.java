@@ -28,4 +28,12 @@ public class CityQuery {
         return findById(id).orElseThrow(() -> new EntityNotFoundException(
                 messageSource.getMessage("city.not.found", id)));
     }
+
+    public City findForUpdate(Long id) throws EntityNotFoundException {
+        City current = findByIdOrElseThrow(id);
+        if (current.getState() != null) {
+            cityRepository.detach(current.getState());
+        }
+        return current;
+    }
 }

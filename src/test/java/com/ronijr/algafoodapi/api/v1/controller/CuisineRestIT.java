@@ -31,27 +31,27 @@ class CuisineRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/cuisines";
+        RestAssured.basePath = "/v1/cuisines";
         cleaner.clearTables();
         testData.createCuisineBaseData();
     }
 
     @Test
-    void shouldStatus200AndContainCountCuisines_WhenListingAllByName() {
+    void shouldStatus200AndContainsCountCuisines_WhenListingAllByName() {
         given().
             queryParam("name", "Cuisine").
             accept(ContentType.JSON).
         when().get("/by-name").
         then().
             statusCode(HttpStatus.OK.value()).
-            body("", hasSize(DataTest.CUISINE_COUNT));
+            body("content", hasSize(DataTest.CUISINE_COUNT));
     }
 
     @Test
-    void shouldContainCountCuisines_WhenListingAllCuisines() {
+    void shouldContainsCountCuisines_WhenListingAllCuisines() {
         given().accept(ContentType.JSON).
         when().get().
-        then().body("", hasSize(DataTest.CUISINE_COUNT));
+        then().body("content", hasSize(DataTest.CUISINE_COUNT));
     }
 
     @Test

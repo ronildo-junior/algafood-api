@@ -30,7 +30,7 @@ class PaymentMethodRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/payment-methods";
+        RestAssured.basePath = "/v1/payment-methods";
         cleaner.clearTables();
         testData.createPaymentMethodBaseData();
     }

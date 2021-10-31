@@ -26,7 +26,7 @@ class OrderStatusRestIT extends AbstractTest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/orders";
+        RestAssured.basePath = "/v1/orders";
         cleaner.clearTables();
         testData.createOrderBaseData();
     }

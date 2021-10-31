@@ -31,7 +31,7 @@ class UserRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/users";
+        RestAssured.basePath = "/v1/users";
         cleaner.clearTables();
         testData.createUserBaseData();
     }

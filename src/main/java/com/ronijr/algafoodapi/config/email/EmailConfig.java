@@ -8,12 +8,10 @@ import com.ronijr.algafoodapi.infrastructure.service.email.SMTPEmailServiceSandb
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mail.javamail.JavaMailSender;
 
 @Configuration
 @RequiredArgsConstructor
 public class EmailConfig {
-    private final JavaMailSender mailSender;
     private final EmailProperties emailProperties;
     private final EmailTemplateRenderer templateEngine;
 
@@ -21,9 +19,9 @@ public class EmailConfig {
     public EmailService emailService() {
         switch (emailProperties.getImpl()) {
             case SMTP:
-                return new SMTPEmailService(mailSender, emailProperties, templateEngine);
+                return new SMTPEmailService(emailProperties, templateEngine);
             case SMTP_SANDBOX:
-                return new SMTPEmailServiceSandbox(mailSender, emailProperties, templateEngine);
+                return new SMTPEmailServiceSandbox(emailProperties, templateEngine);
             default:
                 return new FakeEmailService(templateEngine);
         }

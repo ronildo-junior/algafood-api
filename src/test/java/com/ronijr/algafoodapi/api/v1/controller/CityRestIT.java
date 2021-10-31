@@ -30,7 +30,7 @@ class CityRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/cities";
+        RestAssured.basePath = "/v1/cities";
         cleaner.clearTables();
         testData.createCityBaseData();
     }

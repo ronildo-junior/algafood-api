@@ -36,6 +36,17 @@ public class RestaurantQuery {
                 messageSource.getMessage("restaurant.not.found", id)));
     }
 
+    public Restaurant findForUpdate(Long id) throws EntityNotFoundException {
+        Restaurant current = findByIdOrElseThrow(id);
+        if (current.getCuisine() != null) {
+            restaurantRepository.detach(current.getCuisine());
+        }
+        if (current.getAddress().getCity() != null) {
+            restaurantRepository.detach(current.getAddress().getCity());
+        }
+        return current;
+    }
+
     public Optional<OffsetDateTime> getLastUpdateDate() {
         return restaurantRepository.getLastUpdateDate();
     }

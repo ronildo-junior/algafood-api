@@ -30,7 +30,7 @@ class UserGroupRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/user-groups";
+        RestAssured.basePath = "/v1/user-groups";
         cleaner.clearTables();
         testData.createUserGroupBaseData();
     }

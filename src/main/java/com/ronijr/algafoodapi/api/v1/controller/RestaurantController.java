@@ -92,7 +92,7 @@ public class RestaurantController {
     @PutMapping("/{restaurantId}")
     public ResponseEntity<RestaurantModel.Output> update(
             @PathVariable Long restaurantId, @RequestBody @Valid RestaurantModel.Input input) {
-        Restaurant current = queryService.findByIdOrElseThrow(restaurantId);
+        Restaurant current = queryService.findForUpdate(restaurantId);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
@@ -102,7 +102,7 @@ public class RestaurantController {
     public ResponseEntity<RestaurantModel.Output> updatePartial(
             @PathVariable Long restaurantId, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, RestaurantModel.Input.class);
-        Restaurant current = queryService.findByIdOrElseThrow(restaurantId);
+        Restaurant current = queryService.findForUpdate(restaurantId);
         mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }

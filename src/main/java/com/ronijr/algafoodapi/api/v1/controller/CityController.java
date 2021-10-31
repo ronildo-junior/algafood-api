@@ -67,7 +67,7 @@ public class CityController {
     @Deprecated
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.Output> update(@PathVariable Long id, @RequestBody @Valid CityModel.Input input) {
-        City current = queryService.findByIdOrElseThrow(id);
+        City current = queryService.findForUpdate(id);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
@@ -77,7 +77,7 @@ public class CityController {
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.Output> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CityModel.Input.class);
-        City current = queryService.findByIdOrElseThrow(id);
+        City current = queryService.findForUpdate(id);
         mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }

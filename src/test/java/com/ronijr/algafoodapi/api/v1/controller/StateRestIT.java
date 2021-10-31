@@ -30,7 +30,7 @@ class StateRestIT extends AbstractTestRest {
     void setUp() {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = randomPort;
-        RestAssured.basePath = "/states";
+        RestAssured.basePath = "/v1/states";
         cleaner.clearTables();
         testData.createStateBaseData();
     }

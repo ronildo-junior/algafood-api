@@ -63,7 +63,7 @@ public class CityControllerV2 {
     @CheckSecurity.Cities.AllowEdit
     @PutMapping("/{id}")
     public ResponseEntity<CityModel.OutputV2> update(@PathVariable Long id, @RequestBody @Valid CityModel.InputV2 input) {
-        City current = queryService.findByIdOrElseThrow(id);
+        City current = queryService.findForUpdate(id);
         disassembler.copyToDomainObject(input, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }
@@ -72,7 +72,7 @@ public class CityControllerV2 {
     @PatchMapping("/{id}")
     public ResponseEntity<CityModel.OutputV2> updatePartial(@PathVariable Long id, @RequestBody Map<String, Object> patchMap) {
         verifyMapContainsOnlyFieldsOfClass(patchMap, CityModel.InputV2.class);
-        City current = queryService.findByIdOrElseThrow(id);
+        City current = queryService.findForUpdate(id);
         mergeFieldsMapInObject(patchMap, current);
         return ResponseEntity.ok(assembler.toModel(commandService.update(current)));
     }

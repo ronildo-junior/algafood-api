@@ -1,5 +1,6 @@
 package com.ronijr.algafoodapi.api.v1.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -35,9 +36,13 @@ public final class OrderModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Output extends RepresentationModel<Output> {
         String code;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime createdAt;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime confirmedAt;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime cancelledAt;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime deliveredAt;
         String status;
         BigDecimal deliveryFee;
@@ -55,6 +60,7 @@ public final class OrderModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Summary extends RepresentationModel<Summary> {
         String code;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime createdAt;
         String status;
         BigDecimal deliveryFee;
@@ -69,8 +75,11 @@ public final class OrderModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class StatusInfo extends RepresentationModel<StatusInfo> {
         String status;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime createdAt;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime deliveredAt;
+        @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm")
         OffsetDateTime cancelledAt;
     }
 }

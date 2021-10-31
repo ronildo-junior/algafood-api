@@ -1,7 +1,9 @@
 package com.ronijr.algafoodapi.config.security;
 
+import com.ronijr.algafoodapi.infrastructure.EnvironmentConstants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+@Profile(value = { EnvironmentConstants.HOMOLOGATION, EnvironmentConstants.PRODUCTION })
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)

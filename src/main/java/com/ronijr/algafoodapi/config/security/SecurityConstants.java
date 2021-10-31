@@ -3,7 +3,7 @@ package com.ronijr.algafoodapi.config.security;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class SecurityConstants {
+public final class SecurityConstants {
     public static final String AND = " and ";
     public static final String OR = " or ";
     public static final String HAS_AUTHORITY = "hasAuthority";
