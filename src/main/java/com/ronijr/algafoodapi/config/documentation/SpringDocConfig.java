@@ -3,6 +3,7 @@ package com.ronijr.algafoodapi.config.documentation;
 import com.ronijr.algafoodapi.api.exception.handler.ProblemDetails;
 import com.ronijr.algafoodapi.api.v1.controller.CuisineController;
 import com.ronijr.algafoodapi.config.documentation.model.ControllerTag;
+import com.ronijr.algafoodapi.config.documentation.model.LinkSummary;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.SpringDocUtils;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +40,10 @@ import static com.ronijr.algafoodapi.config.documentation.HttpStatus.*;
 @Configuration
 public class SpringDocConfig implements OperationCustomizer {
     public static final String PATH_SCHEMAS = "#/components/schemas/";
+
+    static {
+        SpringDocUtils.getConfig().replaceWithClass(org.springframework.hateoas.Link.class, LinkSummary.class);
+    }
 
     private final List<Integer> problemStatuses = Arrays.asList(
             HttpStatus.BAD_REQUEST.value(),
@@ -272,8 +278,10 @@ public class SpringDocConfig implements OperationCustomizer {
                 .addTagsItem(ControllerTag.CUISINE.getTag())
                 .addTagsItem(ControllerTag.ORDER.getTag())
                 .addTagsItem(ControllerTag.PAYMENT_METHOD.getTag())
+                .addTagsItem(ControllerTag.PERMISSION.getTag())
                 .addTagsItem(ControllerTag.PRODUCT.getTag())
                 .addTagsItem(ControllerTag.RESTAURANT.getTag())
+                .addTagsItem(ControllerTag.ROOT_ENTRY_POINT.getTag())
                 .addTagsItem(ControllerTag.STATE.getTag())
                 .addTagsItem(ControllerTag.STATISTIC.getTag())
                 .addTagsItem(ControllerTag.USER.getTag())
