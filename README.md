@@ -31,6 +31,7 @@ Run the following command in a terminal window (in the complete) directory:
 ```text
 ./mvnw spring-boot:run
 ```
+The project has at its root a file for import into Postman "postman_collection.json". Security and uri settings are centralized in the collection.
 
 ## Docker
 The files to configure the docker are:
