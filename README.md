@@ -1,9 +1,6 @@
 # AlgaFood API
 This project is based on AlgaWorks' Specialist Spring REST Training. The API is designed to be an MVP for Food Delivery, using DDD - Domain-Driven Design and best practice.
 
-## Status
-This project is currently under development.
-
 ## Technology
 - [Java 11](https://adoptopenjdk.net/) - AdoptOpenJDK distribution.
 - [Maven](https://maven.apache.org/) - Project Management.
